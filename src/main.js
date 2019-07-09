@@ -10,10 +10,15 @@ import router from "./router.js";
 import 'element-ui/lib/theme-chalk/base.css';
 // collapse 展开折叠
 import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+// 引入axios
+import axios from 'axios';
+import qs from 'qs';
 
 Vue.use(ElementUI);
 Vue.use(Router);
-Vue.component(CollapseTransition.name, CollapseTransition)
+Vue.component(CollapseTransition.name, CollapseTransition);
+Vue.prototype.$axios= axios;
+Vue.prototype.$qs = qs;
 
 router.beforeEach((to, from, next) => {
   if (to.path == '/login') {

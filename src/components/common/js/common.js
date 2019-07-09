@@ -93,15 +93,15 @@ var common = {
 		}
 		return year + regex + month + regex + day;
 	},
-    /**
-	 * ajax封装方法
-	 * @author zhoujiawei
-     * @param type 请求类型
-     * @param url 请求url
-     * @param data 数据
-     * @param successFunction 成功执行方法
-     * @param errorFunction 失败执行方法
-     */
+  /**
+   * ajax封装方法
+   * @author zhoujiawei
+   * @param type 请求类型
+   * @param url 请求url
+   * @param data 数据
+   * @param successFunction 成功执行方法
+   * @param errorFunction 失败执行方法
+   */
 	ajaxRequest : function (type, url, data, async, successFunction, errorFunction) {
         $.ajax({
             type: type,

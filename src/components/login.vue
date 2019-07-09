@@ -54,18 +54,36 @@
               loginName: this.ruleForm2.account,
               password: this.ruleForm2.checkPass
             };
-            if (loginParams.loginName == "admin" && loginParams.password == "test123") {
+            this.$axios({
+              method: 'post',
+              url: 'http://localhost:8088/zjw/login',
+              data: this.$qs.stringify({
+                loginName: this.ruleForm2.account,
+                password: this.ruleForm2.checkPass
+              })
+            }).then(function (resopnse) {
               _this.logining = false;
               sessionStorage.setItem('user', JSON.stringify(loginParams));
               _this.$router.push({ path: '/home' });
-            } else {
-              _this.logining = false;
-              _this.$alert('用户名或密码错误！', '提示信息', {
-                confirmButtonText: '确定'
-              });
-            }
+            }).catch(function (error) {
+                confirm(error);
+                _this.logining = false;
+                _this.$alert('用户名或密码错误！', '提示信息', {
+                  confirmButtonText: '确定'
+                });
+            });
+            // if (loginParams.loginName == "admin" && loginParams.password == "test123") {
+            //   _this.logining = false;
+            //   sessionStorage.setItem('user', JSON.stringify(loginParams));
+            //   _this.$router.push({ path: '/home' });
+            // } else {
+            //   _this.logining = false;
+            //   _this.$alert('用户名或密码错误！', '提示信息', {
+            //     confirmButtonText: '确定'
+            //   });
+            // }
           } else {
-            console.log('error submit!!');
+            console.log('submit error!');
             return false;
           }
         });
