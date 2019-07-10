@@ -1,16 +1,16 @@
 <template>
   <div class="login-page-container">
-    <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
       <h3 class="title">系统</h3>
-      <el-form-item prop="account">
-        <el-input type="text" v-model="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
+      <el-form-item prop="loginName">
+        <el-input type="text" v-model="ruleForm.loginName" auto-complete="off" placeholder="用户名"/>
       </el-form-item>
-      <el-form-item prop="checkPass">
-        <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off" placeholder="密码"></el-input>
+      <el-form-item prop="password">
+        <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="密码" prop="password"/>
       </el-form-item>
       <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
-        <el-button type="primary" style="width:100%;" @click="handleSubmit2" :loading="logining">登录</el-button>
+        <el-button type="primary" style="width:100%;" @click="handleSubmit" :loading="logining">登录</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -18,72 +18,67 @@
 
 <script>
   export default {
-    props: {
-    },
+    props: {},
     data() {
       return {
         logining: false,
-        ruleForm2: {
-          account: 'admin',
-          checkPass: 'test123'
+        ruleForm: {
+          loginName: 'admin',
+          password: 'test123'
         },
-        rules2: {
-          account: [{
+        rules: {
+          loginName: [{
             required: true,
-            message: '请输入账号',
+            message: '请输入用户名',
             trigger: 'blur'
-          },
-          ],
-          checkPass: [{
+          }],
+          password: [{
             required: true,
             message: '请输入密码',
             trigger: 'blur'
-          },
-          ]
+          }]
         },
         checked: true
       };
     },
     methods: {
-      handleSubmit2() {
-        let _this = this;
-        _this.$refs.ruleForm2.validate((valid) => {
-          if (valid) {
-            _this.logining = true;
-            let loginParams = {
-              loginName: this.ruleForm2.account,
-              password: this.ruleForm2.checkPass
-            };
+      handleSubmit() {
+        let that = this;
+        that.$refs.ruleForm.validate((valid) => {
+          // 校验通过并且不在登陆处理中时
+          if (valid && !that.logining) {
+            that.logining = true;
             this.$axios({
               method: 'post',
-              url: 'http://localhost:8088/zjw/login',
+              url: 'http://localhost:8088/api/login',
               data: this.$qs.stringify({
-                loginName: this.ruleForm2.account,
-                password: this.ruleForm2.checkPass
+                loginName: that.ruleForm.loginName,
+                password: that.ruleForm.password
               })
-            }).then(function (resopnse) {
-              _this.logining = false;
-              sessionStorage.setItem('user', JSON.stringify(loginParams));
-              _this.$router.push({ path: '/home' });
-            }).catch(function (error) {
-                confirm(error);
-                _this.logining = false;
-                _this.$alert('用户名或密码错误！', '提示信息', {
+            }).then(function (data) {
+              that.logining = false;
+              if (data.data.flag) {
+                sessionStorage.setItem('user', JSON.stringify({
+                  loginName: data.data.loginName,
+                  password: data.data.password
+                }));
+                localStorage.setItem('menu', JSON.stringify(data.data.data));
+                debugger;
+                that.$router.push({ path: '/home' });
+              } else {
+                that.$alert(data.data.msg, '提示信息', {
                   confirmButtonText: '确定'
                 });
+              }
+            }).catch(function (error) {
+              that.logining = false;
+              console.log(error)
+              that.$alert('系统异常,请联系管理员!', '提示信息', {
+                  confirmButtonText: '确定'
+              });
             });
-            // if (loginParams.loginName == "admin" && loginParams.password == "test123") {
-            //   _this.logining = false;
-            //   sessionStorage.setItem('user', JSON.stringify(loginParams));
-            //   _this.$router.push({ path: '/home' });
-            // } else {
-            //   _this.logining = false;
-            //   _this.$alert('用户名或密码错误！', '提示信息', {
-            //     confirmButtonText: '确定'
-            //   });
-            // }
           } else {
-            console.log('submit error!');
+            console.log('请不要重复提交!');
             return false;
           }
         });

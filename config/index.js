@@ -12,10 +12,10 @@ module.exports = {
     assetsPublicPath: '/',
     // https://segmentfault.com/a/1190000011715088 for proxyTable
     proxyTable: {
-      '/zjw/**': {
-        target: 'http://localhost:8088/zjw',
+      '/api/**': {
+        target: 'http://localhost:8088/api',
         pathRewrite: {
-          '^/zjw': '/'
+          '^/api': '/'
         }
       }
     },
