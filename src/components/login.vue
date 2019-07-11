@@ -58,12 +58,12 @@
             }).then(function (data) {
               that.logining = false;
               if (data.data.flag) {
+                // 放入用户
                 sessionStorage.setItem('user', JSON.stringify({
                   loginName: data.data.loginName,
-                  password: data.data.password
                 }));
+                // 放入菜单
                 localStorage.setItem('menu', JSON.stringify(data.data.data));
-                debugger;
                 that.$router.push({ path: '/home' });
               } else {
                 that.$alert(data.data.msg, '提示信息', {

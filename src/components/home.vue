@@ -33,6 +33,10 @@
                   <el-menu-item :index="subMenu.id">{{ subMenu.name }}</el-menu-item>
                 </router-link>
               </el-menu-item-group>
+              <el-submenu index="1-4">
+                <template slot="title">选项4</template>
+                <el-menu-item index="1-4-1">选项1</el-menu-item>
+              </el-submenu>
             </el-submenu>
           </el-menu>
         </div>
@@ -169,43 +173,66 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
 
       // TODO 创建了vue实例后获取菜单数据(改为从接口获取)
-      this.menus.push({
-        id: '1',
-        name: '系统管理',
-        subMenus: [
-          {
-            id: '1-1',
-            name: '用户管理',
-            url: '/home/usersInfo'
-          }, {
-            id: '1-2',
-            url: '/home/error',
-            name: '权限管理'
-          }, {
-            id: '1-3',
-            name: '角色管理',
-            url: '/home/usersInfo1'
-          },
-        ]
-      }, {
-        id: '2',
-        name: '代购管理',
-        subMenus: [
-          {
-            id: '2-1',
-            name: '客户管理',
-            url: '/home/usersInfo1',
-          }, {
-            id: '2-2',
-            name: '商品管理',
-            url: '/home/usersInfo1'
-          }, {
-            id: '2-3',
-            name: '行程管理',
-            url: '/home/usersInfo1'
-          },
-        ]
-      });
+      // debugger;
+      let menusArr = JSON.parse(localStorage.getItem('menu'));
+      for (let index in menusArr ) {
+        this.menus.push(menusArr[index]);
+      }
+      // this.menus.push({
+      //   id: '1',
+      //   name: '系统管理',
+      //   subMenus: [
+      //     {
+      //       id: '1-1',
+      //       name: '用户管理',
+      //       url: '/home/usersInfo'
+      //     }, {
+      //       id: '1-2',
+      //       url: '/home/error',
+      //       name: '权限管理'
+      //     }, {
+      //       id: '1-3',
+      //       name: '角色管理',
+      //       url: '/home/usersInfo1'
+      //     }, {
+      //       id: '1-3',
+      //       name: '角色管理',
+      //       subMenus: [
+      //         {
+      //           id: '2-1',
+      //           name: '客户管理',
+      //           url: '/home/usersInfo1',
+      //         }, {
+      //           id: '2-2',
+      //           name: '商品管理',
+      //           url: '/home/usersInfo1'
+      //         }, {
+      //           id: '2-3',
+      //           name: '行程管理',
+      //           url: '/home/usersInfo1'
+      //         },
+      //       ]
+      //     },
+      //   ]
+      // }, {
+      //   id: '2',
+      //   name: '代购管理',
+      //   subMenus: [
+      //     {
+      //       id: '2-1',
+      //       name: '客户管理',
+      //       url: '/home/usersInfo1',
+      //     }, {
+      //       id: '2-2',
+      //       name: '商品管理',
+      //       url: '/home/usersInfo1'
+      //     }, {
+      //       id: '2-3',
+      //       name: '行程管理',
+      //       url: '/home/usersInfo1'
+      //     },
+      //   ]
+      // });
 
       // vue初始化时根据路由修改面包屑在vue中的值
       let url = this.$route.path;
