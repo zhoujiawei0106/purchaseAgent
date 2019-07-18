@@ -144,6 +144,36 @@
         // 情况面包屑在vue中的值
         this.breadcrumbs.splice(0, this.breadcrumbs.length);
 
+        // 获取菜单
+        this.$axios({
+          method: 'post',
+          url: 'http://localhost:8088/api/login',
+          data: this.$qs.stringify({
+            loginName: that.ruleForm.loginName,
+            password: that.ruleForm.password
+          })
+        }).then(function (data) {
+          that.logining = false;
+          if (data.data.flag) {
+            // 放入用户
+            sessionStorage.setItem('user', JSON.stringify({
+              loginName: data.data.loginName,
+            }));
+            // 放入菜单
+            localStorage.setItem('menu', JSON.stringify(data.data.data));
+            that.$router.push({ path: '/home' });
+          } else {
+            that.$alert(data.data.msg, '提示信息', {
+              confirmButtonText: '确定'
+            });
+          }
+        }).catch(function (error) {
+          that.logining = false;
+          console.log(error)
+          that.$alert('系统异常,请联系管理员!', '提示信息', {
+            confirmButtonText: '确定'
+          });
+        });
         this.menus.find(function (value, index, arr) {
           if (value.subMenus.length > 0) {
             value.subMenus.find(function (subVal, subIndex, subArr) {

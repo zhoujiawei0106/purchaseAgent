@@ -49,12 +49,13 @@
           if (valid && !that.logining) {
             that.logining = true;
             this.$axios({
-              method: 'post',
-              url: 'http://localhost:8088/api/login',
-              data: this.$qs.stringify({
-                loginName: that.ruleForm.loginName,
-                password: that.ruleForm.password
-              })
+              method: 'get',
+              url: 'http://localhost:8088/api/login/' + that.ruleForm.loginName
+                + '/' + that.ruleForm.password
+              // data: this.$qs.stringify({
+              //   loginName: that.ruleForm.loginName,
+              //   password: that.ruleForm.password
+              // })
             }).then(function (data) {
               that.logining = false;
               if (data.data.flag) {
