@@ -33,7 +33,7 @@
                 <router-link v-if="subMenu.subMenus.length == 0" :key="subMenu.id" :to="subMenu.url" tag="li">
                   <el-menu-item :index="subMenu.id">{{ subMenu.name }}</el-menu-item>
                 </router-link>
-                <el-submenu v-if="subMenu.subMenus.length > 0">
+                <el-submenu v-if="subMenu.subMenus.length > 0" :index="subMenu.id">
                   <template slot="title">{{ subMenu.name }}</template>
                   <el-menu-item v-for="next in subMenu.subMenus" :index="next.id">{{ next.name }}</el-menu-item>
                 </el-submenu>
@@ -174,7 +174,6 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
 
       // TODO 创建了vue实例后获取菜单数据(改为从接口获取)
-      // debugger;
       let menusArr = JSON.parse(localStorage.getItem('menu'));
       for (let index in menusArr ) {
         this.menus.push(menusArr[index]);
