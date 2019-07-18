@@ -48,29 +48,23 @@
           // 校验通过并且不在登陆处理中时
           if (valid && !that.logining) {
             that.logining = true;
-            this.$axios({
-              method: 'get',
-              url: 'http://localhost:8088/api/login/' + that.ruleForm.loginName
-                + '/' + that.ruleForm.password
-              // data: this.$qs.stringify({
-              //   loginName: that.ruleForm.loginName,
-              //   password: that.ruleForm.password
-              // })
-            }).then(function (data) {
-              that.logining = false;
-              if (data.data.flag) {
-                // 放入用户
-                sessionStorage.setItem('user', JSON.stringify({
-                  loginName: data.data.loginName,
-                }));
-                // 放入菜单
-                localStorage.setItem('menu', JSON.stringify(data.data.data));
-                that.$router.push({ path: '/home' });
-              } else {
-                that.$alert(data.data.msg, '提示信息', {
-                  confirmButtonText: '确定'
-                });
-              }
+            this.$axios.get('http://localhost:8088/api/login/' + that.ruleForm.loginName + '/' + that.ruleForm.password)
+              .then(function (data) {
+                that.logining = false;
+                debugger;
+                if (data.data.flag) {
+                  // 放入用户
+                  sessionStorage.setItem('user', JSON.stringify({
+                    loginName: data.data.data.loginName,
+                  }));
+                  // 放入菜单
+                  // localStorage.setItem('menu', JSON.stringify(data.data.data));
+                  that.$router.push({ path: '/home' });
+                } else {
+                  that.$alert(data.data.msg, '提示信息', {
+                    confirmButtonText: '确定'
+                  });
+                }
             }).catch(function (error) {
               that.logining = false;
               console.log(error)
