@@ -13,12 +13,14 @@ import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
 // 引入axios
 import axios from 'axios';
 import qs from 'qs';
+import common from "./components/common/js/common.js";
 
 Vue.use(ElementUI);
 Vue.use(Router);
 Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.prototype.$axios= axios;
 Vue.prototype.$qs = qs;
+Vue.prototype.$common = common;
 
 router.beforeEach((to, from, next) => {
   if (to.path == '/login') {

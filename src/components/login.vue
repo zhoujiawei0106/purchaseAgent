@@ -3,10 +3,10 @@
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
       <h3 class="title">系统</h3>
       <el-form-item prop="loginName">
-        <el-input type="text" v-model="ruleForm.loginName" auto-complete="off" placeholder="用户名"/>
+        <el-input type="text" v-model="ruleForm.loginName" auto-complete="off" placeholder="用户名" @keydown.enter.native="handleSubmit"/>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="密码" prop="password"/>
+        <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="密码" prop="password" @keydown.enter.native="handleSubmit"/>
       </el-form-item>
       <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
@@ -48,17 +48,14 @@
           // 校验通过并且不在登陆处理中时
           if (valid && !that.logining) {
             that.logining = true;
-            this.$axios.get('http://localhost:8088/api/login/' + that.ruleForm.loginName + '/' + that.ruleForm.password)
+            this.$axios.get(this.$common.contentPath + '/login/' + that.ruleForm.loginName + '/' + that.ruleForm.password)
               .then(function (data) {
                 that.logining = false;
-                debugger;
                 if (data.data.flag) {
-                  // 放入用户
+                  // 在session中放入用户
                   sessionStorage.setItem('user', JSON.stringify({
                     loginName: data.data.data.loginName,
                   }));
-                  // 放入菜单
-                  // localStorage.setItem('menu', JSON.stringify(data.data.data));
                   that.$router.push({ path: '/home' });
                 } else {
                   that.$alert(data.data.msg, '提示信息', {
@@ -67,7 +64,7 @@
                 }
             }).catch(function (error) {
               that.logining = false;
-              console.log(error)
+              console.log(error);
               that.$alert('系统异常,请联系管理员!', '提示信息', {
                   confirmButtonText: '确定'
               });

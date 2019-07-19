@@ -57,7 +57,7 @@
         </el-collapse-transition>
       </div>
     </div>
-    <div style="padding-top: 3%;">
+    <div style="padding-top: 1%;">
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>

@@ -11,15 +11,13 @@
       </el-dropdown>
     </el-header>
 
-    <el-container>
+    <el-container style="height: 87%;">
       <el-aside :width="leftSideWidth">
         <div class="no-mode-translate-wrapper">
-          <transition name="el-fade-in-linear">
-            <el-button icon="el-icon-d-arrow-right" v-if="isCollapse" key="off" @click="collapseMenu"
-                       :style="collapseCloseBtn" size="small"></el-button>
-            <el-button icon="el-icon-d-arrow-left" v-else="" key="on" @click="collapseMenu" :style="collapseOpenBtn"
-                       size="small"></el-button>
-          </transition>
+          <el-button icon="el-icon-d-arrow-right" v-if="isCollapse" key="off" @click="collapseMenu"
+                     :style="collapseCloseBtn" size="small"></el-button>
+          <el-button icon="el-icon-d-arrow-left" v-else="" key="on" @click="collapseMenu" :style="collapseOpenBtn"
+                     size="small"></el-button>
         </div>
         <div>
           <!-- 最多只支持3层目录 -->
@@ -43,7 +41,6 @@
         </div>
       </el-aside>
 
-      <!--<el-scrollbar id="scrollY" wrap-style="overflow: auto;" :style="'width:' + rightSideWidth + ';'">-->
       <el-main :width="rightSideWidth">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item v-for="breadcrumb in breadcrumbs" :key="breadcrumb.id">
@@ -53,7 +50,6 @@
         <hr v-show="breadcrumbs.length > 0"/>
         <router-view></router-view>
       </el-main>
-      <!--</el-scrollbar>-->
     </el-container>
     <el-footer height="3%" width="100%" style="text-align: center; font-size: 12px">这是我的脚</el-footer>
   </el-container>
@@ -71,17 +67,17 @@
         breadcrumbs: [],
         // 菜单是否展开(默认是)
         isCollapse: false,
-        rightSideWidth: '87%',
-        leftSideWidth: '13%',
+        rightSideWidth: '85%',
+        leftSideWidth: '15%',
         // 菜单展开样式
         collapseOpenBtn: {
           'margin-top': '1px',
-          'margin-left': '86%'
+          'margin-left': '0.5%'
         },
         // 菜单关闭样式
         collapseCloseBtn: {
           'margin-top': '1px',
-          'margin-left': '25%'
+          'margin-left': '0.5%'
         }
       }
     },
@@ -90,13 +86,25 @@
        * 退出登录
        */
       logout: function () {
-        this.$confirm('是否退出登陆?', '退出登陆', {
+        this.$confirm('是否确定退出登陆?', '退出登陆', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'info',
+          center: true
         }).then(() => {
-          sessionStorage.removeItem('user');
-          this.$router.push('/login');
+          // this.$axios.put(this.$common.contentPath + '/logout/' + this.$common.changeString(
+          //   JSON.parse(sessionStorage.getItem('user')).loginName)).then(function (data) {
+              sessionStorage.removeItem('user');
+              // if (data.data.flag) {
+                this.$router.push('/login');
+          //     } else {
+          //       this.$router.push('/404');
+          //     }
+          //   }).catch(function (error) {
+          //   console.log(error);
+          //   sessionStorage.removeItem('user');
+          //   this.$router.push('/404');
+          // })
         }).catch(() => {
 
         });
@@ -107,8 +115,8 @@
       collapseMenu: function () {
         this.isCollapse = !this.isCollapse;
         if (this.isCollapse) {
-          this.rightSideWidth = '97%';
-          this.leftSideWidth = '3%';
+          this.rightSideWidth = '95%';
+          this.leftSideWidth = '5%';
 
         } else {
           this.rightSideWidth = '87%';
@@ -174,7 +182,7 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
 
       // 创建了vue实例后生产菜单
-      let menusArr = JSON.parse(localStorage.getItem('menu'));
+      let menusArr = JSON.parse(sessionStorage.getItem('menu'));
       for (let index in menusArr ) {
         this.menus.push(menusArr[index]);
       }
@@ -184,11 +192,11 @@
       this.initBreadcrumbs(this.menus, this.breadcrumbs, url);
     },
     beforeCreate: function () {
-      this.$axios.get('http://localhost:8088/api/userMenu/' + this.loginName)
-        .then(function (data) {
+      this.$axios.get(this.$common.contentPath + '/userMenu/' + this.$common.changeString(
+        JSON.parse(sessionStorage.getItem('user')).loginName)).then(function (data) {
           if (data.data.flag) {
-            // 每次vue实例化前，在localStorage中放入最新的菜单
-            localStorage.setItem('menu', JSON.stringify(data.data.data));
+            // 每次vue实例化前，sessionStorage
+            sessionStorage.setItem('menu', JSON.stringify(data.data.data));
           } else {
             console.log(data.data.msg)
           }
@@ -220,7 +228,7 @@
   }
 
   .no-mode-translate-wrapper {
-    position: relative;
+    /*position: relative;*/
     height: 35px;
   }
 
