@@ -181,29 +181,25 @@
     created: function () {
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
 
-      // 创建了vue实例后生产菜单
-      let menusArr = JSON.parse(sessionStorage.getItem('menu'));
-      for (let index in menusArr ) {
-        this.menus.push(menusArr[index]);
-      }
+      // vue中的菜单
+      let menus = this.menus;
+      this.$axios.get(this.$common.contentPath + '/userMenu/' + this.$common.changeString(
+        JSON.parse(sessionStorage.getItem('user')).loginName)).then(function (data) {
+        if (data.data.flag) {
+          for (let index in data.data.data) {
+            menus.push(data.data.data[index]);
+          }
+        } else {
+          console.log(data.data.msg);
+        }
+      }).catch(function () {
+        console.log('系统异常,请联系管理员!')
+      });
 
       // vue初始化时根据路由修改面包屑在vue中的值
       let url = this.$route.path;
       this.initBreadcrumbs(this.menus, this.breadcrumbs, url);
     },
-    beforeCreate: function () {
-      this.$axios.get(this.$common.contentPath + '/userMenu/' + this.$common.changeString(
-        JSON.parse(sessionStorage.getItem('user')).loginName)).then(function (data) {
-          if (data.data.flag) {
-            // 每次vue实例化前，sessionStorage
-            sessionStorage.setItem('menu', JSON.stringify(data.data.data));
-          } else {
-            console.log(data.data.msg)
-          }
-        }).catch(function () {
-        console.log('系统异常,请联系管理员!')
-      });
-    }
   }
 </script>
 
@@ -236,21 +232,21 @@
     position: absolute;
   }
 
-  .no-mode-translate-fade-enter-active, .no-mode-translate-fade-leave-active {
-    transition: all 0.5s;
-  }
+  /*.no-mode-translate-fade-enter-active, .no-mode-translate-fade-leave-active {*/
+    /*transition: all 0.5s;*/
+  /*}*/
 
-  .no-mode-translate-fade-enter, .no-mode-translate-fade-leave-active {
-    opacity: 0;
-  }
+  /*.no-mode-translate-fade-enter, .no-mode-translate-fade-leave-active {*/
+    /*opacity: 0;*/
+  /*}*/
 
-  .no-mode-translate-fade-enter {
-    transform: translateX(31px);
-  }
+  /*.no-mode-translate-fade-enter {*/
+    /*transform: translateX(31px);*/
+  /*}*/
 
-  .no-mode-translate-fade-leave-active {
-    transform: translateX(51px);
-  }
+  /*.no-mode-translate-fade-leave-active {*/
+    /*transform: translateX(51px);*/
+  /*}*/
 
   /*#scrollY .el-scrollbar .el-scrollbar__wrap {overflow-x: hidden;}*/
 
