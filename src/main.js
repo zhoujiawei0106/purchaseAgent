@@ -21,6 +21,7 @@ Vue.component(CollapseTransition.name, CollapseTransition);
 Vue.prototype.$axios= axios;
 Vue.prototype.$qs = qs;
 Vue.prototype.$common = common;
+Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
   if (to.path == '/login') {
@@ -39,6 +40,33 @@ router.beforeEach((to, from, next) => {
     next('/404')
   }
 });
+
+axios.interceptors.request.use(function (config) {
+  let token = localStorage.getItem("token");
+  // let token = sessionStorage.getItem("user");
+  if (token) {
+    config.headers['token'] = token;
+  }
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+
+axios.interceptors.response.use(function (config) {
+  if (!config.data.flag && config.data.code == 412) {
+    Vue.prototype.$alert('用户登陆已失效，请重新登陆', '提示', {
+      confirmButtonText: '确定',
+      callback: action => {
+        sessionStorage.removeItem('user');
+        localStorage.removeItem('token');
+        router.push({ path: '/login' });
+      }
+    });
+  }
+  return config;
+}, function (error) {
+  return error;
+})
 
 new Vue({
   el: '#app',

@@ -27,13 +27,13 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">{{ menu.name }}</span>
               </template>
-              <el-menu-item-group v-for="subMenu in menu.subMenus">
+              <el-menu-item-group v-for="subMenu in menu.subMenus" :key="subMenu.id" :index="subMenu.id">
                 <router-link v-if="subMenu.subMenus.length == 0" :key="subMenu.id" :to="subMenu.url" tag="li">
                   <el-menu-item :index="subMenu.id">{{ subMenu.name }}</el-menu-item>
                 </router-link>
                 <el-submenu v-if="subMenu.subMenus.length > 0" :index="subMenu.id">
                   <template slot="title">{{ subMenu.name }}</template>
-                  <el-menu-item v-for="next in subMenu.subMenus" :index="next.id">{{ next.name }}</el-menu-item>
+                  <el-menu-item v-for="next in subMenu.subMenus" :key="next.id" :index="next.id">{{ next.name }}</el-menu-item>
                 </el-submenu>
               </el-menu-item-group>
             </el-submenu>
@@ -192,7 +192,7 @@
         } else {
           console.log(data.data.msg);
         }
-      }).catch(function () {
+      }).catch(function (e) {
         console.log('系统异常,请联系管理员!')
       });
 

@@ -54,8 +54,10 @@
                 if (data.data.flag) {
                   // 在session中放入用户
                   sessionStorage.setItem('user', JSON.stringify({
-                    loginName: data.data.data.loginName,
+                    loginName: data.data.data.loginName
                   }));
+                  // 在local中添加token
+                  localStorage.setItem('token', data.data.data.token);
                   that.$router.push({ path: '/home' });
                 } else {
                   that.$alert(data.data.msg, '提示信息', {
