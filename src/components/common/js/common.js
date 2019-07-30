@@ -113,6 +113,18 @@ function changeString(value) {
   return value;
 }
 
+/**
+ * 错误提示弹窗
+ * @author zhoujiawei
+ * @param that 当前对象
+ * @param data 数据
+ */
+function errorAlert(that, data) {
+  if (!data.flag && data.data.code != 412) {
+    that.$alert('系统异常，请联系管理员', '提示');
+  }
+}
+
 export default {
   contentPath,
   null2empty,
@@ -121,5 +133,6 @@ export default {
   isNotEmpty,
   uuid,
   systemDate,
-  changeString
+  changeString,
+  errorAlert
 }

@@ -179,6 +179,7 @@
       }
     },
     created: function () {
+      let that = this;
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
 
       // vue中的菜单
@@ -190,10 +191,11 @@
             menus.push(data.data.data[index]);
           }
         } else {
+          that.$common.errorAlert(that, data.data)
           console.log(data.data.msg);
         }
       }).catch(function (e) {
-        console.log('系统异常,请联系管理员!')
+        console.log(e)
       });
 
       // vue初始化时根据路由修改面包屑在vue中的值
