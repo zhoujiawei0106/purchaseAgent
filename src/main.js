@@ -43,7 +43,6 @@ router.beforeEach((to, from, next) => {
 
 axios.interceptors.request.use(function (config) {
   let token = localStorage.getItem("token");
-  // let token = sessionStorage.getItem("user");
   if (token) {
     config.headers['token'] = token;
   }
@@ -53,20 +52,44 @@ axios.interceptors.request.use(function (config) {
 });
 
 axios.interceptors.response.use(function (config) {
-  if (!config.data.flag && config.data.code == 412) {
-    Vue.prototype.$alert('用户登陆已失效，请重新登陆', '提示', {
-      confirmButtonText: '确定',
-      callback: action => {
-        sessionStorage.removeItem('user');
-        localStorage.removeItem('token');
-        router.push({ path: '/login' });
-      }
-    });
+  // token失效，重新登陆
+  if (!config.data.flag && config.data.code == 400001) {
+    logout('用户登陆已失效，请重新登陆');
+  }
+
+  // 20分钟未操作，重新登陆
+  let user = sessionStorage.getItem("user");
+  if (!user) {
+    sessionStorage.setItem("lastOperate", new Date().getTime().toString());
+  } else {
+    let lastOperate = sessionStorage.getItem("lastOperate");
+    if (parseInt(lastOperate) + 1200000 < new Date().getTime()) {
+      logout('由于您长时间未操作，请重新登陆');
+    } else {
+      sessionStorage.setItem("lastOperate", new Date().getTime().toString());
+    }
   }
   return config;
 }, function (error) {
   return error;
 })
+
+/**
+ * 登出
+ * @author zhoujiawei
+ * @param msg
+ */
+function logout(msg) {
+  Vue.prototype.$alert(msg, '提示', {
+    confirmButtonText: '确定',
+    callback: action => {
+      sessionStorage.removeItem('user');
+      sessionStorage.removeItem('lastOperate');
+      localStorage.removeItem('token');
+      router.push({ path: '/login' });
+    }
+  });
+}
 
 new Vue({
   el: '#app',
