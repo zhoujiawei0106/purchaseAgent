@@ -61,18 +61,18 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>
-          <el-table-column type="index" width="50" label="序号" align="center"></el-table-column>
-          <el-table-column prop="id" label="id" align="center" v-if="false"></el-table-column>
-          <el-table-column prop="date" label="日期" align="center" sortable></el-table-column>
-          <el-table-column prop="name" label="姓名" align="center"></el-table-column>
-          <el-table-column prop="address" label="地址" align="center" show-overflow-tooltip> </el-table-column>
+          <el-table-column type="index" width="50" label="序号" align="center"/>
+          <el-table-column prop="id" label="id" align="center" v-if="false"/>
+          <el-table-column prop="loginName" label="用户名" align="center" sortable/>
+          <el-table-column prop="userName" label="用户名称" align="center"/>
+          <el-table-column prop="ip" label="ip" align="center"/>
+          <el-table-column prop="loginFailTimes" label="登陆次数" align="center"/>
         </el-table>
       </div>
       <div class="pagination">
         <el-pagination layout="total, sizes, prev, pager, next, jumper" :current-page="currentPage" :total="total"
                        :page-sizes="[5, 10, 20, 50]" :page-size="pageSize" @size-change="sizeChange" @current-change="currentChange"
-                       @prev-click="prevClick" @next-click="nextClick" background>
-        </el-pagination>
+                       @prev-click="prevClick" @next-click="nextClick" background v-show="pagination"/>
       </div>
     </div>
   </div>
@@ -90,12 +90,14 @@
         spanFlag: false,
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
+        // 分页条隐藏
+        pagination: false,
         // 当前第几页
-        currentPage: 1,
+        currentPage: 0,
         // 每页几条
-        pageSize: 10,
+        pageSize: 0,
         // 数据总数
-        total: 200000,
+        total: 0,
         // 查询条件
         formInline: {
           user: '',
@@ -107,69 +109,8 @@
         iconOutStyle: {
           'color': ' #409eff'
         },
-        iconStyle: {},
-        // TODO 表格数据(后台动态获取)
-        tableData: [{
-          id: 1,
-          date: '2018-10-01',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号101室'
-        }, {
-          id: 2,
-          date: '2018-10-02',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号102室'
-        }, {
-          id: 3,
-          date: '2018-10-03',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号103室'
-        }, {
-          id: 4,
-          date: '2018-10-04',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号104室'
-        }, {
-          id: 5,
-          date: '2018-10-05',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号201室'
-        }, {
-          id: 6,
-          date: '2018-10-06',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号202室'
-        }, {
-          id: 7,
-          date: '2018-10-07',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号203室'
-        }, {
-          id: 8,
-          date: '2018-10-08',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号204室'
-        }, {
-          id: 9,
-          date: '2018-10-09',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号301室'
-        }, {
-          id: 10,
-          date: '2018-10-10',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号302室'
-        }, {
-          id: 11,
-          date: '2018-10-11',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号303室'
-        }, {
-          id: 12,
-          date: '2018-10-12',
-          name: '哈哈儿',
-          address: '上海市普陀区天地软件园1号304室'
-        }]
+        // iconStyle: {},
+        tableData: []
       }
     },
     methods: {
@@ -192,7 +133,7 @@
        * @param column
        */
       clickRow(row, event, column) {
-        var rowId = row.id;
+        let rowId = row.id;
       },
       /**
        * 双击数据行
@@ -252,6 +193,12 @@
         this.showFlag = !this.showFlag;
         this.isHideForm = !this.isHideForm;
       }
+    },
+    created: function() {
+      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
+
+      let that = this;
+      that.$common.tableSearch(that, '/system/getUsers', {});
     }
   }
 </script>

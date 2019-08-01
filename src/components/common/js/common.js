@@ -125,6 +125,40 @@ function errorAlert(that, data) {
   }
 }
 
+/**
+ * 列表查询
+ * @author zhoujiawei
+ * @param that vue的this
+ * @param url 请求后台的路径
+ * @param data 查询条件
+ * @param tableData
+ * @param pagination
+ */
+function tableSearch(that, url, data, tableData, pagination) {
+  that.$axios.get(contentPath + url, that).then(function (event) {
+    if (event.data.flag) {
+      that.tableData = event.data.data.list;
+      // 根据返回数据量显示或隐藏分页条，并设置分页信息
+      if (event.data.data.list.length > 0) {
+        that.pagination = true;
+        // 设置当前第页数
+        that.currentPage = event.data.data.pageNum;
+        // 设置每页条数
+        that.pageSize = event.data.data.pageSize;
+        // 设置总条数
+        that.total = event.data.data.total;
+      } else {
+        that.pagination = false;
+      }
+    } else {
+      errorAlert(that, event.data)
+      console.log(event.data.msg);
+    }
+  }).catch(function (e) {
+    console.log(e)
+  });
+}
+
 export default {
   contentPath,
   null2empty,
@@ -134,5 +168,6 @@ export default {
   uuid,
   systemDate,
   changeString,
-  errorAlert
+  errorAlert,
+  tableSearch
 }
