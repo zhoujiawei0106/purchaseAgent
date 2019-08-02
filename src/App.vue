@@ -33,8 +33,9 @@
   }
 
   /** 所有查询页面按钮引用的样式 */
-  .search-element-form .search-element-form-btn {
-    padding-top: 1%;
+  .search-form-btn {
+    padding-bottom: 0.5%;
+    text-align: center;
   }
 
   /** 所有查询页面收缩按钮 */

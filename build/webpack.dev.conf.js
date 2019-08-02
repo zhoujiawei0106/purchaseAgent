@@ -55,7 +55,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
-      favicon: 'favicon.ico',  // 在此处添加一行这个，用于webpack生成index.html时，自动把favicon.ico加入HTML中
+      favicon: './favicon.ico',  // 在此处添加一行这个，用于webpack生成index.html时，自动把favicon.ico加入HTML中
       inject: true
     }),
     // copy custom static assets
