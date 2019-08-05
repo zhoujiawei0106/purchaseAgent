@@ -70,16 +70,12 @@
          * 点击隐藏查询条件div
          */
         hideForm() {
-          debugger;
           this.hideFlag = !this.hideFlag;
           this.showFlag = !this.showFlag;
           // 给父容器传值
           this.$emit('exchangeForm', !this.isHideForm);
         }
       }
-      // created:function () {
-      //   this.$emit('collapse', false);
-      // }
     }
 </script>
 

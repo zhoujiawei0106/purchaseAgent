@@ -140,9 +140,9 @@ function tableSearch(that, url, data) {
       if (event.data.data.list.length > 0) {
         that.pagination = true;
         // 设置当前第页数
-        that.formData.currentPage = event.data.data.pageNum;
+        that.formData.page = event.data.data.pageNum;
         // 设置每页条数
-        that.formData.pageSize = event.data.data.pageSize;
+        that.formData.rows = event.data.data.pageSize;
         // 设置总条数
         that.formData.total = event.data.data.total;
       } else {

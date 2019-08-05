@@ -37,21 +37,26 @@
           <el-table-column prop="loginFailTimes" label="无效登陆次数" align="center"/>
         </el-table>
       </div>
-      <div class="pagination">
-        <el-pagination layout="total, sizes, prev, pager, next, jumper" :page-sizes="[5, 10, 20, 50]" v-show="pagination"
-                       :current-page="formData.currentPage" :total="formData.total" :page-size="formData.pageSize"
-                       @size-change="sizeChange" @current-change="currentChange" @prev-click="prevClick"
-                       @next-click="nextClick" background/>
-      </div>
+      <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
+                  @exchangePagination="exchangePagination"/>
+      <!--<div class="pagination">-->
+        <!--<el-pagination layout="total, sizes, prev, pager, next, jumper" :page-sizes="[5, 10, 20, 50]" v-show="pagination"-->
+                       <!--:current-page="formData.currentPage" :total="formData.total" :page-size="formData.pageSize"-->
+                       <!--@size-change="sizeChange" @current-change="currentChange" @prev-click="prevClick"-->
+                       <!--@next-click="nextClick" background/>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
 
 <script>
-  import collapse from '../../components/common/collapse';
+  import collapse from '../common/collapse';
+  import pagination from '../common/pagination';
   export default {
     data() {
       return {
+        // 请求地址
+        url: '/system/getUsers',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
@@ -61,9 +66,9 @@
           loginName: '',
           userName: '',
           // 当前第几页
-          currentPage: 0,
+          page: 1,
           // 每页几条
-          pageSize: 0,
+          rows: 10,
           // 数据总数
           total: 0
         },
@@ -71,9 +76,18 @@
       }
     },
     components: {
+      pagination,
       collapse,
     },
     methods: {
+      /**
+       * 翻页/跳转页
+       */
+      exchangePagination(param) {
+        this.pagination = param.pagination;
+        this.formData = param.formData;
+        this.tableData = param.tableData;
+      },
       /**
        * 显示隐藏查询表单
        */
@@ -84,9 +98,8 @@
        * 查询按钮
        */
       searchBtn() {
-        console.log('submit!');
         let that = this;
-        that.$common.tableSearch(that, '/system/getUsers', this.formData);
+        that.$common.tableSearch(that, this.url, this.formData);
       },
       /**
        * 重置按钮
@@ -113,48 +126,13 @@
       selectRow(row, event) {
         let rowId = row.id;
         console.log(rowId);
-      },
-      /**
-       * 修改当前页显示条数
-       * @param value
-       */
-      sizeChange(value) {
-        this.formData.pageSize = value;
-      },
-      /**
-       * 自己选择页数
-       * @param value
-       */
-      currentChange(value) {
-        this.formData.currentPage = value
-      },
-      /**
-       * 上一页
-       * @param value
-       */
-      prevClick(value) {
-        this.formData.currentPage = value
-      },
-      /**
-       * 下一页
-       * @param value
-       */
-      nextClick(value) {
-        this.formData.currentPage = value
-      },
+      }
     },
     created: function() {
-      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
+      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
 
       let that = this;
-      that.$common.tableSearch(that, '/system/getUsers', {});
+      that.$common.tableSearch(that, this.url, {});
     }
   }
 </script>
-
-<style scoped>
-  .pagination{
-    text-align: center; /*让div内部文字居中*/
-    padding-top: 1%;
-  }
-</style>
