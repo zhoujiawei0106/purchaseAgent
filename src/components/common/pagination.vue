@@ -10,6 +10,14 @@
 <script>
     export default {
       name: "pagination",
+      data() {
+        return {
+          data_url: this.url,
+          data_pagination: this.pagination,
+          data_formData: this.formData,
+          data_tableData: this.tableData
+        }
+      },
       props: {
         url: {
           type: String,
@@ -34,30 +42,30 @@
          * @param value
          */
         sizeChange(value) {
-          this.formData.rows = value;
+          this.data_formData.rows = value;
           let that = this;
           // 请求后台更新数据
           that.$axios.get(that.$common.contentPath + that.url, {params: that.formData}).then(function (event) {
             if (event.data.flag) {
-              that.tableData = event.data.data.list;
+              that.dtableData = event.data.data.list;
               // 根据返回数据量显示或隐藏分页条，并设置分页信息
               if (event.data.data.list.length > 0) {
                 // 设置当前第页数
-                that.formData.page = event.data.data.pageNum;
+                that.data_formData.page = event.data.data.pageNum;
                 // 设置每页条数
-                that.formData.rows = event.data.data.pageSize;
+                that.data_formData.rows = event.data.data.pageSize;
                 // 设置总条数
-                that.formData.total = event.data.data.total;
+                that.data_formData.total = event.data.data.total;
                 let returnData = {
                   'pagination': true,
-                  'formData': that.formData,
-                  'tableData': that.tableData
+                  'formData': that.data_formData,
+                  'tableData': that.data_tableData
                 };
                 that.$emit('exchangePagination', returnData);
               } else {
                 let returnData = {
                   'pagination': false,
-                  'formData': that.formData,
+                  'formData': that.data_formData,
                   'tableData': {}
                 };
                 that.$emit('exchangePagination', returnData);
@@ -75,30 +83,30 @@
          * @param value
          */
         currentChange(value) {
-          this.formData.page = value;
+          this.data_formData.page = value;
           let that = this;
           // 请求后台更新数据
           that.$axios.get(that.$common.contentPath + that.url, {params: that.formData}).then(function (event) {
             if (event.data.flag) {
-              that.tableData = event.data.data.list;
+              that.data_tableData = event.data.data.list;
               // 根据返回数据量显示或隐藏分页条，并设置分页信息
               if (event.data.data.list.length > 0) {
                 // 设置当前第页数
-                that.formData.page = event.data.data.pageNum;
+                that.data_formData.page = event.data.data.pageNum;
                 // 设置每页条数
-                that.formData.rows = event.data.data.pageSize;
+                that.data_formData.rows = event.data.data.pageSize;
                 // 设置总条数
-                that.formData.total = event.data.data.total;
+                that.data_formData.total = event.data.data.total;
                 let returnData = {
                   'pagination': true,
-                  'formData': that.formData,
-                  'tableData': that.tableData
+                  'formData': that.data_formData,
+                  'tableData': that.data_tableData
                 };
                 that.$emit('exchangePagination', returnData);
               } else {
                 let returnData = {
                   'pagination': false,
-                  'formData': that.formData,
+                  'formData': that.data_formData,
                   'tableData': {}
                 };
                 that.$emit('exchangePagination', returnData);

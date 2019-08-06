@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading" element-loading-background="rgba(0, 0, 0, 0.7)">
     <div>
       <el-collapse-transition>
         <div v-show="!isHideForm">
@@ -18,8 +18,11 @@
             </el-row>
           </el-form>
           <div class="search-form-btn">
-            <el-button type="primary" @click="searchBtn">查询</el-button>
-            <el-button type="primary" @click="resetBtn">重置</el-button>
+            <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-circle-plus-outline">新增</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-edit">修改</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-delete-solid">删除</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -39,12 +42,6 @@
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
-      <!--<div class="pagination">-->
-        <!--<el-pagination layout="total, sizes, prev, pager, next, jumper" :page-sizes="[5, 10, 20, 50]" v-show="pagination"-->
-                       <!--:current-page="formData.currentPage" :total="formData.total" :page-size="formData.pageSize"-->
-                       <!--@size-change="sizeChange" @current-change="currentChange" @prev-click="prevClick"-->
-                       <!--@next-click="nextClick" background/>-->
-      <!--</div>-->
     </div>
   </div>
 </template>
@@ -72,6 +69,7 @@
           // 数据总数
           total: 0
         },
+        loading: false,
         tableData: []
       }
     },
@@ -99,6 +97,7 @@
        */
       searchBtn() {
         let that = this;
+        this.formData.page = 1;
         that.$common.tableSearch(that, this.url, this.formData);
       },
       /**

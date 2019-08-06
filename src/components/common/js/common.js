@@ -133,7 +133,9 @@ function errorAlert(that, data) {
  * @param data 查询条件
  */
 function tableSearch(that, url, data) {
+  that.loading = true;
   that.$axios.get(contentPath + url, {params: data}).then(function (event) {
+    that.loading = false;
     if (event.data.flag) {
       that.tableData = event.data.data.list;
       // 根据返回数据量显示或隐藏分页条，并设置分页信息

@@ -236,24 +236,4 @@
   .no-mode-translate-wrapper button {
     position: absolute;
   }
-
-  /*.no-mode-translate-fade-enter-active, .no-mode-translate-fade-leave-active {*/
-    /*transition: all 0.5s;*/
-  /*}*/
-
-  /*.no-mode-translate-fade-enter, .no-mode-translate-fade-leave-active {*/
-    /*opacity: 0;*/
-  /*}*/
-
-  /*.no-mode-translate-fade-enter {*/
-    /*transform: translateX(31px);*/
-  /*}*/
-
-  /*.no-mode-translate-fade-leave-active {*/
-    /*transform: translateX(51px);*/
-  /*}*/
-
-  /*#scrollY .el-scrollbar .el-scrollbar__wrap {overflow-x: hidden;}*/
-
-  /*#scrollY .el-tree>.el-tree-node{display:inline-block;}*/
 </style>
