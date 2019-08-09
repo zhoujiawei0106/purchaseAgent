@@ -20,9 +20,9 @@
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
             <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
-            <el-button type="primary" @click="resetBtn" icon="el-icon-circle-plus-outline">新增</el-button>
-            <el-button type="primary" @click="resetBtn" icon="el-icon-edit">修改</el-button>
-            <el-button type="primary" @click="resetBtn" icon="el-icon-delete-solid">删除</el-button>
+            <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
+            <el-button type="primary" @click="modifyBtn" icon="el-icon-edit">修改</el-button>
+            <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -43,15 +43,21 @@
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
+
+    <div>
+      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
+    </div>
   </div>
 </template>
 
 <script>
-  import collapse from '../common/collapse';
-  import pagination from '../common/pagination';
+  import collapse from '../../common/collapse';
+  import pagination from '../../common/pagination';
+  import addPage from './add';
   export default {
     data() {
       return {
+        addFlag: false,
         // 请求地址
         url: '/system/getUsers',
         // 是否隐藏查询条件(true隐藏)
@@ -76,8 +82,12 @@
     components: {
       pagination,
       collapse,
+      addPage
     },
     methods: {
+      changeFlag(param) {
+        this.addFlag = param;
+      },
       /**
        * 翻页/跳转页
        */
@@ -125,6 +135,16 @@
       selectRow(row, event) {
         let rowId = row.id;
         console.log(rowId);
+      },
+      addBtn() {
+        this.addFlag = true;
+        // this.$router.push({ path: '/home' });
+      },
+      modifyBtn() {
+
+      },
+      deleteBtn() {
+
       }
     },
     created: function() {

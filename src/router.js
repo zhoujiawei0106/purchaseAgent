@@ -26,8 +26,8 @@ let routes = [{
       name: ''
     }, {
       path: '/home/usersInfo',
-      component: resolve => require(['./components/system/usersInfo.vue'], resolve),
-      name: ''
+      component: resolve => require(['./components/system/user/list.vue'], resolve),
+      name: '用户管理列表'
     }
   ]
 }];

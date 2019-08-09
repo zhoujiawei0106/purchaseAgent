@@ -1,7 +1,7 @@
 <template>
   <div class="login-page-container">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-      <h3 class="title">系统</h3>
+      <h3 class="title">用户登陆</h3>
       <el-form-item prop="loginName">
         <el-input type="text" v-model="ruleForm.loginName" auto-complete="off" placeholder="用户名" @keydown.enter.native="handleSubmit"/>
       </el-form-item>
@@ -72,6 +72,9 @@
               });
             });
           } else {
+            that.$alert('请不要重复提交!', '提示信息', {
+              confirmButtonText: '确定'
+            });
             console.log('请不要重复提交!');
             return false;
           }
@@ -82,6 +85,10 @@
 </script>
 
 <style scoped>
+  .title {
+    text-align: center;
+  }
+
   .login-container {
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -97,5 +104,18 @@
 
   label.el-checkbox.remember {
     margin: 0px 0px 35px 0px;
+  }
+
+  .transition-box {
+    margin-bottom: 10px;
+    width: 200px;
+    height: 100px;
+    border-radius: 4px;
+    background-color: #409EFF;
+    text-align: center;
+    color: #fff;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    margin-right: 20px;
   }
 </style>

@@ -1,4 +1,4 @@
-const contentPath = 'http://localhost:8088/api'
+const contentPath = 'http://localhost:8088/api';
 
 /**
  * @author zhoujiawei

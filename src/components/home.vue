@@ -92,19 +92,9 @@
           type: 'info',
           center: true
         }).then(() => {
-          // this.$axios.put(this.$common.contentPath + '/logout/' + this.$common.changeString(
-          //   JSON.parse(sessionStorage.getItem('user')).loginName)).then(function (data) {
-              sessionStorage.removeItem('user');
-              // if (data.data.flag) {
-                this.$router.push('/login');
-          //     } else {
-          //       this.$router.push('/404');
-          //     }
-          //   }).catch(function (error) {
-          //   console.log(error);
-          //   sessionStorage.removeItem('user');
-          //   this.$router.push('/404');
-          // })
+          sessionStorage.removeItem('user');
+          localStorage.removeItem('token');
+          this.$router.push('/login');
         }).catch(() => {
 
         });
