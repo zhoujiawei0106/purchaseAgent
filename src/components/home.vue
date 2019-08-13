@@ -190,11 +190,13 @@
 
       // vue初始化时根据路由修改面包屑在vue中的值
       let url = this.$route.path;
-      this.initBreadcrumbs(this.menus, this.breadcrumbs, url);
-
-      // 页面刷新时执行home的路由
-      that.$router.push({ path: '/home' });
-    },
+      if (url != '/home') {
+        // 页面刷新时执行home的路由
+        that.$router.push({ path: '/home' });
+      } else {
+        this.initBreadcrumbs(this.menus, this.breadcrumbs, url);
+      }
+    }
   }
 </script>
 

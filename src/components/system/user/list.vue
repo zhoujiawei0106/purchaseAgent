@@ -6,13 +6,13 @@
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="用户名: ">
-                  <el-input v-model="formData.loginName" placeholder="用户名"></el-input>
+                <el-form-item label="登陆名: ">
+                  <el-input v-model="formData.loginName" placeholder="登陆名"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="用户名称: ">
-                  <el-input v-model="formData.userName" placeholder="用户名称"></el-input>
+                <el-form-item label="用户名: ">
+                  <el-input v-model="formData.userName" placeholder="用户名"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -34,8 +34,8 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="loginName" label="用户名" align="center" sortable/>
-          <el-table-column prop="userName" label="用户名称" align="center"/>
+          <el-table-column prop="loginName" label="登陆名" align="center" sortable/>
+          <el-table-column prop="userName" label="用户名" align="center"/>
           <el-table-column prop="ip" label="ip" align="center"/>
           <el-table-column prop="loginFailTimes" label="无效登陆次数" align="center"/>
         </el-table>
@@ -59,7 +59,7 @@
       return {
         addFlag: false,
         // 请求地址
-        url: '/system/getUsers',
+        url: '/system/user/getUsers',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏

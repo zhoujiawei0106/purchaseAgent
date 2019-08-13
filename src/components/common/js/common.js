@@ -126,6 +126,35 @@ function errorAlert(that, data) {
 }
 
 /**
+ * 错误提示信息(从上方出现)
+ * @author zhoujiawei
+ * @param that
+ * @param message
+ */
+function errorMessage(that, message) {
+  that.$message({
+    showClose: true,
+    message: message,
+    type: 'error'
+  });
+}
+
+/**
+ * 数据操作成功提示信息(从右边出现)
+ * @author zhoujiawei
+ * @param title
+ * @param message
+ */
+function operateSuccess(title, message) {
+  this.$notify({
+    title: title +'成功',
+    message: message,
+    type: 'success',
+    duration: 3000
+  });
+}
+
+/**
  * 列表查询
  * @author zhoujiawei
  * @param that vue的this
@@ -155,8 +184,94 @@ function tableSearch(that, url, data) {
       console.log(event.data.msg);
     }
   }).catch(function (e) {
-    console.log(e)
+    console.log(e);
+    errorMessage(that, '系统异常,请联系管理员!');
   });
+}
+
+/**
+ * 查询数据
+ * @author zhoujiawei
+ * @param that
+ * @param url
+ * @param data
+ * @param message
+ */
+function queryAxios(that, url, data, message) {
+  that.$axios.get(contentPath + url, {param: data}).then(function (event) {
+    if (event.data.flag) {
+      operateSuccess('查询', message);
+    } else {
+      errorMessage(that, event.data.msg);
+    }
+  }).catch(function (e) {
+    console.log(e);
+    errorMessage(that, '系统异常,请联系管理员!');
+  })
+}
+
+/**
+ * 新增数据
+ * @author zhoujiawei
+ * @param that
+ * @param url
+ * @param data
+ * @param message
+ */
+function saveAxios(that, url, data, message) {
+  that.$axios.post(contentPath + url, {param: data}).then(function (event) {
+    if (event.data.flag) {
+      operateSuccess('新增', message);
+    } else {
+      errorMessage(that, event.data.msg);
+    }
+  }).catch(function (e) {
+    console.log(e);
+    errorMessage(that, '系统异常,请联系管理员!');
+  })
+}
+
+/**
+ * 更新数据
+ * @author zhoujiawei
+ * @param that
+ * @param url
+ * @param data
+ * @param message
+ */
+function updateAxios(that, url, data, message) {
+  that.$axios.put(contentPath + url, {param: data}).then(function (event) {
+    if (event.data.flag) {
+      that.dialogForm = false;
+      operateSuccess('修改', message);
+    } else {
+      errorMessage(that, event.data.msg);
+    }
+  }).catch(function (e) {
+    console.log(e);
+    errorMessage(that, '系统异常,请联系管理员!');
+  })
+}
+
+/**
+ * 删除数据
+ * @author zhoujiawei
+ * @param that
+ * @param url
+ * @param data
+ * @param message
+ */
+function deleteAxios(that, url, data, message) {
+  that.$axios.delete(contentPath + url, {param: data}).then(function (event) {
+    if (event.data.flag) {
+      operateSuccess('删除', message);
+    } else {
+      errorMessage(that, event.data.msg);
+    }
+  }).catch(function (e) {
+    console.log(e);
+    errorMessage(that, '系统异常,请联系管理员!');
+  })
 }
 
 export default {
@@ -169,5 +284,9 @@ export default {
   systemDate,
   changeString,
   errorAlert,
-  tableSearch
+  tableSearch,
+  queryAxios,
+  saveAxios,
+  updateAxios,
+  deleteAxios
 }
