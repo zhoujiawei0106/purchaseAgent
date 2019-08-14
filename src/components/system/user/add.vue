@@ -3,18 +3,18 @@
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
       <el-form-item label="用户名" prop="userName">
-        <el-input v-model="ruleForm.userName" placeholder="请输入用户名" suffix-icon="el-icon-edit"/>
+        <el-input v-model="ruleForm.userName" placeholder="请输入用户名" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
       <el-form-item label="登陆名" prop="loginName">
-        <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" type="text" suffix-icon="el-icon-edit"/>
+        <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" tabindex="2"/>
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
-        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password/>
+        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="3"/>
       </el-form-item>
       <el-form-item label="确认密码" prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password/>
+        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="4"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -42,14 +42,14 @@
       };
       const passwordPatten = (rule, value, callback) => {
         if (value != '') {
-          debugger;
-          let patten = /^[a-zA-Z]{1}([a-zA-Z0-9]|[!@#$%^&*?]){9,20}$/;
-          if (!patten.exec(value)) {
-            callback(new Error('请输入以字母开头,长度为8-20位的密码'));
-          }
+          let patten = /^[a-zA-Z]{1}([a-zA-Z0-9]|[!@#$%^&*?]){7,20}$/;
           let excludePatten = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
-          if (!excludePatten.exec(value)) {
+          if (!patten.test(value)) {
+            callback(new Error('请输入以字母开头,长度为8-20位的密码'));
+          } else if (!excludePatten.test(value)) {
             callback(new Error("输入的密码中至少包含一个大写英文字母、一个小写英文字母以及一个数字"));
+          } else {
+            callback();
           }
         }
       }
@@ -69,17 +69,15 @@
           ],
           loginName: [
             {required: true, message: '请输入登陆名', trigger: 'change'},
-            // {min: 3, max: 36, message: '登陆名长度在 3 到 36 个字符', trigger: 'blur'},
-            // {pattern: /^[a-zA-Z]{3,36}$/, message: '请输入长度', trigger: 'blur'}
+            {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
+            {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
           ],
           password: [
             {required: true, message: '请输入密码', trigger: 'change'},
-            // {min: 8, max: 20, message: '密码长度在 8 到 20 个字符', trigger: 'blur'},
             {validator: passwordPatten, trigger: 'blur'}
           ],
           pwd: [
             {required: true, message: '请再次输入密码', trigger: 'change'},
-            // {min: 8, max: 20, message: '密码长度在 8 到 20 个字符', trigger: 'blur'},
             {validator: valid2Password, trigger: 'blur'},
             {validator: passwordPatten, trigger: 'blur'}
           ]
@@ -87,12 +85,26 @@
       };
     },
     methods: {
-      save(formName) {
+      save() {
         let that = this;
-        this.$refs[formName].validate((valid) => {
+        that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/', that.ruleForm, '用户新增成功');
-          }
+            that.$common.saveAxios(that, '/system/user/save', that.$qs.stringify({
+              'userName': that.ruleForm.userName,
+              'loginName': that.ruleForm.loginName,
+              'password': that.ruleForm.password,
+              'parentId': JSON.parse(sessionStorage.getItem('user')).id,
+              'id': that.$common.uuid()
+            }), '用户新增成功');
+          };
+          that.ruleForm = {
+            userName: '',
+            loginName: '',
+            password: '',
+            pwd: ''
+          };
+          that.dialogForm = false;
+          that.$emit('changeFlag', [false, true]);
         });
       },
       back() {
@@ -108,7 +120,7 @@
             pwd: ''
           };
           that.dialogForm = false;
-          that.$emit('changeFlag', false);
+          that.$emit('changeFlag', [false, false]);
         }).catch(function () {
           console.log(e);
           that.$message({
@@ -131,7 +143,7 @@
             pwd: ''
           };
           done();
-          that.$emit('changeFlag', false);
+          that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
           console.log(e);
           that.$message({

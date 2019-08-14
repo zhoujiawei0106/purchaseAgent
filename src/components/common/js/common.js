@@ -142,11 +142,12 @@ function errorMessage(that, message) {
 /**
  * 数据操作成功提示信息(从右边出现)
  * @author zhoujiawei
+ * @param that
  * @param title
  * @param message
  */
-function operateSuccess(title, message) {
-  this.$notify({
+function operateSuccess(that, title, message) {
+  that.$notify({
     title: title +'成功',
     message: message,
     type: 'success',
@@ -200,7 +201,7 @@ function tableSearch(that, url, data) {
 function queryAxios(that, url, data, message) {
   that.$axios.get(contentPath + url, {param: data}).then(function (event) {
     if (event.data.flag) {
-      operateSuccess('查询', message);
+      operateSuccess(that, '查询', message);
     } else {
       errorMessage(that, event.data.msg);
     }
@@ -219,9 +220,9 @@ function queryAxios(that, url, data, message) {
  * @param message
  */
 function saveAxios(that, url, data, message) {
-  that.$axios.post(contentPath + url, {param: data}).then(function (event) {
+  that.$axios.post(contentPath + url, data).then(function (event) {
     if (event.data.flag) {
-      operateSuccess('新增', message);
+      operateSuccess(that, '新增', message);
     } else {
       errorMessage(that, event.data.msg);
     }
@@ -243,7 +244,7 @@ function updateAxios(that, url, data, message) {
   that.$axios.put(contentPath + url, {param: data}).then(function (event) {
     if (event.data.flag) {
       that.dialogForm = false;
-      operateSuccess('修改', message);
+      operateSuccess(that, '修改', message);
     } else {
       errorMessage(that, event.data.msg);
     }
@@ -264,7 +265,7 @@ function updateAxios(that, url, data, message) {
 function deleteAxios(that, url, data, message) {
   that.$axios.delete(contentPath + url, {param: data}).then(function (event) {
     if (event.data.flag) {
-      operateSuccess('删除', message);
+      operateSuccess(that, '删除', message);
     } else {
       errorMessage(that, event.data.msg);
     }

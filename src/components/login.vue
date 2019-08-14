@@ -54,7 +54,9 @@
                 if (data.data.flag) {
                   // 在session中放入用户
                   sessionStorage.setItem('user', JSON.stringify({
-                    loginName: data.data.data.loginName
+                    loginName: data.data.data.loginName,
+                    userName: data.data.data.userName,
+                    id: data.data.data.id
                   }));
                   // 在local中添加token
                   localStorage.setItem('token', data.data.data.token);

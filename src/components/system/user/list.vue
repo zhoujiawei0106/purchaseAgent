@@ -86,7 +86,11 @@
     },
     methods: {
       changeFlag(param) {
-        this.addFlag = param;
+        this.addFlag = param[0];
+        // 为true时重新加载列表数据
+        if (param[1]) {
+          this.$common.tableSearch(this, this.url, this.formData);
+        }
       },
       /**
        * 翻页/跳转页

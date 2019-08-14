@@ -1,7 +1,7 @@
 <template lang="html">
   <el-container style="height: 100%; border: 1px solid #eee;width: 100%">
     <el-header style="text-align: right;" height="10%">
-      <span style="font-size: 16px;">欢迎 {{ loginName }}</span>
+      <span style="font-size: 16px;">欢迎 {{ userName }}</span>
       <el-dropdown>
         <i class="el-icon-caret-bottom" style="margin-right: 15px"></i>
         <el-dropdown-menu slot="dropdown">
@@ -60,7 +60,7 @@
     data() {
       return {
         // 登陆用户
-        loginName: '',
+        userName: '',
         // 菜单数据
         menus: [],
         // 面包屑
@@ -113,25 +113,6 @@
           this.leftSideWidth = '13%';
         }
       },
-      // /**
-      //  * 点击左边菜单后生成一个新面包屑
-      //  * @param event vue的dom对象
-      //  */
-      // clickMenu: function (event) {
-      //   this.breadcrumbs.splice(0, this.breadcrumbs.length);
-      //   while(true) {
-      //     let menuId = event.index;
-      //     let menuName = event.$el.textContent.trim().split(" ")[0];
-      //     this.breadcrumbs.splice(0, 0, {
-      //       id: menuId,
-      //       name: menuName
-      //     });
-      //     event = event.parentMenu;
-      //     if(common.isEmpty(event.index)) {
-      //       break;
-      //     }
-      //   }
-      // },
       /**
        * 根据不同常见(直接访问路径，点击菜单)修改面包屑组件在vue中的值
        * @param menus 菜单数据数组
@@ -170,7 +151,7 @@
     },
     created: function () {
       let that = this;
-      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName
+      this.userName = JSON.parse(sessionStorage.getItem('user')).userName;
 
       // vue中的菜单
       let menus = this.menus;
@@ -181,7 +162,7 @@
             menus.push(data.data.data[index]);
           }
         } else {
-          that.$common.errorAlert(that, data.data)
+          that.$common.errorAlert(that, data.data);
           console.log(data.data.msg);
         }
       }).catch(function (e) {
