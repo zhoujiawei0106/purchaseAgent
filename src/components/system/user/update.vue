@@ -103,14 +103,14 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.updateAxios(that, '/system/user/update', that.$qs.stringify({
+            that.$common.updateAxios(that, '/system/user/update', {
               'userName': that.ruleForm.userName,
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
               'password': that.ruleForm.password,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.userId
-            }), '用户修改成功').then(function (flag) {
+            }, '用户修改成功').then(function (flag) {
               if (flag) {
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);

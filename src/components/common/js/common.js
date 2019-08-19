@@ -237,7 +237,7 @@ function queryAxios(that, url, data, message, showMsg) {
  */
 function saveAxios(that, url, data, message) {
   return new Promise(function (resolve) {
-    that.$axios.post(contentPath + url, data).then(function (event) {
+    that.$axios.post(contentPath + url, that.$qs.stringify(data)).then(function (event) {
       if (event.data.flag) {
         operateSuccess(that, '新增', message);
       } else {
@@ -262,7 +262,7 @@ function saveAxios(that, url, data, message) {
  */
 function updateAxios(that, url, data, message) {
   return new Promise(function (resolve) {
-    that.$axios.put(contentPath + url, data).then(function (event) {
+    that.$axios.put(contentPath + url, that.$qs.stringify(data)).then(function (event) {
       if (event.data.flag) {
         that.dialogForm = false;
         operateSuccess(that, '修改', message);
@@ -286,16 +286,19 @@ function updateAxios(that, url, data, message) {
  * @param message
  */
 function deleteAxios(that, url, data, message) {
-  that.$axios.delete(contentPath + url, {param: data}).then(function (event) {
-    if (event.data.flag) {
-      operateSuccess(that, '删除', message);
-    } else {
-      errorMessage(that, event.data.msg);
-    }
-  }).catch(function (e) {
-    console.log(e);
-    errorMessage(that, '系统异常,请联系管理员!');
-  })
+  return new Promise(function (resolve) {
+    that.$axios.delete(contentPath + url, {params: data}).then(function (event) {
+      if (event.data.flag) {
+        operateSuccess(that, '删除', message);
+      } else {
+        errorMessage(that, event.data.msg);
+      }
+      resolve(event.data.flag);
+    }).catch(function (e) {
+      console.log(e);
+      errorMessage(that, '系统异常,请联系管理员!');
+    });
+  });
 }
 
 export default {

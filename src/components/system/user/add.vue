@@ -99,14 +99,14 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/system/user/save', that.$qs.stringify({
+            that.$common.saveAxios(that, '/system/user/save', {
               'userName': that.ruleForm.userName,
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
               'password': that.ruleForm.password,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid()
-            }), '用户新增成功').then(function (flag) {
+            }, '用户新增成功').then(function (flag) {
               that.ruleForm = {
                 userName: '',
                 tel: '',
