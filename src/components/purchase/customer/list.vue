@@ -226,12 +226,15 @@
 
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+      // 获取客户类型下拉框
       that.$common.queryAxios(that, '/purchase/customer/customerType').then(function (resolve) {
         if (resolve.flag) {
           that.type = resolve.data;
         }
       });
-      that.$common.queryAxios(that, '/purchase/customer/customerType').then(function (resolve) {
+
+      // 获取客户状态下拉框
+      that.$common.queryAxios(that, '/purchase/customer/customerStatus').then(function (resolve) {
         if (resolve.flag) {
           that.status = resolve.data;
         }
