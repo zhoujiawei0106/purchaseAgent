@@ -27,7 +27,15 @@ let routes = [{
     }, {
       path: '/home/usersInfo',
       component: resolve => require(['./components/system/user/list.vue'], resolve),
-      name: '用户管理列表'
+      name: '用户管理'
+    }, {
+      path: '/home/commodity',
+      component: resolve => require(['./components/purchase/commodity/list.vue'], resolve),
+      name: '商品管理'
+    }, {
+      path: '/home/customer',
+      component: resolve => require(['./components/purchase/customer/list.vue'], resolve),
+      name: '客户管理'
     }
   ]
 }];

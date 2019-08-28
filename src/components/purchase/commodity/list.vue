@@ -5,16 +5,16 @@
         <div v-show="!isHideForm">
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="登陆名: ">
-                  <el-input v-model="formData.loginName" placeholder="登陆名" suffix-icon="el-icon-edit"/>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="用户名: ">
-                  <el-input v-model="formData.userName" placeholder="用户名" suffix-icon="el-icon-edit"/>
-                </el-form-item>
-              </el-col>
+              <!--<el-col :span="8">-->
+                <!--<el-form-item label="登陆名: ">-->
+                  <!--<el-input v-model="formData.loginName" placeholder="登陆名"></el-input>-->
+                <!--</el-form-item>-->
+              <!--</el-col>-->
+              <!--<el-col :span="8">-->
+                <!--<el-form-item label="用户名: ">-->
+                  <!--<el-input v-model="formData.userName" placeholder="用户名"></el-input>-->
+                <!--</el-form-item>-->
+              <!--</el-col>-->
             </el-row>
           </el-form>
           <div class="search-form-btn">
@@ -23,7 +23,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">登陆次数重置</el-button>
+            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -46,20 +46,20 @@
                   @exchangePagination="exchangePagination"/>
     </div>
 
-    <div>
-      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
-    </div>
-    <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
-    </div>
+    <!--<div>-->
+      <!--<add-page :add-flag="addFlag" @changeFlag="changeFlag"/>-->
+    <!--</div>-->
+    <!--<div>-->
+      <!--<update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>-->
+    <!--</div>-->
   </div>
 </template>
 
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
-  import addPage from './add';
-  import updatePage from './update';
+  // import addPage from './add';
+  // import updatePage from './update';
 
   export default {
     data() {
@@ -67,7 +67,7 @@
         addFlag: false,
         updateFlag: false,
         // 请求地址
-        url: '/system/user/getUsers',
+        url: '/purchase/commodity/list',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
@@ -91,8 +91,8 @@
     components: {
       pagination,
       collapse,
-      addPage,
-      updatePage
+      // addPage,
+      // updatePage
     },
     methods: {
       changeFlag(param) {
@@ -148,7 +148,6 @@
        */
       selectRow(row, event) {
         this.selectedRow = row.id;
-        this.updateBtn();
       },
       addBtn() {
         this.addFlag = true;
@@ -198,12 +197,15 @@
               that.selectedRow = '';
             }
             that.loading = false;
-        });
+          });
       }
     },
     created: function() {
+      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
+
       let that = this;
       that.$common.tableSearch(that, this.url, {});
     }
   }
 </script>
+

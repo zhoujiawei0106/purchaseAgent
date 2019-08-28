@@ -6,13 +6,27 @@
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="登陆名: ">
-                  <el-input v-model="formData.loginName" placeholder="登陆名" suffix-icon="el-icon-edit"/>
+                <el-form-item label="客户名称: ">
+                  <el-input :model="formData.name" placeholder="客户名称" suffix-icon="el-icon-edit"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="用户名: ">
-                  <el-input v-model="formData.userName" placeholder="用户名" suffix-icon="el-icon-edit"/>
+                <el-form-item label="客户昵称: ">
+                  <el-input v-model="formData.nickName" placeholder="客户昵称" suffix-icon="el-icon-edit"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户类型: ">
+                  <el-select v-model="formData.customerType" clearable placeholder="-请选择-">
+                    <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value"/>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户状态: ">
+                  <el-select v-model="formData.customerStatus" clearable placeholder="-请选择-">
+                    <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"/>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -23,7 +37,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">登陆次数重置</el-button>
+            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -46,20 +60,20 @@
                   @exchangePagination="exchangePagination"/>
     </div>
 
-    <div>
-      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
-    </div>
-    <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
-    </div>
+    <!--<div>-->
+      <!--<add-page :add-flag="addFlag" @changeFlag="changeFlag"/>-->
+    <!--</div>-->
+    <!--<div>-->
+      <!--<update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>-->
+    <!--</div>-->
   </div>
 </template>
 
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
-  import addPage from './add';
-  import updatePage from './update';
+  // import addPage from './add';
+  // import updatePage from './update';
 
   export default {
     data() {
@@ -67,15 +81,17 @@
         addFlag: false,
         updateFlag: false,
         // 请求地址
-        url: '/system/user/getUsers',
+        url: '/purchase/customer/list',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
         pagination: false,
         // 查询条件
         formData: {
-          loginName: '',
-          userName: '',
+          name: '',
+          nickName: '',
+          customerType: '',
+          customerStatus: '',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -86,13 +102,15 @@
         loading: false,
         tableData: [],
         selectedRow: '',
+        type: [],
+        status: []
       }
     },
     components: {
       pagination,
       collapse,
-      addPage,
-      updatePage
+      // addPage,
+      // updatePage
     },
     methods: {
       changeFlag(param) {
@@ -131,6 +149,8 @@
       resetBtn() {
         this.formData.loginName = '';
         this.formData.userName = '';
+        this.formData.customerType = 0;
+        this.formData.customerStatus = 0;
       },
       /**
        * 单击数据行
@@ -198,12 +218,25 @@
               that.selectedRow = '';
             }
             that.loading = false;
-        });
+          });
       }
     },
     created: function() {
+      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
+
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+      that.$common.queryAxios(that, '/purchase/customer/customerType').then(function (resolve) {
+        if (resolve.flag) {
+          that.type = resolve.data;
+        }
+      });
+      that.$common.queryAxios(that, '/purchase/customer/customerType').then(function (resolve) {
+        if (resolve.flag) {
+          that.status = resolve.data;
+        }
+      });
     }
   }
 </script>
+
