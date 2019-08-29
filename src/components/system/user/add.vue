@@ -99,7 +99,7 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/system/user/save', {
+            that.$common.saveAxios(that, '/purchase/customer/save', {
               'userName': that.ruleForm.userName,
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
@@ -107,17 +107,17 @@
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid()
             }, '用户新增成功').then(function (flag) {
-              that.ruleForm = {
-                userName: '',
-                tel: '',
-                loginName: '',
-                password: '',
-                pwd: ''
-              };
               if (flag) {
+                that.ruleForm = {
+                  userName: '',
+                  tel: '',
+                  loginName: '',
+                  password: '',
+                  pwd: ''
+                };
                 that.dialogForm = false;
+                that.$emit('changeFlag', [false, true]);
               }
-              that.$emit('changeFlag', [false, true]);
             });
           };
         });

@@ -49,20 +49,21 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="loginName" label="登陆名" align="center" sortable/>
-          <el-table-column prop="userName" label="用户名" align="center"/>
-          <el-table-column prop="tel" label="手机" align="center"/>
-          <el-table-column prop="ip" label="ip" align="center"/>
-          <el-table-column prop="loginFailTimes" label="无效登陆次数" align="center"/>
+          <el-table-column prop="name" label="客户名称(昵称)" align="center"/>
+          <el-table-column prop="type" label="客户类型" align="center" sortable/>
+          <el-table-column prop="status" label="客户状态" align="center"/>
+          <el-table-column prop="point" label="客户积分" align="center"/>
+          <el-table-column prop="tel" label="客户电话" align="center"/>
+          <el-table-column prop="address" label="客户地址" align="center"/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
 
-    <!--<div>-->
-      <!--<add-page :add-flag="addFlag" @changeFlag="changeFlag"/>-->
-    <!--</div>-->
+    <div>
+      <add-page :add-flag="addFlag" :customer-type="type" :customer-status="status" @changeFlag="changeFlag"/>
+    </div>
     <!--<div>-->
       <!--<update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>-->
     <!--</div>-->
@@ -72,7 +73,7 @@
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
-  // import addPage from './add';
+  import addPage from './add';
   // import updatePage from './update';
 
   export default {
@@ -109,7 +110,7 @@
     components: {
       pagination,
       collapse,
-      // addPage,
+      addPage,
       // updatePage
     },
     methods: {
@@ -149,8 +150,8 @@
       resetBtn() {
         this.formData.loginName = '';
         this.formData.userName = '';
-        this.formData.customerType = 0;
-        this.formData.customerStatus = 0;
+        this.formData.customerType = '';
+        this.formData.customerStatus = '';
       },
       /**
        * 单击数据行
