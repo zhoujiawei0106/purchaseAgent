@@ -7,7 +7,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="客户名称: ">
-                  <el-input :model="formData.name" placeholder="客户名称" suffix-icon="el-icon-edit"/>
+                  <el-input v-model="formData.name" placeholder="客户名称" suffix-icon="el-icon-edit"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -17,14 +17,14 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="客户类型: ">
-                  <el-select v-model="formData.customerType" clearable placeholder="-请选择-">
+                  <el-select v-model="formData.type" clearable placeholder="-请选择-">
                     <el-option v-for="item in type" :key="item.value" :label="item.label" :value="item.value"/>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="客户状态: ">
-                  <el-select v-model="formData.customerStatus" clearable placeholder="-请选择-">
+                  <el-select v-model="formData.status" clearable placeholder="-请选择-">
                     <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"/>
                   </el-select>
                 </el-form-item>
@@ -50,6 +50,7 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="客户名称(昵称)" align="center"/>
+          <el-table-column prop="parentId" label="上级客户" align="center"/>
           <el-table-column prop="type" label="客户类型" align="center" sortable/>
           <el-table-column prop="status" label="客户状态" align="center"/>
           <el-table-column prop="point" label="客户积分" align="center"/>
@@ -64,9 +65,10 @@
     <div>
       <add-page :add-flag="addFlag" :customer-type="type" :customer-status="status" @changeFlag="changeFlag"/>
     </div>
-    <!--<div>-->
-      <!--<update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>-->
-    <!--</div>-->
+    <div>
+      <update-page :update-flag="updateFlag" :customer-type="type" :customer-status="status" :id="selectedRow"
+                   @changeFlag="changeFlag"/>
+    </div>
   </div>
 </template>
 
@@ -74,7 +76,7 @@
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
   import addPage from './add';
-  // import updatePage from './update';
+  import updatePage from './update';
 
   export default {
     data() {
@@ -91,8 +93,8 @@
         formData: {
           name: '',
           nickName: '',
-          customerType: '',
-          customerStatus: '',
+          type: '',
+          status: '',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -111,7 +113,7 @@
       pagination,
       collapse,
       addPage,
-      // updatePage
+      updatePage
     },
     methods: {
       changeFlag(param) {
@@ -148,10 +150,10 @@
        * 重置按钮
        */
       resetBtn() {
-        this.formData.loginName = '';
-        this.formData.userName = '';
-        this.formData.customerType = '';
-        this.formData.customerStatus = '';
+        this.formData.name = '';
+        this.formData.nickName = '';
+        this.formData.type = '';
+        this.formData.status = '';
       },
       /**
        * 单击数据行

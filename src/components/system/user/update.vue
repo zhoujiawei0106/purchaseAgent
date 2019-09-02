@@ -77,7 +77,6 @@
           ],
           tel: [
             {required: true, message: '请输入手机号码', trigger: 'change'},
-            // {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'},
             {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
               message: '请输入正确的11位手机号码', trigger: 'blur'}
           ],
@@ -170,7 +169,7 @@
             that.ruleForm.userName = e.data.userName;
           });
         }
-      },
+      }
     }
   }
 </script>

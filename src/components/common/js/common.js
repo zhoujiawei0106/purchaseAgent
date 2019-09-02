@@ -120,7 +120,7 @@ function changeString(value) {
  * @param data 数据
  */
 function errorAlert(that, data) {
-  if (!data.flag && data.data.code != 412) {
+  if (!data.flag && (isEmpty(data.data.code) || data.data.code != 412)) {
     that.$alert('系统异常，请联系管理员', '提示');
   }
 }

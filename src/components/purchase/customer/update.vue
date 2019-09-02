@@ -6,7 +6,8 @@
         <el-input v-model="ruleForm.name" placeholder="请输入客户名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
       <el-form-item label="客户昵称" prop="nickName">
-        <el-input v-model="ruleForm.nickName" placeholder="请输入客户昵称(用于客户登录)" suffix-icon="el-icon-edit" tabindex="2"/>
+        <el-input v-model="ruleForm.nickName" placeholder="请输入客户昵称(用于客户登陆)" suffix-icon="el-icon-edit"
+                  tabindex="2" :disabled="true"/>
       </el-form-item>
       <el-form-item label="客户电话" prop="tel">
         <el-input v-model="ruleForm.tel" placeholder="请输入客户电话" suffix-icon="el-icon-edit" tabindex="3"/>
@@ -41,7 +42,7 @@
 <script>
   export default {
     props: {
-      addFlag: {
+      updateFlag: {
         type: Boolean,
         required: true
       },
@@ -53,6 +54,10 @@
         type: Array,
         required: true
       },
+      id: {
+        type: String,
+        required: true
+      }
     },
     data() {
       return {
@@ -74,11 +79,12 @@
             {min: 2, max: 4, message: '用户名长度在 2 到 4 个字符', trigger: 'blur'}
           ],
           nickName: [
-            {required: true, message: '请输入客户昵称', trigger: 'change'},
+            {required: true, message: '请输入客户名称', trigger: 'change'},
             {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
             {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
           ],
           tel: [
+            {required: true, message: '请输入客户名称', trigger: 'change'},
             {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'},
             {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
               message: '请输入正确的手机号码', trigger: 'blur'}
@@ -190,8 +196,25 @@
       }
     },
     watch: {
-      addFlag(newValue) {
+      updateFlag(newValue) {
         this.dialogForm = newValue;
+        if (newValue) {
+          if (this.$common.isEmpty(this.id)) {
+            this.$common.errorMessage(this, '系统异常,未获取到客户信息!');
+            return false
+          }
+          let that = this;
+          this.$common.queryAxios(this, '/purchase/customer/getCustomer', {id: this.id}, '客户查询成功').then(function (e) {
+            that.ruleForm.name = e.data.name;
+            that.ruleForm.nickName = e.data.nickName;
+            that.ruleForm.tel = e.data.tel;
+            that.ruleForm.address = e.data.address;
+            that.ruleForm.idcard = e.data.idcard;
+            that.ruleForm.point = e.data.point;
+            that.ruleForm.type = e.data.type;
+            that.ruleForm.status = e.data.status;
+          });
+        }
       }
     }
   }
