@@ -85,7 +85,6 @@
           ],
           tel: [
             {required: true, message: '请输入客户名称', trigger: 'change'},
-            {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'},
             {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
               message: '请输入正确的手机号码', trigger: 'blur'}
           ],
@@ -110,7 +109,7 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/purchase/customer/save', {
+            that.$common.updateAxios(that, '/purchase/customer/update', {
               name: that.ruleForm.name,
               nickName: that.ruleForm.nickName,
               tel: that.ruleForm.tel,
@@ -120,7 +119,7 @@
               type: that.ruleForm.type,
               status: that.ruleForm.status,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-              'id': that.$common.uuid()
+              'id': this.id
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {

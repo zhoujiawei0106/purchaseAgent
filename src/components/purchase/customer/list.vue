@@ -195,33 +195,13 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+        this.$common.deleteAxios(that, '/purchase/customer/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
           if (flag) {
             that.$common.tableSearch(that, that.url, that.formData);
             that.selectedRow = '';
           }
           that.loading = false;
         });
-      },
-      resetTimesBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        if (this.$common.isEmpty(this.selectedRow)) {
-          this.$common.selectRowMsg(this);
-          return false;
-        }
-
-        // 遮罩
-        this.loading = true;
-
-        this.$common.updateAxios(that, '/system/user/reset', {'id': that.selectedRow},  '用户登陆次数重置成功')
-          .then(function (flag) {
-            if (flag) {
-              that.$common.tableSearch(that, that.url, that.formData);
-              that.selectedRow = '';
-            }
-            that.loading = false;
-          });
       }
     },
     created: function() {
