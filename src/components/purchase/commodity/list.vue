@@ -3,23 +3,26 @@
     <div>
       <el-collapse-transition>
         <div v-show="!isHideForm">
-          <el-form :inline="true" :model="formData" class="search-element-form">
+          <el-form :inline="true" :model="formData" :rules="rules" class="search-element-form">
             <el-row>
-              <!--<el-col :span="8">-->
-                <!--<el-form-item label="登陆名: ">-->
-                  <!--<el-input v-model="formData.loginName" placeholder="登陆名"></el-input>-->
-                <!--</el-form-item>-->
-              <!--</el-col>-->
-              <!--<el-col :span="8">-->
-                <!--<el-form-item label="用户名: ">-->
-                  <!--<el-input v-model="formData.userName" placeholder="用户名"></el-input>-->
-                <!--</el-form-item>-->
-              <!--</el-col>-->
+              <el-col :span="8">
+                <el-form-item label="商品名称: ">
+                  <el-input v-model="formData.name" placeholder="商品名称"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="商品价格: ">
+                  <!--<el-input v-model="formData.fprice" placeholder="￥"></el-input>
+                  <el-input v-model="formData.fprice" placeholder="￥"></el-input>-->
+                  <el-input v-model="formData.price" placeholder="￥" style="width: 80px"></el-input>
+                  <span>-</span>
+                  <el-input v-model="formData.price" placeholder="￥" style="width: 80px"></el-input>
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
-            <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
@@ -35,35 +38,34 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="loginName" label="登陆名" align="center" sortable/>
-          <el-table-column prop="userName" label="用户名" align="center"/>
-          <el-table-column prop="tel" label="手机" align="center"/>
-          <el-table-column prop="ip" label="ip" align="center"/>
-          <el-table-column prop="loginFailTimes" label="无效登陆次数" align="center"/>
+          <el-table-column prop="name" label="商品名称" align="center" sortable/>
+          <el-table-column prop="description" label="商品描述/详细" align="center"/>
+          <el-table-column prop="pictureUrl" label="商品图片" align="center"/>
+          <el-table-column prop="price" label="商品价格" align="center"/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
 
-    <!--<div>-->
-      <!--<add-page :add-flag="addFlag" @changeFlag="changeFlag"/>-->
-    <!--</div>-->
-    <!--<div>-->
-      <!--<update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>-->
-    <!--</div>-->
   </div>
 </template>
 
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
-  // import addPage from './add';
-  // import updatePage from './update';
 
   export default {
     data() {
       return {
+        ruleForm: {
+          price: '',
+        },
+        rules: {
+          price: [
+            {pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^0$)|(^\d\.\d{1,2}$)/, message: '请输入正确的金额', trigger: 'blur'}
+        ]
+        },
         addFlag: false,
         updateFlag: false,
         // 请求地址
@@ -74,12 +76,14 @@
         pagination: false,
         // 查询条件
         formData: {
-          loginName: '',
-          userName: '',
+          name: '',
+          description: '',
+          pictureUrl: '',
+          price: '',
           // 当前第几页
           page: 1,
           // 每页几条
-          rows: 10,
+          rows: 5,
           // 数据总数
           total: 0
         },
@@ -91,18 +95,8 @@
     components: {
       pagination,
       collapse,
-      // addPage,
-      // updatePage
     },
     methods: {
-      changeFlag(param) {
-        this.addFlag = param[0];
-        this.updateFlag = param[0];
-        // 为true时重新加载列表数据
-        if (param[1]) {
-          this.$common.tableSearch(this, this.url, this.formData);
-        }
-      },
       /**
        * 翻页/跳转页
        */
@@ -110,6 +104,7 @@
         this.pagination = param.pagination;
         this.formData = param.formData;
         this.tableData = param.tableData;
+        this.$common.tableSearch(this, this.url, this.formData);
       },
       /**
        * 显示隐藏查询表单
@@ -124,13 +119,6 @@
         let that = this;
         this.formData.page = 1;
         that.$common.tableSearch(that, this.url, this.formData);
-      },
-      /**
-       * 重置按钮
-       */
-      resetBtn() {
-        this.formData.loginName = '';
-        this.formData.userName = '';
       },
       /**
        * 单击数据行
@@ -190,19 +178,11 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.updateAxios(that, '/system/user/reset', {'id': that.selectedRow},  '用户登陆次数重置成功')
-          .then(function (flag) {
-            if (flag) {
-              that.$common.tableSearch(that, that.url, that.formData);
-              that.selectedRow = '';
-            }
-            that.loading = false;
-          });
+
       }
     },
     created: function() {
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
-
       let that = this;
       that.$common.tableSearch(that, this.url, {});
     }
