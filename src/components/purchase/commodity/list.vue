@@ -16,7 +16,7 @@
                   <el-input v-model="formData.fprice" placeholder="￥"></el-input>-->
                   <el-input v-model="formData.price" placeholder="￥" style="width: 80px"></el-input>
                   <span>-</span>
-                  <el-input v-model="formData.price" placeholder="￥" style="width: 80px"></el-input>
+                  <el-input v-model="formData.priceOf" placeholder="￥" style="width: 80px"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -26,7 +26,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">导出</el-button>
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -47,25 +47,24 @@
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
-
+    <div>
+      <add-page :add-flag="addFlag" :commodity-type="type" :commodity-status="status" @changeFlag="changeFlag"/>
+    </div>
+    <div>
+      <update-page :update-flag="updateFlag" :commodity-type="type" :commodity-status="status" :id="selectedRow" @changeFlag="changeFlag"/>
+    </div>
   </div>
 </template>
 
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
+  import addPage from './add';
+  import updatePage from './update';
 
   export default {
     data() {
       return {
-        ruleForm: {
-          price: '',
-        },
-        rules: {
-          price: [
-            {pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^0$)|(^\d\.\d{1,2}$)/, message: '请输入正确的金额', trigger: 'blur'}
-        ]
-        },
         addFlag: false,
         updateFlag: false,
         // 请求地址
@@ -80,6 +79,7 @@
           description: '',
           pictureUrl: '',
           price: '',
+          priceOf:'',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -95,8 +95,18 @@
     components: {
       pagination,
       collapse,
+      addPage,
+      updatePage
     },
     methods: {
+      changeFlag(param) {
+        this.addFlag = param[0];
+        this.updateFlag = param[0];
+        // 为true时重新加载列表数据
+        if (param[1]) {
+          this.$common.tableSearch(this, this.url, this.formData);
+        }
+      },
       /**
        * 翻页/跳转页
        */
@@ -159,7 +169,7 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+        this.$common.deleteAxios(that, '/purchase/commodity/delete', {'id': that.selectedRow}, '商品删除成功').then(function (flag) {
           if (flag) {
             that.$common.tableSearch(that, that.url, that.formData);
             that.selectedRow = '';
@@ -167,18 +177,14 @@
           that.loading = false;
         });
       },
-      resetTimesBtn() {
+      exportBtn() {
         let that = this;
         // 判断是否选择了数据
-        if (this.$common.isEmpty(this.selectedRow)) {
-          this.$common.selectRowMsg(this);
-          return false;
-        }
-
+        let commodity = that.formData;
         // 遮罩
         this.loading = true;
-
-
+        that.$common.saveAxios(that, '/purchase/commodity/export', commodity
+        );
       }
     },
     created: function() {
