@@ -1,27 +1,18 @@
 <template>
-  <el-dialog title="修改商品信息" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
+  <el-dialog title="修改库存商品信息" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
       <el-form-item label="商品名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入商品名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="商品描述" prop="description">
-        <el-input v-model="ruleForm.description" placeholder="请输入商品描述" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="商品数量" prop="description">
+        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
-      <!--<el-form-item label="商品图片" prop="description">
-        <el-input v-model="ruleForm.pictureUrl" placeholder="请输入商品图片" suffix-icon="el-icon-edit" tabindex="3"/>
-      </el-form-item>-->
-      <el-form-item label="商品价格" prop="description">
-        <el-input v-model="ruleForm.price" placeholder="请输入商品价格" suffix-icon="el-icon-edit" tabindex="4"/>
+      <el-form-item label="商品来源" prop="description">
+        <el-input v-model="ruleForm.shopAddress" placeholder="请输入商品来源" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
-      <el-form-item label="商品成本" prop="baseprice">
-        <el-input v-model="ruleForm.baseprice" placeholder="请输入商品成本" suffix-icon="el-icon-edit" tabindex="4"/>
-      </el-form-item>
-      <el-form-item label="商品类型" prop="type">
-        <el-input v-model="ruleForm.type" placeholder="请输入商品类型" suffix-icon="el-icon-edit" tabindex="4"/>
-      </el-form-item>
-      <el-form-item label="商品品牌" prop="brand">
-        <el-input v-model="ruleForm.brand" placeholder="请输入商品品牌" suffix-icon="el-icon-edit" tabindex="4"/>
+      <el-form-item label="是否上架" prop="baseprice">
+        <el-input v-model="ruleForm.whetherShelf" placeholder="是否上架" suffix-icon="el-icon-edit" tabindex="4"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -58,24 +49,13 @@
         ruleForm: {
           name: '',
           description: '',
-          pictureUrl: '',
-          price: '',
-          baseprice:'',
-          type:'',
-          brand:''
+          shopNum:'',
+          shopAddress:'',
+          whetherShelf:''
         },
         rules: {
           name: [
             {required: true, message: '请输入商品名称', trigger: 'change'},
-          ],
-          description: [
-            {required: true, message: '请输入商品描述', trigger: 'change'},
-          ],
-          pictureUrl: [
-            {required: true, message: '请输入商品图片', trigger: 'change'},
-          ],
-          price: [
-            {required: true, message: '请输入商品价格', trigger: 'change'},
           ]
         }
       };
@@ -85,14 +65,11 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.updateAxios(that, '/purchase/commodity/update', {
+            that.$common.updateAxios(that, '/purchase/inventory/update', {
               name: that.ruleForm.name,
-              description: that.ruleForm.description,
-              pictureUrl: that.ruleForm.pictureUrl,
-              price: that.ruleForm.price,
-              baseprice:that.ruleForm.baseprice,
-              type:that.ruleForm.type,
-              brand:that.ruleForm.brand,
+              shopNum: that.ruleForm.shopNum,
+              shopAddress: that.ruleForm.shopAddress,
+              whetherShelf: that.ruleForm.whetherShelf,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': this.id
             }, '商品信息修改成功').then(function (flag) {
@@ -100,11 +77,9 @@
                 that.ruleForm = {
                   name: '',
                   description: '',
-                  pictureUrl: '',
-                  price: '',
-                  baseprice:'',
-                  type:'',
-                  brand:''
+                  shopNum:'',
+                  shopAddress:'',
+                  whetherShelf:''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -122,11 +97,9 @@
           that.ruleForm = {
             name: '',
             description: '',
-            pictureUrl: '',
-            price: '',
-            baseprice:'',
-            type:'',
-            brand:''
+            shopNum:'',
+            shopAddress:'',
+            whetherShelf:''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -148,11 +121,9 @@
           that.ruleForm = {
             name: '',
             description: '',
-            pictureUrl: '',
-            price: '',
-            baseprice:'',
-            type:'',
-            brand:''
+            shopNum:'',
+            shopAddress:'',
+            whetherShelf:''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -175,14 +146,11 @@
             return false
           }
           let that = this;
-          this.$common.queryAxios(this, '/purchase/commodity/getCustomer', {id: this.id}, '客户查询成功').then(function (e) {
-            that.ruleForm.name = e.data.name;
-            that.ruleForm.description = e.data.description;
-            that.ruleForm.pictureUrl = e.data.pictureUrl;
-            that.ruleForm.price = e.data.price;
-            that.ruleForm.baseprice = e.data.baseprice;
-            that.ruleForm.type = e.data.type;
-            that.ruleForm.brand = e.data.brand;
+          this.$common.queryAxios(this, '/purchase/inventory/getInventory', {id: this.id}, '库存商品查询成功').then(function (e) {
+              that.ruleForm.name = e.data.name,
+              that.ruleForm.shopNum = e.data.shopNum,
+              that.ruleForm.shopAddress = e.data.shopAddress,
+              that.ruleForm.whetherShelf = e.data.whetherShelf
           });
         }
       }

@@ -36,6 +36,14 @@ let routes = [{
       path: '/home/customer',
       component: resolve => require(['./components/purchase/customer/list.vue'], resolve),
       name: '客户管理'
+    }, {
+      path: '/home/inventory',
+      component: resolve => require(['./components/purchase/inventory/list.vue'], resolve),
+      name: '库存管理'
+    }, {
+      path: '/home/order',
+      component: resolve => require(['./components/purchase/order/list.vue'], resolve),
+      name: '订单管理'
     }
   ]
 }];
