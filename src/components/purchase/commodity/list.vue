@@ -14,18 +14,22 @@
                 <el-form-item label="商品价格: ">
                   <el-input v-model="formData.price" placeholder="￥" style="width: 80px"></el-input>
                   <span>-</span>
-                  <el-input v-model="formData.priceOf" placeholder="￥" style="width: 80px"></el-input>
+                  <el-input v-model="formData.priceMax" placeholder="￥" style="width: 80px"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="商品类型: ">
+                  <el-input v-model="formData.category" placeholder="商品类型"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
-            <el-button type="primary" @click="buyBtn" icon="el-icon-shopping-cart-full">购买</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
+            <!--<el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>-->
           </div>
         </div>
       </el-collapse-transition>
@@ -38,8 +42,9 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
-          <el-table-column prop="baseprice" label="商品成本" align="center"/>
-          <el-table-column prop="type" label="商品类型" align="center"/>
+          <el-table-column prop="eName" label="英文名称" align="center" />
+          <el-table-column prop="basePrice" label="商品成本" align="center"/>
+          <el-table-column prop="category" label="商品类型" align="center"/>
           <el-table-column prop="brand" label="商品品牌" align="center"/>
           <el-table-column prop="price" label="商品价格" align="center"/>
           <el-table-column prop="description" label="商品描述/详细" align="center"/>
@@ -77,13 +82,13 @@
         // 查询条件
         formData: {
           name: '',
-          description: '',
-          pictureUrl: '',
+          eName:'',
           price: '',
-          priceOf:'',
-          baseprice:'',
-          type:'',
+          priceMax:'',
+          basePrice:'',
+          category:'',
           brand:'',
+          description:'',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -180,15 +185,6 @@
           }
           that.loading = false;
         });
-      },
-      exportBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        let commodity = that.formData;
-        // 遮罩
-        this.loading = true;
-        that.$common.saveAxios(that, '/purchase/commodity/export', commodity
-        );
       }
     },
     created: function() {

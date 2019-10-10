@@ -5,23 +5,26 @@
       <el-form-item label="商品名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入商品名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="商品描述" prop="description">
-        <el-input v-model="ruleForm.description" placeholder="请输入商品描述" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="英文名称" prop="eName">
+        <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
-      <!--<el-form-item label="商品图片" prop="description">
-        <el-input v-model="ruleForm.pictureUrl" placeholder="请输入商品图片" suffix-icon="el-icon-edit" tabindex="3"/>
-      </el-form-item>-->
-      <el-form-item label="商品价格" prop="description">
+      <el-form-item label="商品描述" prop="description">
+        <el-input v-model="ruleForm.description" placeholder="请输入商品描述" suffix-icon="el-icon-edit" tabindex="3"/>
+      </el-form-item>
+      <el-form-item label="商品价格" prop="price">
         <el-input v-model="ruleForm.price" placeholder="请输入商品价格" suffix-icon="el-icon-edit" tabindex="4"/>
       </el-form-item>
-      <el-form-item label="商品成本" prop="baseprice">
-        <el-input v-model="ruleForm.baseprice" placeholder="请输入商品成本" suffix-icon="el-icon-edit" tabindex="4"/>
+      <el-form-item label="商品成本" prop="basePrice">
+        <el-input v-model="ruleForm.basePrice" placeholder="请输入商品成本" suffix-icon="el-icon-edit" tabindex="5"/>
       </el-form-item>
-      <el-form-item label="商品类型" prop="type">
-        <el-input v-model="ruleForm.type" placeholder="请输入商品类型" suffix-icon="el-icon-edit" tabindex="4"/>
+      <el-form-item label="商品类型" prop="category">
+        <el-input v-model="ruleForm.category" placeholder="请输入商品类型" suffix-icon="el-icon-edit" tabindex="6"/>
       </el-form-item>
       <el-form-item label="商品品牌" prop="brand">
-        <el-input v-model="ruleForm.brand" placeholder="请输入商品品牌" suffix-icon="el-icon-edit" tabindex="4"/>
+        <el-input v-model="ruleForm.brand" placeholder="请输入商品品牌" suffix-icon="el-icon-edit" tabindex="7"/>
+      </el-form-item>
+      <el-form-item label="商品数量" prop="shopNum">
+        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="7"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -37,15 +40,7 @@
       addFlag: {
         type: Boolean,
         required: true
-      },
-      customerType: {
-        type: Array,
-        required: true
-      },
-      customerStatus: {
-        type: Array,
-        required: true
-      },
+      }
     },
     data() {
       return {
@@ -53,25 +48,35 @@
         inline: true,
         ruleForm: {
           name: '',
+          eName:'',
           description: '',
-          /*pictureUrl: '',*/
           price: '',
-          baseprice:'',
-          type:'',
-          brand:''
+          basePrice:'',
+          category:'',
+          brand:'',
+          shopNum:''
         },
         rules: {
           name: [
             {required: true, message: '请输入商品名称', trigger: 'change'},
           ],
+          eName: [
+            {required: true, message: '请输入英文名称', trigger: 'change'},
+          ],
           description: [
             {required: true, message: '请输入商品描述', trigger: 'change'},
           ],
-          pictureUrl: [
-            {required: true, message: '请输入商品图片', trigger: 'change'},
-          ],
           price: [
             {required: true, message: '请输入商品价格', trigger: 'change'},
+          ],
+          basePrice: [
+            {required: true, message: '请输入商品成本', trigger: 'change'},
+          ],
+          category: [
+            {required: true, message: '请输入商品类型', trigger: 'change'},
+          ],
+          brand: [
+            {required: true, message: '请输入商品品牌', trigger: 'change'},
           ]
         }
       };
@@ -83,24 +88,26 @@
           if (valid) {
             that.$common.saveAxios(that, '/purchase/commodity/save', {
               name: that.ruleForm.name,
-              description: that.ruleForm.description,
-              pictureUrl: that.ruleForm.pictureUrl,
+              eName: that.ruleForm.eName,
               price: that.ruleForm.price,
-              baseprice:that.ruleForm.baseprice,
-              type:that.ruleForm.type,
+              description: that.ruleForm.description,
+              basePrice:that.ruleForm.basePrice,
+              category:that.ruleForm.category,
               brand:that.ruleForm.brand,
+              shopNum:that.ruleForm.shopNum == ''? 0 : that.ruleForm.shopNum,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid()
             }, '商品新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
                   name: '',
+                  eName:'',
                   description: '',
-                  pictureUrl: '',
                   price: '',
-                  baseprice:'',
-                  type:'',
-                  brand:''
+                  basePrice:'',
+                  category:'',
+                  brand:'',
+                  shopNum:''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -117,12 +124,13 @@
         }).then(function () {
           that.ruleForm = {
             name: '',
+            eName:'',
             description: '',
-            pictureUrl: '',
             price: '',
-            baseprice:'',
-            type:'',
-            brand:''
+            basePrice:'',
+            category:'',
+            brand:'',
+            shopNum:''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -144,11 +152,11 @@
           that.ruleForm = {
             name: '',
             description: '',
-            pictureUrl: '',
             price: '',
-            baseprice:'',
-            type:'',
-            brand:''
+            basePrice:'',
+            category:'',
+            brand:'',
+            shopNum:''
           };
           done();
           that.$emit('changeFlag', [false, false]);

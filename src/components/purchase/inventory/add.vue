@@ -1,18 +1,15 @@
 <template>
-  <el-dialog title="新增库存商品" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
+  <el-dialog title="库存商品增量" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
       <el-form-item label="商品名称" prop="name">
-        <el-input v-model="ruleForm.name" placeholder="请输入商品名称" suffix-icon="el-icon-edit" tabindex="1"/>
+        <el-input v-model="ruleForm.name" placeholder="请输入商品名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="商品数量" prop="description">
-        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="英文名称" prop="eName">
+        <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
-      <el-form-item label="商品来源" prop="description">
-        <el-input v-model="ruleForm.shopAddress" placeholder="请输入商品来源" suffix-icon="el-icon-edit" tabindex="3"/>
-      </el-form-item>
-      <el-form-item label="是否上架" prop="baseprice">
-        <el-input v-model="ruleForm.whetherShelf" placeholder="是否上架" suffix-icon="el-icon-edit" tabindex="4"/>
+      <el-form-item label="商品数量" prop="shopNum">
+        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -25,34 +22,28 @@
 <script>
   export default {
     props: {
-      addFlag: {
+      updateFlag: {
         type: Boolean,
         required: true
       },
-      customerType: {
-        type: Array,
+      id: {
+        type: String,
         required: true
-      },
-      customerStatus: {
-        type: Array,
-        required: true
-      },
+      }
     },
     data() {
       return {
         dialogForm: false,
         inline: true,
         ruleForm: {
-          name: '',
-          description: '',
-          shopNum:'',
-          shopAddress:'',
-          whetherShelf:''
+          name:'',
+          eName:'',
+          shopNum:''
         },
         rules: {
-          name: [
-            {required: true, message: '请输入商品名称', trigger: 'change'},
-          ],
+          shopNum: [
+            {required: true, message: '请输入商品的增量', trigger: 'change'},
+          ]
         }
       };
     },
@@ -61,20 +52,16 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/purchase/inventory/save', {
-              name: that.ruleForm.name,
-              shopNum: that.ruleForm.shopNum,
-              shopAddress: that.ruleForm.shopAddress,
-              whetherShelf: that.ruleForm.whetherShelf,
+            that.$common.updateAxios(that, '/purchase/inventory/update', {
+              shopNum:that.ruleForm.shopNum,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-              'id': that.$common.uuid()
-            }, '商品新增成功').then(function (flag) {
+              'id': this.id
+            }, '库存商品信息修改成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
-                  name: '',
-                  shopNum:'',
-                  shopAddress:'',
-                  whetherShelf:''
+                  name:'',
+                  eName:'',
+                  shopNum:''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -90,10 +77,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            name: '',
-            shopNum:'',
-            shopAddress:'',
-            whetherShelf:''
+            name:'',
+            eName:'',
+            shopNum:''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -113,11 +99,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            name: '',
-            shopNum:'',
-            createMan:'',
-            shopAddress:'',
-            whetherShelf:'',
+            name:'',
+            eName:'',
+            shopNum:''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -132,8 +116,20 @@
       }
     },
     watch: {
-      addFlag(newValue) {
+      updateFlag(newValue) {
         this.dialogForm = newValue;
+        if (newValue) {
+          if (this.$common.isEmpty(this.id)) {
+            this.$common.errorMessage(this, '系统异常,未获取到客户信息!');
+            return false
+          }
+          let that = this;
+          this.$common.queryAxios(this, '/purchase/inventory/getInventory', {id: this.id}, '商品信息查询成功').then(function (e) {
+            that.ruleForm.name = e.data.name;
+            that.ruleForm.eName = e.data.eName;
+            that.ruleForm.shopNum = e.data.shopNum;
+          });
+        }
       }
     }
   }

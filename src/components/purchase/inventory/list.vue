@@ -14,10 +14,8 @@
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
-            <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
-            <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
-            <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
+            <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">增量</el-button>
+            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">库存销毁</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -30,13 +28,10 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
+          <el-table-column prop="eName" label="英文名称" align="center" sortable/>
           <el-table-column prop="shopNum" label="商品数量" align="center" />
-          <!--<el-table-column prop="description" label="商品描述/详细" align="center" />-->
           <el-table-column prop="createTime" label="入库时间" align="center" />
           <el-table-column prop="updateTime" label="更新时间" align="center" />
-          <el-table-column prop="createMan" label="入库人" align="center" />
-          <el-table-column prop="shopAddress" label="商品来源" align="center" />
-          <el-table-column prop="whetherShelf" label="是否上架" align="center" />
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -54,13 +49,11 @@
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
-  import addPage from './add';
-  import updatePage from './update';
+  import updatePage from './add';
 
   export default {
     data() {
       return {
-        addFlag: false,
         updateFlag: false,
         // 请求地址
         url: '/purchase/inventory/list',
@@ -71,13 +64,10 @@
         // 查询条件
         formData: {
           name: '',
-          description: '',
+          eName: '',
           shopNum:'',
           createTime:'',
           updateTime:'',
-          createMan:'',
-          shopAddress:'',
-          whetherShelf:'',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -93,12 +83,10 @@
     components: {
       pagination,
       collapse,
-      addPage,
-      updatePage
+      updatePage,
     },
     methods: {
       changeFlag(param) {
-         this.addFlag = param[0];
          this.updateFlag = param[0];
         // 为true时重新加载列表数据
         if (param[1]) {
@@ -146,17 +134,14 @@
         this.selectedRow = row.id;
       },
       addBtn() {
-        this.addFlag = true;
-      },
-      updateBtn() {
         // 判断是否选择了数据
         if (this.$common.isEmpty(this.selectedRow)) {
           this.$common.selectRowMsg(this);
           return false;
         }
-         this.updateFlag = true;
+        this.updateFlag = true;
       },
-      deleteBtn() {
+      resetTimesBtn() {
         let that = this;
         // 判断是否选择了数据
         if (this.$common.isEmpty(this.selectedRow)) {
@@ -167,23 +152,15 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.deleteAxios(that, '/purchase/inventory/delete', {'id': that.selectedRow}, '商品删除成功').then(function (flag) {
-          if (flag) {
-            that.$common.tableSearch(that, that.url, that.formData);
-            that.selectedRow = '';
-          }
-          that.loading = false;
-        });
+        this.$common.updateAxios(that, '/purchase/inventory/reset', {'id': that.selectedRow},  '客户销毁成功')
+          .then(function (flag) {
+            if (flag) {
+              that.$common.tableSearch(that, that.url, that.formData);
+              that.selectedRow = '';
+            }
+            that.loading = false;
+          });
       },
-      exportBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        let commodity = that.formData;
-        // 遮罩
-        this.loading = true;
-        that.$common.saveAxios(that, '/purchase/inventory/export', commodity
-        );
-      }
     },
     created: function() {
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
