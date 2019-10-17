@@ -44,6 +44,10 @@ let routes = [{
       path: '/home/order',
       component: resolve => require(['./components/purchase/order/list.vue'], resolve),
       name: '订单管理'
+    }, {
+      path: '/home/schedule',
+      component: resolve => require(['./components/purchase/schedule/list.vue'], resolve),
+      name: '订单管理'
     }
   ]
 }];

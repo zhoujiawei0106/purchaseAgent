@@ -1,17 +1,24 @@
 <template>
-  <el-dialog title="修改订单信息" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
+  <el-dialog title="修改订单" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-      <el-form-item label="订单编号" prop="id">
-        <el-input v-model="ruleForm.orderNum" disabled="disable" placeholder="请输入订单状态" tabindex="1"/>
-      </el-form-item>
-      <el-form-item label="订单状态" prop="orderStatus">
-        <el-input v-model="ruleForm.orderStatus" placeholder="请输入订单状态" suffix-icon="el-icon-edit" tabindex="2"/>
-      </el-form-item>
-      <el-form-item label="订单价格" prop="totalPrice">
-        <el-input v-model="ruleForm.totalPrice" placeholder="请输入订单价格" suffix-icon="el-icon-edit" tabindex="3"/>
-      </el-form-item>
-    </el-form>
+    <div style="padding-top: 1%;">
+      <div>
+        <el-table :data="tableData" style="width: 100%;" border highlight-current-row stripe ref="table"
+                  @row-dblclick="selectRow" @row-click="clickRow" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"/>
+          <el-table-column type="index" width="50" label="序号" align="center"/>
+          <el-table-column prop="id" label="id" align="center" v-if="false"/>
+          <el-table-column prop="name" label="商品" align="center" sortable/>
+          <el-table-column  prop="shopNum" label="数量" align="center" >
+            <template slot-scope="scope">
+              <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange" controls-position="right" :min="1"></el-input-number>
+            </template>
+          </el-table-column>
+          <el-table-column prop="price" label="价格" align="center" />
+        </el-table>
+      </div>
+      <el-input  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="save('ruleForm')" tabindex="9">保存</el-button>
       <el-button @click="back" tabindex="10">返回</el-button>
@@ -33,40 +40,86 @@
     },
     data() {
       return {
+        hasSelectList:[],
+        multipleSelection: [],
+        totalPrice:0,
         dialogForm: false,
+        shopNum: 1,
         inline: true,
-        ruleForm: {
-          orderNum: '',
-          orderStatus: '',
-          totalPrice:''
-        },
-        rules: {
+        selectedRow: '',
+        tableData:[],
+        // 请求地址
+        url: '/purchase/commodity/list',
+        // 查询条件
+        formData: {
+          id:'',
+          name: '',
+          shopNum:'',
+          price: '',
         }
       };
     },
     methods: {
+      handleChange(value) {
+        let that = this;
+        let allPrice = 0;
+        let multipleSelection = that.multipleSelection;
+        for(let key in multipleSelection){
+          allPrice += multipleSelection[key].price * multipleSelection[key].shopNum
+        }
+        this.totalPrice = allPrice;
+      },
+      handleSelectionChange(val) {
+        let allPrice = 0;
+        for(let key in val){
+          allPrice += val[key].price * val[key].shopNum
+        }
+        this.multipleSelection = val;
+        this.totalPrice = allPrice;
+      },
+      /**
+       * 单击数据行
+       * @param row
+       * @param event
+       * @param column
+       */
+      clickRow(row, event, column) {
+        this.selectedRow = row.id;
+      },
+      /**
+       * 双击数据行
+       * @param row
+       * @param event
+       */
+      selectRow(row, event) {
+        this.selectedRow = row.id;
+      },
       save() {
         let that = this;
-        that.$refs['ruleForm'].validate((valid) => {
-          if (valid) {
-            that.$common.updateAxios(that, '/purchase/order/update', {
-              orderNum: that.ruleForm.orderNum,
-              orderStatus: that.ruleForm.orderStatus,
-              totalPrice: that.ruleForm.totalPrice,
-              'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-              'id': this.id
-            }, '订单信息修改成功').then(function (flag) {
-              if (flag) {
-                that.ruleForm = {
-                  orderNum: '',
-                  orderStatus: '',
-                  totalPrice:''
-                };
-                that.dialogForm = false;
-                that.$emit('changeFlag', [false, true]);
-              }
-            });
-          };
+        let multipleSelection = that.multipleSelection;
+        let nameAll = '';
+        let priceAll = '';
+        let shopNumAll = '';
+        let idAll = '';
+        for(let key in multipleSelection){
+          nameAll += multipleSelection[key].name + ',';
+          priceAll += multipleSelection[key].price + ',';
+          shopNumAll += multipleSelection[key].shopNum + ',';
+          idAll += multipleSelection[key].id + ',';
+        }
+        debugger;
+        that.$common.saveAxios(that, '/purchase/order/update', {
+          nameAll:nameAll,
+          priceAll:priceAll,
+          shopNumAll:shopNumAll,
+          idAll:idAll,
+          'parentId': JSON.parse(sessionStorage.getItem('user')).id,
+          id:this.id
+        }, '订单修改成功').then(function (flag) {
+          if (flag) {
+            that.dialogForm = false;
+            that.$emit('changeFlag', [false, true]);
+          }
         });
       },
       back() {
@@ -75,10 +128,10 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
-          that.ruleForm = {
-            orderNum: '',
-            orderStatus: '',
-            totalPrice:''
+          that.formData = {
+            name: '',
+            shopNum: '',
+            price: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -98,9 +151,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            orderNum: '',
-            orderStatus: '',
-            totalPrice:''
+            name: '',
+            shopNum: '',
+            price: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -116,20 +169,36 @@
     },
     watch: {
       updateFlag(newValue) {
+        this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
+        let that = this;
+        that.$common.tableSearch(that, this.url, {});
+        this.shopNum = 1;
         this.dialogForm = newValue;
         if (newValue) {
           if (this.$common.isEmpty(this.id)) {
+            alert(this.id);
             this.$common.errorMessage(this, '系统异常,未获取到客户信息!');
             return false
           }
           let that = this;
           this.$common.queryAxios(this, '/purchase/order/getOrder', {id: this.id}, '订单查询成功').then(function (e) {
-              that.ruleForm.orderNum = e.data.id,
-              that.ruleForm.orderStatus = e.data.orderStatus,
-              that.ruleForm.totalPrice = e.data.totalPrice
+            that.hasSelectList = e.data;
           });
+          debugger;
+          this.$nextTick(()=>{
+            for(let key in that.tableData) {
+              if(this.hasSelectList.indexOf(that.tableData[key].id) >= 0){
+                this.$refs.dataTable.toggleRowSelection(that.tableData[key],true);
+              }
+            }
+          })
         }
       }
+    },
+    created: function() {
+      this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
+      let that = this;
+      that.$common.tableSearch(that, this.url, {});
     }
   }
 </script>

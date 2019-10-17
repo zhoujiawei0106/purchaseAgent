@@ -4,20 +4,20 @@
     <div style="padding-top: 1%;">
       <div>
         <el-table :data="tableData" style="width: 100%;" border highlight-current-row stripe
-                  @row-dblclick="selectRow" @row-click="clickRow">
-          <el-table-column type="selection"/>
+                  @row-dblclick="selectRow" @row-click="clickRow" @selection-change="handleSelectionChange">
+          <el-table-column type="selection" width="55"/>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品" align="center" sortable/>
           <el-table-column  prop="shopNum" label="数量" align="center" >
             <template slot-scope="scope">
-            <el-input-number v-model="scope.row.shopNum" prop="shopNum" controls-position="right" :min="1"></el-input-number>
+            <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange" controls-position="right" :min="1"></el-input-number>
             </template>
           </el-table-column>
           <el-table-column prop="price" label="价格" align="center" />
         </el-table>
       </div>
-     <el-input  v-text="'总价：' + this.shopNum*4" prop="totalPrice"  disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
+     <el-input  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="save('ruleForm')" tabindex="9">保存</el-button>
@@ -36,6 +36,8 @@
     },
     data() {
       return {
+        multipleSelection: [],
+        totalPrice:0,
         dialogForm: false,
         shopNum: 1,
         inline: true,
@@ -52,6 +54,23 @@
       };
     },
     methods: {
+      handleChange(value) {
+        let that = this;
+        let allPrice = 0;
+        let multipleSelection = that.multipleSelection;
+        for(let key in multipleSelection){
+          allPrice += multipleSelection[key].price * multipleSelection[key].shopNum
+        }
+        this.totalPrice = allPrice;
+      },
+    handleSelectionChange(val) {
+      let allPrice = 0;
+      for(let key in val){
+        allPrice += val[key].price * val[key].shopNum
+      }
+      this.multipleSelection = val;
+      this.totalPrice = allPrice;
+    },
       /**
        * 单击数据行
        * @param row
@@ -70,22 +89,23 @@
         this.selectedRow = row.id;
       },
       save() {
-        alert("1");
         let that = this;
-        let tableData = that.tableData;
+        let multipleSelection = that.multipleSelection;
         let nameAll = '';
         let priceAll = '';
         let shopNumAll = '';
-        for(let key in tableData){
-          nameAll += tableData[key].name + ',';
-          priceAll += tableData[key].price + ',';
-          shopNumAll += tableData[key].shopNum + ',';
+        let idAll = '';
+        for(let key in multipleSelection){
+          nameAll += multipleSelection[key].name + ',';
+          priceAll += multipleSelection[key].price + ',';
+          shopNumAll += multipleSelection[key].shopNum + ',';
+          idAll += multipleSelection[key].id + ',';
         }
-        debugger;
             that.$common.saveAxios(that, '/purchase/order/save', {
               nameAll:nameAll,
               priceAll:priceAll,
               shopNumAll:shopNumAll,
+              idAll:idAll,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
             }, '订单新增成功').then(function (flag) {
               if (flag) {

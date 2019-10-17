@@ -3,7 +3,7 @@
     <div>
       <el-collapse-transition>
         <div v-show="!isHideForm">
-          <el-form :inline="true" :model="formData" :rules="rules" class="search-element-form">
+          <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="订单编号: ">
@@ -21,8 +21,7 @@
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
-            <el-button type="primary" @click="updateBtn" icon="el-icon-edit">明细</el-button>
-            <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">撤销</el-button>
+            <!--<el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">撤销</el-button>-->
           </div>
         </div>
       </el-collapse-transition>
@@ -39,16 +38,24 @@
           <el-table-column prop="totalPrice" label="订单结算" align="center" />
           <el-table-column prop="createTime" label="订单创建时间" align="center" />
           <el-table-column prop="updateTime" label="订单更新时间" align="center" />
+          <el-table-column label="操作" align="center">
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="color: blue">明细</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
     <div>
-      <add-page :add-flag="addFlag" :commodity-type="type" :commodity-status="status" @changeFlag="changeFlag"/>
+      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :commodity-type="type" :commodity-status="status" :id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :id="selectedRow" @changeFlag="changeFlag"/>
+    </div>
+    <div>
+      <detail-page :detail-flag="detailFlag" :id="rowId" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
@@ -58,18 +65,21 @@
   import pagination from '../../common/pagination';
   import addPage from './add';
   import updatePage from './update';
+  import detailPage from './detail';
 
   export default {
     data() {
       return {
         addFlag:false,
         updateFlag: false,
+        detailFlag:false,
         // 请求地址
         url: '/purchase/order/list',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
         pagination: false,
+        rowId:'',
         // 查询条件
         formData: {
           orderNum: '',
@@ -93,12 +103,24 @@
       pagination,
       collapse,
       addPage,
-      updatePage
+      updatePage,
+      detailPage
     },
-    methods: {
+    methods:
+      {handleEdit(index, row) {
+        let that = this;
+        that.rowId = row.id;
+          // 判断是否选择了数据
+          if (this.$common.isEmpty(row.id)) {
+            this.$common.selectRowMsg(this);
+            return false;
+          }
+          this.detailFlag = true;
+      },
       changeFlag(param) {
         this.addFlag = param[0];
         this.updateFlag = param[0];
+        this.detailFlag = param[0];
         // 为true时重新加载列表数据
         if (param[1]) {
           this.$common.tableSearch(this, this.url, this.formData);

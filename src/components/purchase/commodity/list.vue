@@ -3,7 +3,7 @@
     <div>
       <el-collapse-transition>
         <div v-show="!isHideForm">
-          <el-form :inline="true" :model="formData" :rules="rules" class="search-element-form">
+          <el-form :inline="true" :model="formData"  class="search-element-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="商品名称: ">
@@ -54,10 +54,10 @@
                   @exchangePagination="exchangePagination"/>
     </div>
     <div>
-      <add-page :add-flag="addFlag" :commodity-type="type" :commodity-status="status" @changeFlag="changeFlag"/>
+      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :commodity-type="type" :commodity-status="status" :id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :id="selectedRow" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
