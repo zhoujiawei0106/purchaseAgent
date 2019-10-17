@@ -107,7 +107,6 @@
           shopNumAll += multipleSelection[key].shopNum + ',';
           idAll += multipleSelection[key].id + ',';
         }
-        debugger;
         that.$common.saveAxios(that, '/purchase/order/update', {
           nameAll:nameAll,
           priceAll:priceAll,
@@ -137,11 +136,14 @@
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
           console.log(e);
-          that.$message({
-            showClose: true,
-            message: '系统异常,请联系管理员!',
-            type: 'error'
-          });
+          if(e === 'cancel') {
+          } else {
+            that.$message({
+              showClose: true,
+              message: '系统异常,请联系管理员!',
+              type: 'error'
+            });
+          }
         });
       },
       handleClose(done) {
@@ -150,7 +152,7 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
-          that.ruleForm = {
+          that.formData = {
             name: '',
             shopNum: '',
             price: ''
@@ -159,11 +161,14 @@
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
           console.log(e);
-          that.$message({
-            showClose: true,
-            message: '系统异常,请联系管理员!',
-            type: 'error'
-          });
+          if(e === 'cancel') {
+          } else {
+            that.$message({
+              showClose: true,
+              message: '系统异常,请联系管理员!',
+              type: 'error'
+            });
+          }
         });
       }
     },

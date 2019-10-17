@@ -73,11 +73,14 @@
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
           console.log(e);
-          that.$message({
-            showClose: true,
-            message: '系统异常,请联系管理员!',
-            type: 'error'
-          });
+          if(e === 'cancel') {
+          } else {
+            that.$message({
+              showClose: true,
+              message: '系统异常,请联系管理员!',
+              type: 'error'
+            });
+          }
         });
       },
       handleClose(done) {
@@ -93,11 +96,14 @@
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
           console.log(e);
-          that.$message({
-            showClose: true,
-            message: '系统异常,请联系管理员!',
-            type: 'error'
-          });
+          if(e === 'cancel') {
+          } else {
+            that.$message({
+              showClose: true,
+              message: '系统异常,请联系管理员!',
+              type: 'error'
+            });
+          }
         });
       }
     },
