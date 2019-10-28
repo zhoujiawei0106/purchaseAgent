@@ -12,7 +12,9 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="订单状态: ">
-                  <el-input v-model="formData.orderStatus" placeholder="订单状态"></el-input>
+                    <el-select v-model="formData.orderStatus" clearable placeholder="请选择" >
+                      <el-option v-for="item in orderStatus" :key="item.value" :label="item.label" :value="item.value"/>
+                    </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -96,6 +98,7 @@
         },
         loading: false,
         tableData: [],
+        orderStatus:[],
         selectedRow: '',
       }
     },
@@ -182,6 +185,12 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+      // 获取订单状态下拉框
+      that.$common.queryAxios(that, '/purchase/order/orderStatus').then(function (resolve) {
+        if (resolve.flag) {
+          that.orderStatus = resolve.data;
+        }
+      });
     }
   }
 </script>

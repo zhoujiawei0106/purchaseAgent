@@ -3,7 +3,7 @@
              :center="true" :destroy-on-close="true">
     <div style="padding-top: 1%;">
       <div>
-        <el-table :data="tableData" style="width: 100%;" border highlight-current-row stripe ref="table"
+        <el-table :data="tableData"  style="width: 100%;" border highlight-current-row stripe ref="multipleTable"
                   @row-dblclick="selectRow" @row-click="clickRow" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"/>
           <el-table-column type="index" width="50" label="序号" align="center"/>
@@ -17,12 +17,16 @@
           <el-table-column prop="price" label="价格" align="center" />
         </el-table>
       </div>
-      <el-input  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
     </div>
+    <el-button  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" style="color: darkorange" tabindex="1"/>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="9">保存</el-button>
-      <el-button @click="back" tabindex="10">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="2">保存</el-button>
+      <el-button @click="back" tabindex="3">返回</el-button>
     </span>
+    <!--<div style="margin-top: 20px">
+      <el-button @click="toggleSelection([tableData[1], tableData[2]])">切换第二、第三行的选中状态</el-button>
+      <el-button @click="toggleSelection()">取消选择</el-button>
+    </div>-->
   </el-dialog>
 </template>
 
@@ -60,6 +64,11 @@
       };
     },
     methods: {
+      toggleSelection(rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+      },
       handleChange(value) {
         let that = this;
         let allPrice = 0;
@@ -187,16 +196,17 @@
           }
           let that = this;
           this.$common.queryAxios(this, '/purchase/order/getOrder', {id: this.id}, '订单查询成功').then(function (e) {
-            that.hasSelectList = e.data;
+            /*this.hasSelectList = e.data;*/
+            that.toggleSelection([that.tableData[1], that.tableData[2]]);
           });
-          debugger;
-          this.$nextTick(()=>{
-            for(let key in that.tableData) {
+          /*this.$nextTick(()=>{
+            this.$refs.tableData.toggleRowSelection(that.tableData[0],true);
+           /!* for(let key in that.tableData) {
               if(this.hasSelectList.indexOf(that.tableData[key].id) >= 0){
                 this.$refs.dataTable.toggleRowSelection(that.tableData[key],true);
               }
-            }
-          })
+            }*!/
+          })*/
         }
       }
     },

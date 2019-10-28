@@ -19,7 +19,9 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="商品类型: ">
-                  <el-input v-model="formData.category" placeholder="商品类型"></el-input>
+                  <el-select v-model="formData.category" clearable placeholder="请选择" >
+                    <el-option v-for="item in category" :key="item.value" :label="item.label" :value="item.value"/>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -54,10 +56,10 @@
                   @exchangePagination="exchangePagination"/>
     </div>
     <div>
-      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
+      <add-page :add-flag="addFlag" :category="category" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :id="selectedRow" :category="category" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
@@ -98,6 +100,7 @@
         },
         loading: false,
         tableData: [],
+        category:[],
         selectedRow: '',
       }
     },
@@ -191,6 +194,12 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+      // 获取商品类型下拉框
+      that.$common.queryAxios(that, '/purchase/commodity/commodityCategory').then(function (resolve) {
+        if (resolve.flag) {
+          that.category = resolve.data;
+        }
+      });
     }
   }
 </script>

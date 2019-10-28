@@ -18,13 +18,15 @@
         <el-input v-model="ruleForm.basePrice" placeholder="请输入商品成本" suffix-icon="el-icon-edit" tabindex="5"/>
       </el-form-item>
       <el-form-item label="商品类型" prop="category">
-        <el-input v-model="ruleForm.category" placeholder="请输入商品类型" suffix-icon="el-icon-edit" tabindex="6"/>
+        <el-select v-model="ruleForm.category" clearable placeholder="请选择" tabindex="6">
+          <el-option v-for="item in category" :key="item.value" :label="item.label" :value="item.value"/>
+        </el-select>
       </el-form-item>
       <el-form-item label="商品品牌" prop="brand">
         <el-input v-model="ruleForm.brand" placeholder="请输入商品品牌" suffix-icon="el-icon-edit" tabindex="7"/>
       </el-form-item>
       <el-form-item label="商品数量" prop="shopNum">
-        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="7"/>
+        <el-input-number v-model="ruleForm.shopNum" :min="0" placeholder="请输入商品数量" size="medium" tabindex="8"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -39,6 +41,10 @@
     props: {
       addFlag: {
         type: Boolean,
+        required: true
+      },
+      category: {
+        type: Array,
         required: true
       }
     },

@@ -9,7 +9,7 @@
         <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
       <el-form-item label="商品数量" prop="shopNum">
-        <el-input v-model="ruleForm.shopNum" placeholder="请输入商品数量" suffix-icon="el-icon-edit" tabindex="3"/>
+        <el-input-number v-model="ruleForm.shopNum" :min="0" placeholder="请输入商品数量" size="medium" tabindex="3"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

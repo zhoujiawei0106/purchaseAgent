@@ -17,11 +17,11 @@
           <el-table-column prop="price" label="价格" align="center" />
         </el-table>
       </div>
-     <el-input  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
     </div>
+    <el-button  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" style="color: darkorange" tabindex="1"/>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="9">保存</el-button>
-      <el-button @click="back" tabindex="10">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="2">保存</el-button>
+      <el-button @click="back" tabindex="3">返回</el-button>
     </span>
   </el-dialog>
 </template>

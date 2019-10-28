@@ -12,7 +12,9 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="行程状态: ">
-                  <el-input v-model="formData.status" placeholder="行程状态"></el-input>
+                  <el-select v-model="formData.status" clearable placeholder="请选择" >
+                    <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"/>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -85,6 +87,7 @@
           total: 0
         },
         loading: false,
+        status:[],
         tableData: [],
         selectedRow: '',
       }
@@ -179,6 +182,12 @@
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+      // 获取行程状态下拉框
+      that.$common.queryAxios(that, '/purchase/schedule/scheduleStatus').then(function (resolve) {
+        if (resolve.flag) {
+          that.status = resolve.data;
+        }
+      });
     }
   }
 </script>
