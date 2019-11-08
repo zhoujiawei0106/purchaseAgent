@@ -126,18 +126,18 @@ export function export_json_to_excel(th, jsonData, defaultTitle) {
 
   /* original data */
 
-  var data = jsonData;
+  let data = jsonData;
   data.unshift(th);
-  var ws_name = "SheetJS";
+  let ws_name = defaultTitle;
 
-  var wb = new Workbook(), ws = sheet_from_array_of_arrays(data);
+  let wb = new Workbook(), ws = sheet_from_array_of_arrays(data);
 
 
   /* add worksheet to workbook */
   wb.SheetNames.push(ws_name);
   wb.Sheets[ws_name] = ws;
 
-  var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
-  var title = defaultTitle || '列表'
+  let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
+  let title = (defaultTitle || '列表') + '_' + new Date().getTime();
   saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), title + ".xlsx")
 }
