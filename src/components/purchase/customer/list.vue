@@ -37,7 +37,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <!--<el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">导出</el-button>-->
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -201,6 +201,19 @@
             that.selectedRow = '';
           }
           that.loading = false;
+        });
+      },
+      exportBtn() {
+        let that = this;
+        return new Promise(function (resolve) {
+          that.$common.queryAxios(that, '/purchase/customer/export', that.formData, '数据导出成功', true).then(function (event) {
+            if (event.flag) {
+              let header = ['客户名称(昵称)','上级客户','客户类型','客户状态','客户积分','客户电话','客户地址'];
+              let entity = ['name','parentId','type','status','point','tel','address'];
+              let title = '客户管理';
+              that.$common.exportExcel(title, header, entity, event.data);
+            }
+          });
         });
       }
     },

@@ -300,6 +300,25 @@ function deleteAxios(that, url, data, message) {
   });
 }
 
+function exportExcel(title, header, entity, list) {
+  //因为导出要全部的，所以导出我是请求的接口getchanneldelList接口的名字
+  require.ensure([], () => {
+    const { export_json_to_excel } = require('@/vendor/export2excel')
+    // 对应表格输出的title
+    // const tHeader = ['渠道ID', '渠道名称', '渠道标识符', '系统ID ', 'CP单接', '创建时间'];
+    // 对应表格输出的数据
+    // const filterVal = ['channel_id', 'channel_name', 'channel_label', 'group_id', 'cp_only', 'created_at'];
+    // const list = resolve.data;
+    const data = formatJson(entity, list);
+    // 对应下载文件的名字
+    export_json_to_excel(header, data, title);
+  });
+}
+
+function formatJson(filterVal, jsonData) {
+  return jsonData.map(v => filterVal.map(j => v[j]))
+}
+
 export default {
   contentPath,
   null2empty,
@@ -316,5 +335,6 @@ export default {
   queryAxios,
   saveAxios,
   updateAxios,
-  deleteAxios
+  deleteAxios,
+  exportExcel
 }
