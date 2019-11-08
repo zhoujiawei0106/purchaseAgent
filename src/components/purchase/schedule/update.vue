@@ -2,18 +2,23 @@
   <el-dialog title="修改行程" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-      <el-form-item label="行程开始时间" prop="startTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.startTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
-                       :readonly="startStatus" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="1">
+      <el-form-item v-show="isEnd" label-width="100%"  style="width:100%; height:2px;text-align: center">
+        <span class="dialog-footer">
+          <el-button type="warning" v-text="'行程已结束'"></el-button>
+        </span>
+      </el-form-item>
+      <el-form-item v-show="startStatus" label="行程开始时间" prop="startTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd" tabindex="1">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="行程结束时间" prop="endTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
-                       :readonly="endStatus" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="2">
+      <el-form-item  v-show="endStatus" label="行程结束时间" prop="endTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd"  tabindex="2">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="行程目的地" prop="name">
-        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" :readonly="placeStatus" suffix-icon="el-icon-edit" tabindex="3"/>
+      <el-form-item v-show="placeStatus" label="行程目的地" prop="name">
+        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -37,29 +42,7 @@
     },
     data() {
       return {
-        //日期控件
-        pickerOptions: {
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
+        isEnd:false,
         startStatus:false,
         endStatus:false,
         placeStatus:false,
@@ -170,10 +153,17 @@
             that.status = e.data.status;
             debugger;
             if(that.status == '2') {
+              that.startStatus = false;
+              that.endStatus = false;
+              that.placeStatus = false;
+              that.isEnd = true;
+            } else if (that.status == '1') {
               that.startStatus = true;
               that.endStatus = true;
-              that.placeStatus = true;
-            } else if (that.status == '1') {
+              that.placeStatus = false;
+            } else {
+              that.startStatus = true;
+              that.endStatus = true;
               that.placeStatus = true;
             }
           });
