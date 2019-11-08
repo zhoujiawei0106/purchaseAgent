@@ -2,8 +2,18 @@
   <el-dialog title="新增行程" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-      <el-form-item label="行程目的地" prop="name">
-        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" suffix-icon="el-icon-edit" tabindex="1"/>
+      <el-form-item label="行程开始时间" prop="startTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.startTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
+                        value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"  tabindex="1">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="行程结束时间" prop="endTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
+                        value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="2">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="行程目的地" prop="name" label-width="110px">
+        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -23,14 +33,45 @@
     },
     data() {
       return {
+        //日期控件
+        pickerOptions: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
         dialogForm: false,
         inline: true,
         ruleForm: {
-          place: ''
+          place: '',
+          startTime:'',
+          endTime:''
         },
         rules: {
           place: [
-            {required: true, message: '请输入行程地点', trigger: 'change'},
+            {required: true, message: '请输入行程地点', trigger: ''},
+          ],
+          startTime: [
+            {required: true, message: '请输入行程开始时间', trigger: 'change'},
+          ],
+          endTime: [
+            {required: true, message: '请输入行程结束时间', trigger: 'change'},
           ]
         }
       };
@@ -42,12 +83,16 @@
           if (valid) {
             that.$common.saveAxios(that, '/purchase/schedule/save', {
               place: that.ruleForm.place,
+              startTime: that.ruleForm.startTime,
+              endTime: that.ruleForm.endTime,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid()
             }, '商品新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
-                  place: ''
+                  place: '',
+                  startTime: '',
+                  endTime: ''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -63,7 +108,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            place: ''
+            place: '',
+            startTime: '',
+            endTime: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -86,7 +133,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            place: ''
+            place: '',
+            startTime: '',
+            endTime: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);

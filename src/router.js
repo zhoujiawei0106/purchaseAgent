@@ -47,7 +47,7 @@ let routes = [{
     }, {
       path: '/home/schedule',
       component: resolve => require(['./components/purchase/schedule/list.vue'], resolve),
-      name: '订单管理'
+      name: '行程管理'
     }
   ]
 }];

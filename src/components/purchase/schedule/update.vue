@@ -2,8 +2,18 @@
   <el-dialog title="修改行程" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
+      <el-form-item label="行程开始时间" prop="startTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.startTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
+                       :readonly="startStatus" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="1">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="行程结束时间" prop="endTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
+                       :readonly="endStatus" value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="2">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item label="行程目的地" prop="name">
-        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" suffix-icon="el-icon-edit" tabindex="1"/>
+        <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" :readonly="placeStatus" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -27,10 +37,39 @@
     },
     data() {
       return {
+        //日期控件
+        pickerOptions: {
+          shortcuts: [{
+            text: '今天',
+            onClick(picker) {
+              picker.$emit('pick', new Date());
+            }
+          }, {
+            text: '昨天',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24);
+              picker.$emit('pick', date);
+            }
+          }, {
+            text: '一周前',
+            onClick(picker) {
+              const date = new Date();
+              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', date);
+            }
+          }]
+        },
+        startStatus:false,
+        endStatus:false,
+        placeStatus:false,
+        status:'',
         dialogForm: false,
         inline: true,
         ruleForm: {
-          place: ''
+          place: '',
+          startTime:'',
+          endTime:''
         },
         rules: {
           place: [
@@ -46,12 +85,16 @@
           if (valid) {
             that.$common.updateAxios(that, '/purchase/schedule/update', {
               place: that.ruleForm.place,
+              startTime:that.ruleForm.startTime,
+              endTime:that.ruleForm.endTime,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': this.id
             }, '行程信息修改成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
-                  place: ''
+                  place: '',
+                  startTime:'',
+                  endTime:''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -67,7 +110,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            place: ''
+            place: '',
+            startTime:'',
+            endTime:''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -90,7 +135,9 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            place: ''
+            place: '',
+            startTime:'',
+            endTime:''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -118,7 +165,19 @@
           let that = this;
           this.$common.queryAxios(this, '/purchase/schedule/getSchedule', {id: this.id}, '行程查询成功').then(function (e) {
             that.ruleForm.place = e.data.place;
+            that.ruleForm.startTime = e.data.startTime;
+            that.ruleForm.endTime = e.data.endTime,
+            that.status = e.data.status;
+            debugger;
+            if(that.status == '2') {
+              that.startStatus = true;
+              that.endStatus = true;
+              that.placeStatus = true;
+            } else if (that.status == '1') {
+              that.placeStatus = true;
+            }
           });
+
         }
       }
     }

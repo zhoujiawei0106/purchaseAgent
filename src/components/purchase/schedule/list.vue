@@ -5,11 +5,18 @@
         <div v-show="!isHideForm">
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
-              <el-col :span="8">
+              <!--<el-col :span="8">
                 <el-form-item label="行程编码: ">
                   <el-input v-model="formData.id" placeholder="行程编码"> </el-input>
                 </el-form-item>
-              </el-col>
+              </el-col>-->
+              <el-form-item label="日期查询: " label-width="110px">
+                <el-col :span="8">
+                    <el-date-picker v-model="timeRange" type="datetimerange" :picker-options="pickerOptions" value-format="yyyy-MM-dd HH:mm:ss"
+                                    range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+                    </el-date-picker>
+                </el-col>
+              </el-form-item>
               <el-col :span="8">
                 <el-form-item label="行程状态: ">
                   <el-select v-model="formData.status" clearable placeholder="请选择" >
@@ -35,11 +42,11 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>
+          <!--<el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>-->
           <el-table-column prop="status" label="行程状态" align="center" />
           <el-table-column prop="place" label="行程目的地" align="center" />
-          <el-table-column prop="startTime" label="开始时间" align="center" />
-          <el-table-column prop="endTime" label="结束时间" align="center" />
+          <el-table-column prop="startTime" label="行程开始时间" align="center" />
+          <el-table-column prop="endTime" label="行程结束时间" align="center" />
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -63,6 +70,34 @@
   export default {
     data() {
       return {
+        //日期
+        pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
         addFlag:false,
         updateFlag: false,
         // 请求地址
@@ -73,12 +108,12 @@
         pagination: false,
         // 查询条件
         formData: {
-          scheduleNum: "",
+          scheduleNum: '',
           id:'',
           status: '',
           place: '',
-          startTime:'',
-          endTime:'',
+          startTime:null,
+          endTime:null,
           // 当前第几页
           page: 1,
           // 每页几条
@@ -86,6 +121,7 @@
           // 数据总数
           total: 0
         },
+        timeRange:[],
         loading: false,
         status:[],
         tableData: [],
@@ -128,6 +164,8 @@
       searchBtn() {
         let that = this;
         this.formData.page = 1;
+        that.formData.startTime = that.timeRange[0];
+        that.formData.endTime = that.timeRange[1];
         that.$common.tableSearch(that, this.url, this.formData);
       },
       /**
