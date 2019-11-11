@@ -3,13 +3,13 @@
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
       <el-form-item label="行程开始时间" prop="startTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.startTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
-                        value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions"  tabindex="1">
+        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd"  tabindex="1">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="行程结束时间" prop="endTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.endTime" type="datetime" placeholder="选择日期时间" format="yyyy-MM-dd HH:mm:ss"
-                        value-format="yyyy-MM-dd HH:mm:ss" :picker-options="pickerOptions" tabindex="2">
+        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd" tabindex="2">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="行程目的地" prop="name" label-width="110px">
@@ -33,29 +33,6 @@
     },
     data() {
       return {
-        //日期控件
-        pickerOptions: {
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
         dialogForm: false,
         inline: true,
         ruleForm: {
