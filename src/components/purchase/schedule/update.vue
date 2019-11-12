@@ -7,13 +7,13 @@
           <el-button type="warning" v-text="'行程已结束'"></el-button>
         </span>
       </el-form-item>
-      <el-form-item v-show="startStatus" label="行程开始时间" prop="startTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+      <el-form-item v-show="startStatus" label="行程开始日期" prop="startTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择行程开始日期" format="yyyy-MM-dd"
                         value-format="yyyy-MM-dd" tabindex="1">
         </el-date-picker>
       </el-form-item>
-      <el-form-item  v-show="endStatus" label="行程结束时间" prop="endTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+      <el-form-item  v-show="endStatus" label="行程开始日期" prop="endTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择行程结束日期" format="yyyy-MM-dd"
                         value-format="yyyy-MM-dd"  tabindex="2">
         </el-date-picker>
       </el-form-item>
@@ -161,10 +161,12 @@
               that.startStatus = true;
               that.endStatus = true;
               that.placeStatus = false;
+              that.isEnd = false;
             } else {
               that.startStatus = true;
               that.endStatus = true;
               that.placeStatus = true;
+              that.isEnd = false;
             }
           });
 
