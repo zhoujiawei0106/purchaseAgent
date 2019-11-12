@@ -5,8 +5,8 @@
       <el-form-item label="商品名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入商品名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="英文名称" prop="eName">
-        <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="英文名称" prop="enName">
+        <el-input v-model="ruleForm.enName" placeholder="请输入英文名称" disabled="disabled" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
       <el-form-item label="商品数量" prop="shopNum">
         <el-input-number v-model="ruleForm.shopNum" :min="0" placeholder="请输入商品数量" size="medium" tabindex="3"/>
@@ -37,12 +37,13 @@
         inline: true,
         ruleForm: {
           name:'',
-          eName:'',
+          enName:'',
           shopNum:''
         },
         rules: {
           shopNum: [
-            {required: true, message: '请输入商品的增量', trigger: 'change'},
+            {pattern: /^[1-9]\d*|0$/,
+              message: '请输入整数', trigger: 'blur'}
           ]
         }
       };
@@ -60,7 +61,7 @@
               if (flag) {
                 that.ruleForm = {
                   name:'',
-                  eName:'',
+                  enName:'',
                   shopNum:''
                 };
                 that.dialogForm = false;
@@ -78,7 +79,7 @@
         }).then(function () {
           that.ruleForm = {
             name:'',
-            eName:'',
+            enName:'',
             shopNum:''
           };
           that.dialogForm = false;
@@ -103,7 +104,7 @@
         }).then(function () {
           that.ruleForm = {
             name:'',
-            eName:'',
+            enName:'',
             shopNum:''
           };
           done();
@@ -132,7 +133,7 @@
           let that = this;
           this.$common.queryAxios(this, '/purchase/inventory/getInventory', {id: this.id}, '商品信息查询成功').then(function (e) {
             that.ruleForm.name = e.data.name;
-            that.ruleForm.eName = e.data.eName;
+            that.ruleForm.enName = e.data.enName;
             that.ruleForm.shopNum = e.data.shopNum;
           });
         }

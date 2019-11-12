@@ -5,12 +5,12 @@
       <el-form-item label="商品名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入商品名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="英文名称" prop="eName">
-        <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="英文名称" prop="enName">
+        <el-input v-model="ruleForm.enName" placeholder="请输入英文名称" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
-      <el-form-item label="商品描述" prop="description">
+      <!--<el-form-item label="商品描述" prop="description">
         <el-input v-model="ruleForm.description" placeholder="请输入商品描述" suffix-icon="el-icon-edit" tabindex="3"/>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item label="商品价格" prop="price">
         <el-input v-model="ruleForm.price" placeholder="请输入商品价格" suffix-icon="el-icon-edit" tabindex="4"/>
       </el-form-item>
@@ -54,7 +54,7 @@
         inline: true,
         ruleForm: {
           name: '',
-          eName:'',
+          enName:'',
           description: '',
           price: '',
           basePrice:'',
@@ -66,11 +66,8 @@
           name: [
             {required: true, message: '请输入商品名称', trigger: 'change'},
           ],
-          eName: [
+          enName: [
             {required: true, message: '请输入英文名称', trigger: 'change'},
-          ],
-          description: [
-            {required: true, message: '请输入商品描述', trigger: 'change'},
           ],
           price: [
             {required: true, message: '请输入商品价格', trigger: 'change'},
@@ -83,6 +80,10 @@
           ],
           brand: [
             {required: true, message: '请输入商品品牌', trigger: 'change'},
+          ],
+          shopNum: [
+            {pattern: /^[1-9]\d*|0$/,
+              message: '请输入整数', trigger: 'blur'}
           ]
         }
       };
@@ -94,9 +95,8 @@
           if (valid) {
             that.$common.saveAxios(that, '/purchase/commodity/save', {
               name: that.ruleForm.name,
-              eName: that.ruleForm.eName,
+              enName: that.ruleForm.enName,
               price: that.ruleForm.price,
-              description: that.ruleForm.description,
               basePrice:that.ruleForm.basePrice,
               category:that.ruleForm.category,
               brand:that.ruleForm.brand,
@@ -107,8 +107,7 @@
               if (flag) {
                 that.ruleForm = {
                   name: '',
-                  eName:'',
-                  description: '',
+                  enName:'',
                   price: '',
                   basePrice:'',
                   category:'',
@@ -130,8 +129,7 @@
         }).then(function () {
           that.ruleForm = {
             name: '',
-            eName:'',
-            description: '',
+            enName:'',
             price: '',
             basePrice:'',
             category:'',
@@ -160,7 +158,6 @@
         }).then(function () {
           that.ruleForm = {
             name: '',
-            description: '',
             price: '',
             basePrice:'',
             category:'',
