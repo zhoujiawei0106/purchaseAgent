@@ -57,8 +57,8 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <!--<el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>-->
-          <el-table-column prop="status" label="行程状态" align="center" />
           <el-table-column prop="place" label="行程目的地" align="center" />
+          <el-table-column prop="status" label="行程状态" align="center" />
           <el-table-column prop="startTime" label="行程开始日期" align="center" />
           <el-table-column prop="endTime" label="行程结束日期" align="center" />
         </el-table>
