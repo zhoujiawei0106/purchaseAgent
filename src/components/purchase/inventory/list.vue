@@ -24,7 +24,7 @@
     <div style="padding-top: 1%;">
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
-                  :row-class-name="tableRowClassName">
+                  :row-class-name="tableRowClassName" >
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
@@ -45,15 +45,15 @@
 
 <style>
   .el-table .warning-row {
-    background: #fd7578;
+    background-color: #fd987a !important;
   }
-
 </style>
 
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
   import updatePage from './add';
+  import $ from 'jquery';
 
   export default {
     data() {
@@ -90,8 +90,16 @@
       updatePage,
     },
     methods: {
+      /*cellMouseEnter: function (row, column, cell, event) {
+          $(".el-table__body :hover>td").css("background-color","green")
+      },
+      cellMouseLeave: function(row, column, cell, event) {
+        if(row.shopNum < 10){
+          $(".el-table__body :hover>td").css("background-color","#fd7578")
+        }
+       },*/
       tableRowClassName({row, rowIndex}) {
-        if(row.shopNum < 9)
+        if(row.shopNum < 10)
           return 'warning-row';
       },
       changeFlag(param) {
