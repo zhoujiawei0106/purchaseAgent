@@ -151,7 +151,6 @@
             that.ruleForm.startTime = e.data.startTime;
             that.ruleForm.endTime = e.data.endTime,
             that.status = e.data.status;
-            debugger;
             if(that.status == '2') {
               that.startStatus = false;
               that.endStatus = false;

@@ -75,7 +75,6 @@
             this.$common.errorMessage(this, '系统异常,未获取到订单信息!');
             return false
           }
-          debugger;
           let that = this;
           this.$common.queryAxios(this, '/purchase/order/getOrder', {id: this.id}, '订单查询成功').then(function (e) {
             that.tableData = e.data;

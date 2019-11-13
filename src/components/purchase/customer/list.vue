@@ -206,12 +206,12 @@
       exportBtn() {
         let that = this;
         return new Promise(function (resolve) {
-          that.$common.queryAxios(that, '/purchase/customer/export', that.formData, '数据导出成功', true).then(function (event) {
+          that.$common.queryAxios(that, '/purchase/customer/export', that.formData, '', false).then(function (event) {
             if (event.flag) {
               let header = ['客户名称(昵称)','上级客户','客户类型','客户状态','客户积分','客户电话','客户地址'];
               let entity = ['name','parentId','type','status','point','tel','address'];
               let title = '客户管理';
-              that.$common.exportExcel(title, header, entity, event.data);
+              that.$common.exportExcel(that, title, header, entity, event.data);
             }
           });
         });
