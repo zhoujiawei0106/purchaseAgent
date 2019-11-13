@@ -2,13 +2,13 @@
   <el-dialog title="新增行程" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-      <el-form-item label="行程开始时间" prop="startTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+      <el-form-item label="行程开始日期" prop="startTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.startTime" type="date" placeholder="选择行程开始日期" format="yyyy-MM-dd"
                         value-format="yyyy-MM-dd"  tabindex="1">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="行程结束时间" prop="endTime" label-width="110px">
-        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择日期时间" format="yyyy-MM-dd"
+      <el-form-item label="行程结束日期" prop="endTime" label-width="110px">
+        <el-date-picker v-model="ruleForm.endTime" type="date" placeholder="选择行程结束日期" format="yyyy-MM-dd"
                         value-format="yyyy-MM-dd" tabindex="2">
         </el-date-picker>
       </el-form-item>

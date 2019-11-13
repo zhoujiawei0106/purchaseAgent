@@ -44,12 +44,11 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
-          <el-table-column prop="eName" label="英文名称" align="center" />
-          <el-table-column prop="basePrice" label="商品成本" align="center"/>
+          <el-table-column prop="enName" label="英文名称" align="center" />
           <el-table-column prop="category" label="商品类型" align="center"/>
           <el-table-column prop="brand" label="商品品牌" align="center"/>
+          <el-table-column prop="basePrice" label="商品成本" align="center"/>
           <el-table-column prop="price" label="商品价格" align="center"/>
-          <el-table-column prop="description" label="商品描述/详细" align="center"/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -84,7 +83,7 @@
         // 查询条件
         formData: {
           name: '',
-          eName:'',
+          enName:'',
           price: '',
           priceMax:'',
           basePrice:'',

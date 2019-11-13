@@ -24,11 +24,11 @@
     <div style="padding-top: 1%;">
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
-                  border highlight-current-row stripe>
+                  :row-class-name="tableRowClassName" >
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
-          <el-table-column prop="eName" label="英文名称" align="center" sortable/>
+          <el-table-column prop="enName" label="英文名称" align="center" sortable/>
           <el-table-column prop="shopNum" label="商品数量" align="center" />
           <el-table-column prop="createTime" label="入库时间" align="center" />
           <el-table-column prop="updateTime" label="更新时间" align="center" />
@@ -43,10 +43,17 @@
   </div>
 </template>
 
+<style>
+  .el-table .warning-row {
+    background-color: #fd987a !important;
+  }
+</style>
+
 <script>
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
   import updatePage from './add';
+  import $ from 'jquery';
 
   export default {
     data() {
@@ -61,7 +68,7 @@
         // 查询条件
         formData: {
           name: '',
-          eName: '',
+          enName: '',
           shopNum:'',
           createTime:'',
           updateTime:'',
@@ -83,6 +90,18 @@
       updatePage,
     },
     methods: {
+      /*cellMouseEnter: function (row, column, cell, event) {
+          $(".el-table__body :hover>td").css("background-color","green")
+      },
+      cellMouseLeave: function(row, column, cell, event) {
+        if(row.shopNum < 10){
+          $(".el-table__body :hover>td").css("background-color","#fd7578")
+        }
+       },*/
+      tableRowClassName({row, rowIndex}) {
+        if(row.shopNum < 10)
+          return 'warning-row';
+      },
       changeFlag(param) {
          this.updateFlag = param[0];
         // 为true时重新加载列表数据

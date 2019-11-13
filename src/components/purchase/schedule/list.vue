@@ -10,13 +10,27 @@
                   <el-input v-model="formData.id" placeholder="行程编码"> </el-input>
                 </el-form-item>
               </el-col>-->
-                <el-col :span="8">
-                  <el-form-item label="日期查询: " label-width="110px">
-                    <el-date-picker v-model="timeRange" type="daterange" :picker-options="pickerOptions" value-format="yyyy-MM-dd"
-                                    range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" >
-                    </el-date-picker>
-                  </el-form-item>
-                </el-col>
+              <!--<el-col :span="8">
+                <el-form-item label="日期查询: " label-width="110px">
+                  <el-date-picker v-model="timeRange" type="daterange" :picker-options="pickerOptions" value-format="yyyy-MM-dd"
+                                  range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" >
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>-->
+              <el-col :span="8">
+                <el-form-item label="行程开始日期" >
+                  <el-date-picker v-model="formData.startTime" type="date" placeholder="选择行程开始日期" format="yyyy-MM-dd"
+                                  value-format="yyyy-MM-dd" tabindex="1">
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="行程开始日期">
+                  <el-date-picker v-model="formData.endTime" type="date" placeholder="选择行程结束日期" format="yyyy-MM-dd"
+                                  value-format="yyyy-MM-dd"  tabindex="2">
+                  </el-date-picker>
+              </el-form-item>
+              </el-col>
               <el-col :span="8">
                 <el-form-item label="行程状态: ">
                   <el-select v-model="formData.status" clearable placeholder="请选择" >
@@ -43,10 +57,10 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <!--<el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>-->
-          <el-table-column prop="status" label="行程状态" align="center" />
           <el-table-column prop="place" label="行程目的地" align="center" />
-          <el-table-column prop="startTime" label="行程开始时间" align="center" />
-          <el-table-column prop="endTime" label="行程结束时间" align="center" />
+          <el-table-column prop="status" label="行程状态" align="center" />
+          <el-table-column prop="startTime" label="行程开始日期" align="center" />
+          <el-table-column prop="endTime" label="行程结束日期" align="center" />
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -121,7 +135,6 @@
           // 数据总数
           total: 0
         },
-        timeRange:[],
         loading: false,
         status:[],
         tableData: [],
@@ -164,8 +177,6 @@
       searchBtn() {
         let that = this;
         this.formData.page = 1;
-        that.formData.startTime = that.timeRange[0];
-        that.formData.endTime = that.timeRange[1];
         that.$common.tableSearch(that, this.url, this.formData);
       },
       /**

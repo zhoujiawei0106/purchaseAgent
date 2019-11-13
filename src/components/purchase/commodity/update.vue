@@ -5,11 +5,8 @@
       <el-form-item label="商品名称" prop="name">
         <el-input v-model="ruleForm.name" placeholder="请输入商品名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="英文名称" prop="eName">
-        <el-input v-model="ruleForm.eName" placeholder="请输入英文名称" suffix-icon="el-icon-edit" tabindex="2"/>
-      </el-form-item>
-      <el-form-item label="商品描述" prop="description">
-        <el-input v-model="ruleForm.description" placeholder="请输入商品描述" suffix-icon="el-icon-edit" tabindex="3"/>
+      <el-form-item label="英文名称" prop="enName">
+        <el-input v-model="ruleForm.enName" placeholder="请输入英文名称" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
       <el-form-item label="商品价格" prop="price">
         <el-input v-model="ruleForm.price" placeholder="请输入商品价格" suffix-icon="el-icon-edit" tabindex="4"/>
@@ -24,6 +21,9 @@
       </el-form-item>
       <el-form-item label="商品品牌" prop="brand">
         <el-input v-model="ruleForm.brand" placeholder="请输入商品品牌" suffix-icon="el-icon-edit" tabindex="7"/>
+      </el-form-item>
+      <el-form-item label="商品库存" prop="brand">
+        <el-input disabled="false" v-model="ruleForm.shopNum" tabindex="7" />
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -55,8 +55,7 @@
         inline: true,
         ruleForm: {
           name: '',
-          eName:'',
-          description: '',
+          enName:'',
           price: '',
           basePrice:'',
           category:'',
@@ -67,11 +66,8 @@
           name: [
             {required: true, message: '请输入商品名称', trigger: 'change'},
           ],
-          eName: [
+          enName: [
             {required: true, message: '请输入英文名称', trigger: 'change'},
-          ],
-          description: [
-            {required: true, message: '请输入商品描述', trigger: 'change'},
           ],
           price: [
             {required: true, message: '请输入商品价格', trigger: 'change'},
@@ -95,8 +91,7 @@
           if (valid) {
             that.$common.updateAxios(that, '/purchase/commodity/update', {
               name: that.ruleForm.name,
-              eName: that.ruleForm.eName,
-              description: that.ruleForm.description,
+              enName: that.ruleForm.enName,
               price: that.ruleForm.price,
               basePrice:that.ruleForm.basePrice,
               category:that.ruleForm.category,
@@ -108,8 +103,7 @@
               if (flag) {
                 that.ruleForm = {
                   name: '',
-                  eName:'',
-                  description: '',
+                  enName:'',
                   price: '',
                   basePrice:'',
                   category:'',
@@ -131,8 +125,7 @@
         }).then(function () {
           that.ruleForm = {
             name: '',
-            eName:'',
-            description: '',
+            enName:'',
             price: '',
             basePrice:'',
             category:'',
@@ -161,8 +154,7 @@
         }).then(function () {
           that.ruleForm = {
             name: '',
-            eName:'',
-            description: '',
+            enName:'',
             price: '',
             basePrice:'',
             category:'',
@@ -195,8 +187,7 @@
           let that = this;
           this.$common.queryAxios(this, '/purchase/commodity/getCustomer', {id: this.id}, '客户查询成功').then(function (e) {
             that.ruleForm.name = e.data.name;
-            that.ruleForm.eName = e.data.eName;
-            that.ruleForm.description = e.data.description;
+            that.ruleForm.enName = e.data.enName;
             that.ruleForm.price = e.data.price;
             that.ruleForm.basePrice = e.data.basePrice;
             that.ruleForm.category = e.data.category;
