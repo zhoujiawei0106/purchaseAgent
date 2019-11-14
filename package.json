@@ -18,7 +18,8 @@
     "style-loader": "^0.23.0",
     "vue": "^2.6.10",
     "vue-router": "^3.1.1",
-    "xlsx": "^0.15.1"
+    "xlsx": "^0.15.1",
+    "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

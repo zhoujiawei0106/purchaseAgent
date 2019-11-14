@@ -2,6 +2,7 @@
 require('script-loader!file-saver');
 require('script-loader!@/vendor/blob');
 require('script-loader!xlsx/dist/xlsx.core.min');
+import XLSX from 'xlsx-style'
 
 function generateArray(table) {
   let out = [];
@@ -115,6 +116,36 @@ function sheet_from_array_of_arrays(data, title) {
   if (range.s.c < 10000000) {
     ws['!ref'] = XLSX.utils.encode_range(range);
   }
+
+  /*设置worksheet每列的最大宽度*/
+  const colWidth = data.map(row => row.map(val => {
+    /*先判断是否为null/undefined*/
+    if (val == null) {
+      return {
+        'wch': 10
+      };
+    }
+    /*再判断是否为中文*/
+    else if (val.toString().charCodeAt(0) > 255) {
+      return {
+        'wch': val.toString().length * 2
+      };
+    } else {
+      return {
+        'wch': val.toString().length
+      };
+    }
+  }))
+  /*以第一行为初始值*/
+  let result = colWidth[0];
+  for (let i = 1; i < colWidth.length; i++) {
+    for (let j = 0; j < colWidth[i].length; j++) {
+      if (result[j]['wch'] < colWidth[i][j]['wch']) {
+        result[j]['wch'] = colWidth[i][j]['wch'];
+      }
+    }
+  }
+  ws['!cols'] = result;
   return ws;
 }
 
@@ -175,9 +206,53 @@ export function export_json_to_excel(th, jsonData, defaultTitle) {
   /* add worksheet to workbook */
   wb.SheetNames.push(ws_name);
   wb.Sheets[ws_name] = ws;
+  let dataInfo = wb.Sheets[wb.SheetNames[0]];
+
+  const borderAll = {  //单元格外侧框线
+    top: {
+      style: 'thin'
+    },
+    bottom: {
+      style: 'thin'
+    },
+    left: {
+      style: 'thin'
+    },
+    right: {
+      style: 'thin'
+    }
+  };
+  //给所以单元格加上边框
+  for (let i in dataInfo) {
+    if (i == '!ref' || i == '!merges' || i == '!cols' || i == 'A1') {
+
+    } else {
+      dataInfo[i + ''].s = {
+        border: borderAll
+      }
+    }
+  }
+
+  //设置主标题样式
+  dataInfo["A1"].s = {
+    font: {
+      name: '宋体',
+      sz: 18,
+      // color: {rgb: "ff0000"},
+      bold: true,
+      italic: false,
+      underline: false
+    },
+    alignment: {
+      horizontal: "center",
+      vertical: "center"
+    },
+    // fill: {
+    //   fgColor: {rgb: "008000"},
+    // },
+  };
 
   let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
   let title = (defaultTitle || '列表') +  new Date().toLocaleString();
-  console.log(title);
   saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), title + ".xlsx")
 }

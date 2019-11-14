@@ -27,7 +27,6 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      './cptable': resolve('var cptable')
     }
   },
   module: {
