@@ -57,7 +57,6 @@
   import collapse from '../../common/collapse';
   import pagination from '../../common/pagination';
   import updatePage from './add';
-  import $ from 'jquery';
 
   export default {
     data() {
@@ -94,14 +93,6 @@
       updatePage,
     },
     methods: {
-     /* cellMouseEnter: function (row, column, cell, event) {
-          $(".el-table--enable-row-hover .el-table__body tr:hover>td").addClass(".el-table--enable-row-hover .el-table__body tr:hover>td ");
-      },*/
-      /*cellMouseLeave: function(row, column, cell, event) {
-        if(row.shopNum < 10){
-          $(".el-table__body :hover>td").css("background-color","#fd7578")
-        }
-       },*/
       tableRowClassName({row, rowIndex}) {
         if(row.shopNum < 10)
           return 'warning-row';
