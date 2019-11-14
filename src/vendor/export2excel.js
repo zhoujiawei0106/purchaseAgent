@@ -69,11 +69,13 @@ function sheet_from_array_of_arrays(data, title) {
       }
 
       let cell, cell_ref;
+      // 第一行设置标题
       if (R == 0) {
         const letter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
           'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
         let mergeColumn = 'A1:';
 
+        // 设置合并单元格到列
         if (data[0].length > 26) {
           mergeColumn = mergeColumn + letter[data[0].length / 26 - 1] + letter[data[0].length - data[0].length / 26 - 1];
         } else {
@@ -81,6 +83,8 @@ function sheet_from_array_of_arrays(data, title) {
         }
 
         ws['!merges'] = [XLSX.utils.decode_range(mergeColumn)];
+
+        // 合并完单元格设置标题
         cell = {v: title};
         cell_ref = XLSX.utils.encode_cell({c: 0, r: 0});
         ws[cell_ref] = cell;

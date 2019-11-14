@@ -9,7 +9,7 @@ const contentPath = 'http://localhost:8088/api';
 function null2empty(obj) {
   if (!obj || "null" == obj)
     return "";
-  for (var p in obj) {
+  for (let p in obj) {
     if (obj[p] instanceof Object) {
       obj[p] = null2empty(obj[p]);
     } else if (!obj[p] || "null" == obj[p]) {
@@ -61,17 +61,17 @@ function isNotEmpty(obj) {
  * @returns
  */
 function uuid() {
-  var s = [];
-  var hexDigits = "0123456789abcdef";
+  let s = [];
+  let hexDigits = "0123456789abcdef";
   // 设置uuid长度32位
-  for (var i = 0; i < 32; i++) {
+  for (let i = 0; i < 32; i++) {
     s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
   }
   s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
   s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 //	    s[8] = s[13] = s[18] = s[23] = "-"; // "-"分隔，和guid相似
 
-  var uuid = s.join("");
+  let uuid = s.join("");
   return uuid;
 }
 
@@ -82,13 +82,13 @@ function uuid() {
  * @param count 减去的时间
  */
 function systemDate(regex, count) {
-  var date = new Date();
+  let date = new Date();
   // 年
-  var year = date.getFullYear() - count;
+  let year = date.getFullYear() - count;
   // 月
-  var month = date.getMonth() + 1;
+  let month = date.getMonth() + 1;
   // 日
-  var day = date.getDate();
+  let day = date.getDate();
   // 如果月份是个位数，在月份前拼接0
   if (month.toString().length == 1) {
     month = "0" + month;
@@ -322,12 +322,10 @@ function exportExcel(that, title, header, entity, list) {
     return false;
   }
 
-  //因为导出要全部的，所以导出我是请求的接口getchanneldelList接口的名字
-  require.ensure([], () => {
-    let { export_json_to_excel } = require('@/vendor/export2excel')
+  // 导出excel
+  import('../../../vendor/export2excel').then(method => {
     let data = formatJson(entity, list);
-    // 对应下载文件的名字
-    export_json_to_excel(header, data, title);
+    method.export_json_to_excel(header, data, title);
   });
 }
 
