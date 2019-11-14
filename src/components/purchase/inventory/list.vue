@@ -47,6 +47,10 @@
   .el-table .warning-row {
     background-color: #fd987a !important;
   }
+
+  .el-table--enable-row-hover .el-table__body tr:hover>td {
+    background-color: #e6a23c;
+  }
 </style>
 
 <script>
@@ -90,10 +94,10 @@
       updatePage,
     },
     methods: {
-      /*cellMouseEnter: function (row, column, cell, event) {
-          $(".el-table__body :hover>td").css("background-color","green")
-      },
-      cellMouseLeave: function(row, column, cell, event) {
+     /* cellMouseEnter: function (row, column, cell, event) {
+          $(".el-table--enable-row-hover .el-table__body tr:hover>td").addClass(".el-table--enable-row-hover .el-table__body tr:hover>td ");
+      },*/
+      /*cellMouseLeave: function(row, column, cell, event) {
         if(row.shopNum < 10){
           $(".el-table__body :hover>td").css("background-color","#fd7578")
         }
