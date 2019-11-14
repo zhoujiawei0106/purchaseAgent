@@ -17,7 +17,7 @@
                         value-format="yyyy-MM-dd"  tabindex="2">
         </el-date-picker>
       </el-form-item>
-      <el-form-item v-show="placeStatus" label="行程目的地" prop="name">
+      <el-form-item v-show="placeStatus" label="行程目地" prop="name">
         <el-input v-model="ruleForm.place" placeholder="请输入行程目的地" suffix-icon="el-icon-edit" tabindex="3"/>
       </el-form-item>
     </el-form>

@@ -16,6 +16,7 @@
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">增量</el-button>
             <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">库存销毁</el-button>
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -48,9 +49,9 @@
     background-color: #fd987a !important;
   }
 
-  .el-table--enable-row-hover .el-table__body tr:hover>td {
+  /*.el-table--enable-row-hover .el-table__body tr:hover>td {
     background-color: #e6a23c;
-  }
+  }*/
 </style>
 
 <script>
@@ -172,6 +173,19 @@
             that.loading = false;
           });
       },
+      exportBtn() {
+        let that = this;
+        return new Promise(function (resolve) {
+          that.$common.queryAxios(that, '/purchase/inventory/export', that.formData, '导出报表', false).then(function (event) {
+            if (event.flag) {
+              let header = ['商品名称','英文名称','商品数量','入库时间','更新时间'];
+              let entity = ['name','enName','shopNum','createTime','updateTime'];
+              let title = '库存管理';
+              that.$common.exportExcel(that, title, header, entity, event.data);
+            }
+          });
+        });
+      }
     },
     created: function() {
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;

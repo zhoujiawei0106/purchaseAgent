@@ -31,7 +31,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <!--<el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>-->
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -186,6 +186,19 @@
             that.selectedRow = '';
           }
           that.loading = false;
+        });
+      },
+      exportBtn() {
+        let that = this;
+        return new Promise(function (resolve) {
+          that.$common.queryAxios(that, '/purchase/commodity/export', that.formData, '导出报表', false).then(function (event) {
+            if (event.flag) {
+              let header = ['商品名称','英文名称','商品类型','商品品牌','商品成本','商品价格'];
+              let entity = ['name','enName','category','brand','basePrice','price'];
+              let title = '商品管理';
+              that.$common.exportExcel(that, title, header, entity, event.data);
+            }
+          });
         });
       }
     },
