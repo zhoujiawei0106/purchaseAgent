@@ -45,6 +45,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -57,7 +58,7 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <!--<el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>-->
-          <el-table-column prop="place" label="行程目的地" align="center" />
+          <el-table-column prop="place" label="行程目地" align="center" />
           <el-table-column prop="status" label="行程状态" align="center" />
           <el-table-column prop="startTime" label="行程开始日期" align="center" />
           <el-table-column prop="endTime" label="行程结束日期" align="center" />
@@ -224,6 +225,19 @@
             that.selectedRow = '';
           }
           that.loading = false;
+        });
+      },
+      exportBtn() {
+        let that = this;
+        return new Promise(function (resolve) {
+          that.$common.queryAxios(that, '/purchase/schedule/export', that.formData, '导出报表', false).then(function (event) {
+            if (event.flag) {
+              let header = ['行程目地','行程状态','行程开始日期','行程结束日期'];
+              let entity = ['place','status','startTime','endTime'];
+              let title = '行程管理';
+              that.$common.exportExcel(that, title, header, entity, event.data);
+            }
+          });
         });
       }
     },
