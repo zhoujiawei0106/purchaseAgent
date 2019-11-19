@@ -12,7 +12,11 @@
         <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" :disabled="true"/>
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
-      <el-form-item label="密码" prop="password">
+      <el-form-item label="旧密码" prop="oldPwd">
+        <el-input type="password" style="position: fixed;bottom: -9999px;"/>
+        <el-input v-model="ruleForm.oldPwd" placeholder="请输入密码" show-password tabindex="3"/>
+      </el-form-item>
+      <el-form-item label="新密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
         <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="3"/>
       </el-form-item>
@@ -67,6 +71,7 @@
           userName: '',
           tel: '',
           loginName: '',
+          oldPwd: '',
           password: '',
           pwd: ''
         },
@@ -84,6 +89,9 @@
             {required: true, message: '请输入登陆名', trigger: 'change'},
             {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
             {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
+          ],
+          oldPwd: [
+            {required: true, message: '请输入密码', trigger: 'change'}
           ],
           password: [
             {required: true, message: '请输入密码', trigger: 'change'},
@@ -106,6 +114,7 @@
               'userName': that.ruleForm.userName,
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
+              'oldPwd': that.ruleForm.oldPwd,
               'password': that.ruleForm.password,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.userId
@@ -164,7 +173,7 @@
           let that = this;
           this.$common.queryAxios(this, '/system/user/getUser', {id: this.userId}, '用户查询成功').then(function (e) {
             that.ruleForm.loginName = e.data.loginName;
-            that.ruleForm.password = e.data.password;
+            // that.ruleForm.password = e.data.password;
             that.ruleForm.tel = e.data.tel;
             that.ruleForm.userName = e.data.userName;
           });

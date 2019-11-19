@@ -12,6 +12,11 @@
         <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" tabindex="3"/>
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
+      <el-form-item label="用户状态" prop="status">
+        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-">
+          <el-option v-for="item in userStatus" :key="item.value" :label="item.label" :value="item.value"/>
+        </el-select>
+      </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
         <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="4"/>
@@ -63,9 +68,11 @@
           userName: '',
           tel: '',
           loginName: '',
+          status: '',
           password: '',
           pwd: ''
         },
+        userStatus: [],
         rules: {
           userName: [
             {required: true, message: '请输入用户名', trigger: 'change'},
@@ -81,6 +88,9 @@
             {required: true, message: '请输入登陆名', trigger: 'change'},
             {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
             {pattern: /^[a-zA-Z]{1}[a-zA-Z0-9]{2,35}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
+          ],
+          status: [
+            {required: true, message: '请选择用户状态', trigger: 'change'}
           ],
           password: [
             {required: true, message: '请输入密码', trigger: 'change'},
@@ -99,7 +109,7 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/purchase/customer/save', {
+            that.$common.saveAxios(that, '/system/user/save', {
               'userName': that.ruleForm.userName,
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
@@ -174,7 +184,17 @@
     watch: {
       addFlag(newValue) {
         this.dialogForm = newValue;
+        let that = this;
+        // 获取客户状态下拉框
+        that.$common.queryAxios(that, '/system/user/customerStatus').then(function (resolve) {
+          if (resolve.flag) {
+            that.userStatus = resolve.data;
+          }
+        });
       }
+    },
+    created: function () {
+
     }
   }
 </script>

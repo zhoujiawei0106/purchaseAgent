@@ -35,9 +35,15 @@ router.beforeEach((to, from, next) => {
   } else if(to.matched.length > 0) {
     next();
   } else if(to.path == '/') {
-    next('/home')
+    next('/home');
+  } else if (to.path.startsWith('/home/')) {
+    next({
+      path: '/home/404'
+    });
   } else {
-    next('/404')
+    next({
+      path: '/404'
+    });
   }
 });
 

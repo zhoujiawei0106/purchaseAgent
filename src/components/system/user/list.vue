@@ -23,7 +23,9 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">登陆次数重置</el-button>
+            <el-button type="primary" @click="roleBtn" icon="el-icon-user">角色分配</el-button>
+            <el-button type="primary" @click="resetPwdBtn" icon="el-icon-refresh-right">重置密码</el-button>
+            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">重置登陆次数</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -180,6 +182,46 @@
           that.loading = false;
         });
       },
+      roleBtn() {
+        let that = this;
+        // 判断是否选择了数据
+        if (this.$common.isEmpty(this.selectedRow)) {
+          this.$common.selectRowMsg(this);
+          return false;
+        }
+
+        // // 遮罩
+        // this.loading = true;
+        //
+        // this.$common.updateAxios(that, '/system/user/reset', {'id': that.selectedRow},  '用户登陆次数重置成功')
+        //   .then(function (flag) {
+        //     if (flag) {
+        //       that.$common.tableSearch(that, that.url, that.formData);
+        //       that.selectedRow = '';
+        //     }
+        //     that.loading = false;
+        // });
+      },
+      resetPwdBtn() {
+        let that = this;
+        // 判断是否选择了数据
+        if (this.$common.isEmpty(this.selectedRow)) {
+          this.$common.selectRowMsg(this);
+          return false;
+        }
+
+        // 遮罩
+        this.loading = true;
+
+        this.$common.updateAxios(that, '/system/user/resetPwd', {'id': that.selectedRow},  '用户登陆次数重置成功')
+          .then(function (flag) {
+            if (flag) {
+              that.$common.tableSearch(that, that.url, that.formData);
+              that.selectedRow = '';
+            }
+            that.loading = false;
+        });
+      },
       resetTimesBtn() {
         let that = this;
         // 判断是否选择了数据
@@ -191,7 +233,7 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.updateAxios(that, '/system/user/reset', {'id': that.selectedRow},  '用户登陆次数重置成功')
+        this.$common.updateAxios(that, '/system/user/resetTimes', {'id': that.selectedRow},  '用户登陆次数重置成功')
           .then(function (flag) {
             if (flag) {
               that.$common.tableSearch(that, that.url, that.formData);
