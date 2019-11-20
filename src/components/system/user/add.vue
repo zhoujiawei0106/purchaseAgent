@@ -13,21 +13,21 @@
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
       <el-form-item label="用户状态" prop="status">
-        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-">
+        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="4">
           <el-option v-for="item in userStatus" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
-        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="4"/>
+        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="5"/>
       </el-form-item>
       <el-form-item label="确认密码" prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="5"/>
+        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="6"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="6">保存</el-button>
-      <el-button @click="back" tabindex="7">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="7">保存</el-button>
+      <el-button @click="back" tabindex="8">返回</el-button>
     </span>
   </el-dialog>
 </template>
@@ -38,7 +38,11 @@
       addFlag: {
         type: Boolean,
         required: true
-      }
+      },
+      userStatus: {
+        type: Array,
+        required: true
+      },
     },
     data() {
       const valid2Password = (rule, value, callback) => {
@@ -72,7 +76,6 @@
           password: '',
           pwd: ''
         },
-        userStatus: [],
         rules: {
           userName: [
             {required: true, message: '请输入用户名', trigger: 'change'},
@@ -115,7 +118,8 @@
               'loginName': that.ruleForm.loginName,
               'password': that.ruleForm.password,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-              'id': that.$common.uuid()
+              'id': that.$common.uuid(),
+              'status': that.ruleForm.status
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
@@ -123,7 +127,8 @@
                   tel: '',
                   loginName: '',
                   password: '',
-                  pwd: ''
+                  pwd: '',
+                  status: ''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -143,7 +148,8 @@
             tel: '',
             loginName: '',
             password: '',
-            pwd: ''
+            pwd: '',
+            status: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -167,7 +173,8 @@
             tel: '',
             loginName: '',
             password: '',
-            pwd: ''
+            pwd: '',
+            status: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -184,17 +191,7 @@
     watch: {
       addFlag(newValue) {
         this.dialogForm = newValue;
-        let that = this;
-        // 获取客户状态下拉框
-        that.$common.queryAxios(that, '/system/user/customerStatus').then(function (resolve) {
-          if (resolve.flag) {
-            that.userStatus = resolve.data;
-          }
-        });
       }
-    },
-    created: function () {
-
     }
   }
 </script>

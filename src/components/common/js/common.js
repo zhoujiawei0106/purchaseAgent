@@ -29,7 +29,7 @@ function null2empty(obj) {
  * @returns
  */
 function null2zero(obj) {
-  return common.isEmpty(obj) ? "0" : obj;
+  return this.isEmpty(obj) ? "0" : obj;
 }
 
 /**
@@ -52,7 +52,7 @@ function isEmpty(obj) {
  * @returns
  */
 function isNotEmpty(obj) {
-  return !common.isEmpty(obj);
+  return !this.isEmpty(obj);
 }
 
 /**

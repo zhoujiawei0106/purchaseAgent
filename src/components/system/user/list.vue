@@ -15,6 +15,13 @@
                   <el-input v-model="formData.userName" placeholder="用户名" suffix-icon="el-icon-edit"/>
                 </el-form-item>
               </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户状态: ">
+                  <el-select v-model="formData.status" clearable placeholder="-请选择-">
+                    <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"/>
+                  </el-select>
+                </el-form-item>
+              </el-col>
             </el-row>
           </el-form>
           <div class="search-form-btn">
@@ -41,7 +48,8 @@
           <el-table-column prop="userName" label="用户名" align="center"/>
           <el-table-column prop="tel" label="手机" align="center"/>
           <el-table-column prop="ip" label="ip" align="center"/>
-          <el-table-column prop="loginFailTimes" label="无效登陆次数" align="center"/>
+          <el-table-column prop="status" label="有效状态" align="center"/>
+          <el-table-column prop="loginFailTimes" label="登陆失败次数" align="center"/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -49,10 +57,10 @@
     </div>
 
     <div>
-      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
+      <add-page :add-flag="addFlag" :user-status="status" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :user-id="selectedRow" :user-status="status" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
@@ -88,6 +96,7 @@
         loading: false,
         tableData: [],
         selectedRow: '',
+        status: []
       }
     },
     components: {
@@ -171,16 +180,20 @@
           return false;
         }
 
-        // 遮罩
-        this.loading = true;
-
-        this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
-          if (flag) {
-            that.$common.tableSearch(that, that.url, that.formData);
-            that.selectedRow = '';
-          }
-          that.loading = false;
-        });
+        this.$confirm('是否确认删除数据？<br/><b>数据删除后无法恢复</b>', '提示', {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }).then(function () {
+          // 遮罩
+          this.loading = true;
+          this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+            if (flag) {
+              that.$common.tableSearch(that, that.url, that.formData);
+              that.selectedRow = '';
+            }
+            that.loading = false;
+          });
+        })
       },
       roleBtn() {
         let that = this;
@@ -246,6 +259,13 @@
     created: function() {
       let that = this;
       that.$common.tableSearch(that, this.url, {});
+
+      // 获取客户状态下拉框
+      that.$common.queryAxios(that, '/system/user/customerStatus').then(function (resolve) {
+        if (resolve.flag) {
+          that.status = resolve.data;
+        }
+      });
     }
   }
 </script>
