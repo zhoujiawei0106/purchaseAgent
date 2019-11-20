@@ -192,7 +192,7 @@ function formatJson(jsonData) {
   console.log(jsonData)
 }
 
-export function export_json_to_excel(th, jsonData, defaultTitle) {
+export function export_json_to_excel(th, jsonData, defaultTitle, dateTime) {
 
   /* original data */
 
@@ -253,6 +253,6 @@ export function export_json_to_excel(th, jsonData, defaultTitle) {
   };
 
   let wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
-  let title = (defaultTitle || '列表') +  new Date().toLocaleString();
+  let title = (defaultTitle || '列表') + dateTime;
   saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), title + ".xlsx")
 }

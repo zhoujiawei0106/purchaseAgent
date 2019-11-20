@@ -101,6 +101,18 @@ function systemDate(regex, count) {
 }
 
 /**
+ * 生成日期(年月日时分秒)
+ * @author zhoujiawei
+ * @param regex 分隔符
+ * @param count 减去的时间
+ */
+function systemDateTime(regex, count) {
+  let date = new Date();
+  let dateTime = systemDate(regex, count);
+  return dateTime + ' ' + date.getHours() + '：' + date.getMinutes() + '：' + date.getSeconds();
+}
+
+/**
  * 空和undefined转换成空字符串
  * @author zhoujiawei
  * @param value
@@ -325,7 +337,7 @@ function exportExcel(that, title, header, entity, list) {
   // 导出excel
   import('../../../vendor/export2excel').then(method => {
     let data = formatJson(entity, list);
-    method.export_json_to_excel(header, data, title);
+    method.export_json_to_excel(header, data, title, systemDateTime('-', 0));
   });
 }
 
