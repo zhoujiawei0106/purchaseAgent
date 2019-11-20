@@ -42,7 +42,7 @@
         },
         rules: {
           shopNum: [
-            {pattern: /^[1-9]\d*|0$/,
+            {pattern: /^\d+$/,
               message: '请输入整数', trigger: 'blur'}
           ]
         }

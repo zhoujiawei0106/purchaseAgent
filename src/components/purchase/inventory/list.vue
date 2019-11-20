@@ -25,7 +25,7 @@
     <div style="padding-top: 1%;">
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
-                  :row-class-name="tableRowClassName" >
+                  :row-style="tableRowClassName" >
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="name" label="商品名称" align="center" sortable/>
@@ -43,16 +43,6 @@
     </div>
   </div>
 </template>
-
-<style>
-  .el-table .warning-row {
-    background-color: #fd987a !important;
-  }
-
-  /*.el-table--enable-row-hover .el-table__body tr:hover>td {
-    background-color: #e6a23c;
-  }*/
-</style>
 
 <script>
   import collapse from '../../common/collapse';
@@ -95,8 +85,8 @@
     },
     methods: {
       tableRowClassName({row, rowIndex}) {
-        if(row.shopNum < 10)
-          return 'warning-row';
+        if(row.shopNum < 3)
+          return 'background: #fdefe3';
       },
       changeFlag(param) {
          this.updateFlag = param[0];

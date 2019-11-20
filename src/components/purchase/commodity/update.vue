@@ -71,9 +71,13 @@
           ],
           price: [
             {required: true, message: '请输入商品价格', trigger: 'change'},
+            {pattern: /^([0-9]+(.[0-9]{1,2})?)|(-[0-9]+(.[0-9]{1,2})?)$/,
+              message: '请输入正确的价格', trigger: 'blur'}
           ],
           basePrice: [
             {required: true, message: '请输入商品成本', trigger: 'change'},
+            {pattern: /^([0-9]+(.[0-9]{1,2})?)|(-[0-9]+(.[0-9]{1,2})?)$/,
+              message: '请输入正确的价格', trigger: 'blur'}
           ],
           category: [
             {required: true, message: '请输入商品类型', trigger: 'change'},

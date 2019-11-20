@@ -2,19 +2,41 @@
   <el-dialog title="新增订单" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <div style="padding-top: 1%;">
+      <div class="search-form-btn">
+        <el-button type="primary" @click.prevent="addRow()" icon="el-icon-circle-plus-outline">新增</el-button>
+        <el-button type="primary" @click.prevent="delData()" icon="el-icon-delete-solid">删除</el-button>
+      </div>
       <div>
+        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
+          <el-form-item label="客户名称" prop="name">
+            <el-input v-model="ruleForm.name" placeholder="请输入客户名称" suffix-icon="el-icon-edit" tabindex="1"/>
+          </el-form-item>
+          <el-form-item label="快递单号" prop="trackId">
+            <el-input v-model="ruleForm.trackId" placeholder="请输入快递单号"/>
+          </el-form-item>
+        </el-form>
         <el-table :data="tableData" style="width: 100%;" border highlight-current-row stripe
                   @row-dblclick="selectRow" @row-click="clickRow" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55"/>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="name" label="商品" align="center" sortable/>
-          <el-table-column  prop="shopNum" label="数量" align="center" >
+          <el-table-column prop="name" label="商品名称" align="center">
             <template slot-scope="scope">
-            <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange" controls-position="right" :min="1"></el-input-number>
+              <el-autocomplete
+                class="inline-input"
+                v-model="scope.row.name"
+                :fetch-suggestions="querySearch"
+                placeholder="请输入商品名称"
+                @select="handleSelect"
+              ></el-autocomplete>
             </template>
           </el-table-column>
-          <el-table-column prop="price" label="价格" align="center" />
+          <el-table-column  prop="shopNum" label="商品数量" align="center" >
+            <template slot-scope="scope">
+              <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange" controls-position="right" :min="1"></el-input-number>
+            </template>
+          </el-table-column>
+          <el-table-column prop="price" label="商品价格" align="center" />
         </el-table>
       </div>
     </div>
@@ -43,6 +65,8 @@
         inline: true,
         selectedRow: '',
         tableData:[],
+        name:'',
+        trackId:'',
         // 请求地址
         url: '/purchase/commodity/list',
         // 查询条件
@@ -50,10 +74,48 @@
           name: '',
           shopNum:'',
           price: '',
+        },
+        ruleForm: {
+          name: '',
+          trackId:''
+        },
+        rules: {
+          name: [
+            {required: true, message: '请输入商品名称', trigger: 'change'},
+          ],
+          trackId: [
+            {required: true, message: '请输入英文名称', trigger: 'change'},
+          ],
         }
       };
     },
     methods: {
+      querySearch(queryString, cb) {
+        var restaurants = this.restaurants;
+        var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+        // 调用 callback 返回建议列表的数据
+        cb(results);
+      },
+      createFilter(queryString) {
+        return (restaurant) => {
+          return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        };
+      },
+      handleSelect(item) {
+        console.log(item);
+      },
+      // 增加行
+      addRow () {
+        let list = {
+          rowNum: '',
+          address: this.address,
+          name: this.name,
+          weather: this.weather,
+          phone: this.phone,
+          date: this.date,
+        }
+        this.tableData.unshift(list)
+      },
       handleChange(value) {
         let that = this;
         let allPrice = 0;
@@ -63,14 +125,14 @@
         }
         this.totalPrice = allPrice;
       },
-    handleSelectionChange(val) {
-      let allPrice = 0;
-      for(let key in val){
-        allPrice += val[key].price * val[key].shopNum
-      }
-      this.multipleSelection = val;
-      this.totalPrice = allPrice;
-    },
+      handleSelectionChange(val) {
+        let allPrice = 0;
+        for(let key in val){
+          allPrice += val[key].price * val[key].shopNum
+        }
+        this.multipleSelection = val;
+        this.totalPrice = allPrice;
+      },
       /**
        * 单击数据行
        * @param row
@@ -101,18 +163,18 @@
           shopNumAll += multipleSelection[key].shopNum + ',';
           idAll += multipleSelection[key].id + ',';
         }
-            that.$common.saveAxios(that, '/purchase/order/save', {
-              nameAll:nameAll,
-              priceAll:priceAll,
-              shopNumAll:shopNumAll,
-              idAll:idAll,
-              'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-            }, '订单新增成功').then(function (flag) {
-              if (flag) {
-                that.dialogForm = false;
-                that.$emit('changeFlag', [false, true]);
-              }
-            });
+        that.$common.saveAxios(that, '/purchase/order/save', {
+          nameAll:nameAll,
+          priceAll:priceAll,
+          shopNumAll:shopNumAll,
+          idAll:idAll,
+          'parentId': JSON.parse(sessionStorage.getItem('user')).id,
+        }, '订单新增成功').then(function (flag) {
+          if (flag) {
+            that.dialogForm = false;
+            that.$emit('changeFlag', [false, true]);
+          }
+        });
       },
       back() {
         let that = this;
