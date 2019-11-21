@@ -6,20 +6,8 @@
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="登陆名: ">
-                  <el-input v-model="formData.loginName" placeholder="登陆名" suffix-icon="el-icon-edit"/>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="用户名: ">
-                  <el-input v-model="formData.userName" placeholder="用户名" suffix-icon="el-icon-edit"/>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="客户状态: ">
-                  <el-select v-model="formData.status" clearable placeholder="-请选择-">
-                    <el-option v-for="item in status" :key="item.value" :label="item.label" :value="item.value"/>
-                  </el-select>
+                <el-form-item label="角色名称: ">
+                  <el-input v-model="formData.roleName" placeholder="角色名称" suffix-icon="el-icon-edit"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -30,9 +18,7 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="roleBtn" icon="el-icon-user">角色分配</el-button>
-            <el-button type="primary" @click="resetPwdBtn" icon="el-icon-refresh-right">重置密码</el-button>
-            <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">重置登陆次数</el-button>
+            <el-button type="primary" @click="roleBtn" icon="el-icon-user">权限分配</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -44,12 +30,9 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="loginName" label="登陆名" align="center" sortable/>
-          <el-table-column prop="userName" label="用户名" align="center"/>
-          <el-table-column prop="tel" label="手机" align="center"/>
-          <el-table-column prop="ip" label="ip" align="center"/>
-          <el-table-column prop="status" label="有效状态" align="center"/>
-          <el-table-column prop="loginFailTimes" label="登陆失败次数" align="center"/>
+          <el-table-column prop="roleName" label="角色名称" align="center" sortable/>
+          <el-table-column prop="userName" label="归属用户" align="center" sortable/>
+          <el-table-column prop="remark" label="角色描述" align="center"/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
@@ -57,10 +40,10 @@
     </div>
 
     <div>
-      <add-page :add-flag="addFlag" :user-status="status" @changeFlag="changeFlag"/>
+      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" :user-status="status" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
@@ -77,16 +60,14 @@
         addFlag: false,
         updateFlag: false,
         // 请求地址
-        url: '/system/user/getUsers',
+        url: '/system/role/getRoles',
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
         pagination: false,
         // 查询条件
         formData: {
-          loginName: '',
-          userName: '',
-          status: '',
+          roleName: '',
           // 当前第几页
           page: 1,
           // 每页几条
@@ -97,7 +78,6 @@
         loading: false,
         tableData: [],
         selectedRow: '',
-        status: []
       }
     },
     components: {
@@ -141,9 +121,7 @@
        * 重置按钮
        */
       resetBtn() {
-        this.formData.loginName = '';
-        this.formData.userName = '';
-        this.formData.status = '';
+        this.formData.roleName = '';
       },
       /**
        * 单击数据行
@@ -236,38 +214,11 @@
             }
             that.loading = false;
         });
-      },
-      resetTimesBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        if (this.$common.isEmpty(this.selectedRow)) {
-          this.$common.selectRowMsg(this);
-          return false;
-        }
-
-        // 遮罩
-        this.loading = true;
-
-        this.$common.updateAxios(that, '/system/user/resetTimes', {'id': that.selectedRow},  '用户登陆次数重置成功')
-          .then(function (flag) {
-            if (flag) {
-              that.$common.tableSearch(that, that.url, that.formData);
-              that.selectedRow = '';
-            }
-            that.loading = false;
-        });
       }
     },
     created: function() {
       let that = this;
       that.$common.tableSearch(that, this.url, {});
-
-      // 获取客户状态下拉框
-      that.$common.queryAxios(that, '/common/customerStatus').then(function (resolve) {
-        if (resolve.flag) {
-          that.status = resolve.data;
-        }
-      });
     }
   }
 </script>

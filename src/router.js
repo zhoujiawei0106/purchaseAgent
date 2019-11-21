@@ -53,6 +53,10 @@ let routes = [{
       path: '/home/schedule',
       component: resolve => require(['./components/purchase/schedule/list.vue'], resolve),
       name: '行程管理'
+    }, {
+      path: '/home/role',
+      component: resolve => require(['./components/system/role/list.vue'], resolve),
+      name: '角色管理'
     }
   ]
 }];
