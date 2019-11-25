@@ -192,16 +192,20 @@
           return false;
         }
 
-        // 遮罩
-        this.loading = true;
-
-        this.$common.deleteAxios(that, '/purchase/customer/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
-          if (flag) {
-            that.$common.tableSearch(that, that.url, that.formData);
-            that.selectedRow = '';
-          }
-          that.loading = false;
-        });
+        this.$confirm('是否确认删除数据？<br/><b>数据删除后无法恢复</b>', '提示', {
+          type: 'warning',
+          dangerouslyUseHTMLString: true
+        }).then(function () {
+          // 遮罩
+          this.loading = true;
+          this.$common.deleteAxios(that, '/purchase/customer/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+            if (flag) {
+              that.$common.tableSearch(that, that.url, that.formData);
+              that.selectedRow = '';
+            }
+            that.loading = false;
+          });
+        })
       },
       exportBtn() {
         let that = this;
@@ -223,14 +227,14 @@
       let that = this;
       that.$common.tableSearch(that, this.url, {});
       // 获取客户类型下拉框
-      that.$common.queryAxios(that, '/purchase/customer/customerType').then(function (resolve) {
+      that.$common.queryAxios(that, '/common/customerType').then(function (resolve) {
         if (resolve.flag) {
           that.type = resolve.data;
         }
       });
 
       // 获取客户状态下拉框
-      that.$common.queryAxios(that, '/purchase/customer/customerStatus').then(function (resolve) {
+      that.$common.queryAxios(that, '/common/customerStatus').then(function (resolve) {
         if (resolve.flag) {
           that.status = resolve.data;
         }

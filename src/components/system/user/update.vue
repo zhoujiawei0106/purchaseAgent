@@ -12,21 +12,26 @@
         <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" :disabled="true"/>
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
-      <el-form-item label="旧密码" prop="oldPwd">
+      <el-form-item label="用户状态" prop="status">
+        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="3">
+          <el-option v-for="item in userStatus" :key="item.value" :label="item.label" :value="item.value"/>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="旧密码">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
-        <el-input v-model="ruleForm.oldPwd" placeholder="请输入密码" show-password tabindex="3"/>
+        <el-input v-model="ruleForm.oldPwd" placeholder="请输入密码" show-password tabindex="4"/>
       </el-form-item>
       <el-form-item label="新密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
-        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="3"/>
+        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="5"/>
       </el-form-item>
       <el-form-item label="确认密码" prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="4"/>
+        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="6"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="5">保存</el-button>
-      <el-button @click="back" tabindex="6">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="7">保存</el-button>
+      <el-button @click="back" tabindex="8">返回</el-button>
     </span>
   </el-dialog>
 </template>
@@ -41,9 +46,14 @@
       userId: {
         type: String,
         required: true
-      }
+      },
+      userStatus: {
+        type: Array,
+        required: true
+      },
     },
     data() {
+      const that = this;
       const valid2Password = (rule, value, callback) => {
         if (value !== this.ruleForm.password) {
           callback(new Error('两次输入密码不一致!'));
@@ -52,7 +62,7 @@
         }
       };
       const passwordPatten = (rule, value, callback) => {
-        if (value != '') {
+        if (that.$common.isNotEmpty(value)) {
           let patten = /^[a-zA-Z]{1}([a-zA-Z0-9]|[!@#$%^&*?]){7,20}$/;
           let excludePatten = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
           if (!patten.test(value)) {
@@ -62,6 +72,8 @@
           } else {
             callback();
           }
+        } else {
+          callback();
         }
       }
       return {
@@ -73,7 +85,8 @@
           loginName: '',
           oldPwd: '',
           password: '',
-          pwd: ''
+          pwd: '',
+          status: ''
         },
         rules: {
           userName: [
@@ -90,15 +103,15 @@
             {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
             {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
           ],
-          oldPwd: [
-            {required: true, message: '请输入密码', trigger: 'change'}
-          ],
+          // status: [
+          //   {required: true, message: '请选择用户状态', trigger: 'change'}
+          // ],
           password: [
-            {required: true, message: '请输入密码', trigger: 'change'},
+            {required: false, message: '请输入密码', trigger: 'change'},
             {validator: passwordPatten, trigger: 'blur'}
           ],
           pwd: [
-            {required: true, message: '请再次输入密码', trigger: 'change'},
+            {required: false, message: '请再次输入密码', trigger: 'change'},
             {validator: valid2Password, trigger: 'blur'},
             {validator: passwordPatten, trigger: 'blur'}
           ]
@@ -117,7 +130,8 @@
               'oldPwd': that.ruleForm.oldPwd,
               'password': that.ruleForm.password,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
-              'id': that.userId
+              'id': that.userId,
+              'status': that.ruleForm.status
             }, '用户修改成功').then(function (flag) {
               if (flag) {
                 that.dialogForm = false;
@@ -125,7 +139,7 @@
               }
             });
           };
-        });
+        })
       },
       back() {
         let that = this;
@@ -173,9 +187,9 @@
           let that = this;
           this.$common.queryAxios(this, '/system/user/getUser', {id: this.userId}, '用户查询成功').then(function (e) {
             that.ruleForm.loginName = e.data.loginName;
-            // that.ruleForm.password = e.data.password;
             that.ruleForm.tel = e.data.tel;
             that.ruleForm.userName = e.data.userName;
+            that.ruleForm.status = e.data.status;
           });
         }
       }

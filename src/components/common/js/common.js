@@ -29,7 +29,7 @@ function null2empty(obj) {
  * @returns
  */
 function null2zero(obj) {
-  return common.isEmpty(obj) ? "0" : obj;
+  return this.isEmpty(obj) ? "0" : obj;
 }
 
 /**
@@ -52,7 +52,7 @@ function isEmpty(obj) {
  * @returns
  */
 function isNotEmpty(obj) {
-  return !common.isEmpty(obj);
+  return !this.isEmpty(obj);
 }
 
 /**
@@ -98,6 +98,18 @@ function systemDate(regex, count) {
     day = "0" + day;
   }
   return year + regex + month + regex + day;
+}
+
+/**
+ * 生成日期(年月日时分秒)
+ * @author zhoujiawei
+ * @param regex 分隔符
+ * @param count 减去的时间
+ */
+function systemDateTime(regex, count) {
+  let date = new Date();
+  let dateTime = systemDate(regex, count);
+  return dateTime + ' ' + date.getHours() + '：' + date.getMinutes() + '：' + date.getSeconds();
 }
 
 /**
@@ -325,7 +337,7 @@ function exportExcel(that, title, header, entity, list) {
   // 导出excel
   import('../../../vendor/export2excel').then(method => {
     let data = formatJson(entity, list);
-    method.export_json_to_excel(header, data, title);
+    method.export_json_to_excel(header, data, title, systemDateTime('-', 0));
   });
 }
 

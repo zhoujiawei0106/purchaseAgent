@@ -12,11 +12,6 @@
         <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" tabindex="3"/>
         <el-input style="position: fixed;bottom: -9999px;"/>
       </el-form-item>
-      <el-form-item label="用户状态" prop="status">
-        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="4">
-          <el-option v-for="item in userStatus" :key="item.value" :label="item.label" :value="item.value"/>
-        </el-select>
-      </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input type="password" style="position: fixed;bottom: -9999px;"/>
         <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="5"/>
@@ -38,11 +33,7 @@
       addFlag: {
         type: Boolean,
         required: true
-      },
-      userStatus: {
-        type: Array,
-        required: true
-      },
+      }
     },
     data() {
       const valid2Password = (rule, value, callback) => {
