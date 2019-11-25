@@ -192,9 +192,6 @@
           }
         });
       }
-    },
-    created: function () {
-
     }
   }
 </script>
