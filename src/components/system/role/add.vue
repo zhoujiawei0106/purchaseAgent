@@ -1,33 +1,28 @@
 <template>
-  <el-dialog title="新增用户" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
-             :center="true" :destroy-on-close="true">
+  <el-dialog title="新增角色" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
+             :center="true" :destroy-on-close="true" width="50%">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="ruleForm.userName" placeholder="请输入用户名" suffix-icon="el-icon-edit" tabindex="1"/>
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="ruleForm.roleName" placeholder="请输入角色名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
-      <el-form-item label="手机号码" prop="tel">
-        <el-input v-model="ruleForm.tel" placeholder="请输入手机号码" suffix-icon="el-icon-edit" tabindex="2"/>
+      <el-form-item label="角色描述" prop="remark">
+        <el-input v-model="ruleForm.remark" type="textarea" placeholder="请输入角色描述" suffix-icon="el-icon-edit"
+                  tabindex="2" size="small"/>
       </el-form-item>
-      <el-form-item label="登陆名" prop="loginName">
-        <el-input v-model="ruleForm.loginName" placeholder="请输入登陆名" suffix-icon="el-icon-edit" tabindex="3"/>
-        <el-input style="position: fixed;bottom: -9999px;"/>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input type="password" style="position: fixed;bottom: -9999px;"/>
-        <el-input v-model="ruleForm.password" placeholder="请输入密码" show-password tabindex="5"/>
-      </el-form-item>
-      <el-form-item label="确认密码" prop="pwd">
-        <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="6"/>
-      </el-form-item>
+      <hr style="height: 1px;background-color: #d9d9d9;border: none;"/>
+      <el-form-item label="分配菜单"/>
+      <menu-tree :distribute="distribute" :undistributed="undistributed"/>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="7">保存</el-button>
-      <el-button @click="back" tabindex="8">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="3">保存</el-button>
+      <el-button @click="back" tabindex="4">返回</el-button>
     </span>
   </el-dialog>
 </template>
 
 <script>
+  import menuTree from './menuTree';
+
   export default {
     props: {
       addFlag: {
@@ -36,67 +31,31 @@
       }
     },
     data() {
-      const valid2Password = (rule, value, callback) => {
-        if (value !== this.ruleForm.password) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      const passwordPatten = (rule, value, callback) => {
-        if (value != '') {
-          let patten = /^[a-zA-Z]{1}([a-zA-Z0-9]|[!@#$%^&*?]){7,20}$/;
-          let excludePatten = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
-          if (!patten.test(value)) {
-            callback(new Error('请输入以字母开头,长度为8-20位的密码'));
-          } else if (!excludePatten.test(value)) {
-            callback(new Error("输入的密码中至少包含一个大写英文字母、一个小写英文字母以及一个数字"));
-          } else {
-            callback();
-          }
-        }
-      }
       return {
         dialogForm: false,
         inline: true,
         ruleForm: {
-          userName: '',
-          tel: '',
-          loginName: '',
-          status: '',
-          password: '',
-          pwd: ''
+          roleName: '',
+          remark: '',
         },
         rules: {
-          userName: [
-            {required: true, message: '请输入用户名', trigger: 'change'},
+          roleName: [
+            {required: true, message: '请输入角色名称', trigger: 'change'},
             {min: 2, max: 4, message: '用户名长度在 2 到 4 个字符', trigger: 'blur'}
           ],
-          tel: [
-            {required: true, message: '请输入手机号码', trigger: 'change'},
-            {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'},
-            {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
-              message: '请输入正确的手机号码', trigger: 'blur'}
-          ],
-          loginName: [
-            {required: true, message: '请输入登陆名', trigger: 'change'},
-            {min: 3, max: 36, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'},
-            {pattern: /^[a-zA-Z]{1}[a-zA-Z0-9]{2,35}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
-          ],
-          status: [
-            {required: true, message: '请选择用户状态', trigger: 'change'}
-          ],
-          password: [
-            {required: true, message: '请输入密码', trigger: 'change'},
-            {validator: passwordPatten, trigger: 'blur'}
-          ],
-          pwd: [
-            {required: true, message: '请再次输入密码', trigger: 'change'},
-            {validator: valid2Password, trigger: 'blur'},
-            {validator: passwordPatten, trigger: 'blur'}
+          remark: [
+            {required: false, message: '请输入角色描述', trigger: 'change'},
+            {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'}
           ]
-        }
+        },
+        title: ['left', 'right'],
+        mode: "transfer", // transfer addressList
+        distribute:[],
+        undistributed:[]
       };
+    },
+    components: {
+      menuTree
     },
     methods: {
       save() {
@@ -104,22 +63,14 @@
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             that.$common.saveAxios(that, '/system/user/save', {
-              'userName': that.ruleForm.userName,
-              'tel': that.ruleForm.tel,
-              'loginName': that.ruleForm.loginName,
-              'password': that.ruleForm.password,
-              'parentId': JSON.parse(sessionStorage.getItem('user')).id,
+              'roleName': that.ruleForm.roleName,
+              'remark': that.ruleForm.remark,
               'id': that.$common.uuid(),
-              'status': that.ruleForm.status
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
-                  userName: '',
-                  tel: '',
-                  loginName: '',
-                  password: '',
-                  pwd: '',
-                  status: ''
+                  roleName: '',
+                  remark: ''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -135,12 +86,8 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            userName: '',
-            tel: '',
-            loginName: '',
-            password: '',
-            pwd: '',
-            status: ''
+            roleName: '',
+            remark: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -160,12 +107,8 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           that.ruleForm = {
-            userName: '',
-            tel: '',
-            loginName: '',
-            password: '',
-            pwd: '',
-            status: ''
+            roleName: '',
+            remark: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -181,7 +124,14 @@
     },
     watch: {
       addFlag(newValue) {
-        this.dialogForm = newValue;
+        let that = this;
+        that.dialogForm = newValue;
+        // 打开新增窗口时加载未分配菜单数据
+        if (newValue) {
+          that.$common.queryAxios(that, '/system/role/getUndistributedMenu', {type: 'save'}, '', false).then(function (e) {
+            that.distribute = e.data;
+          })
+        }
       }
     }
   }

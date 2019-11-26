@@ -77,7 +77,7 @@
         },
         loading: false,
         tableData: [],
-        selectedRow: '',
+        selectedRow: ''
       }
     },
     components: {

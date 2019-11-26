@@ -9,7 +9,9 @@ import router from "./router.js";
 // fade/zoom 等
 import 'element-ui/lib/theme-chalk/base.css';
 // collapse 展开折叠
-import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+import collapseTransition from 'element-ui/lib/transitions/collapse-transition';
+// tree-transfer 属性穿梭框
+import TreeTransfer from 'el-tree-transfer/dist/treeTransfer.min'; // 引入
 // 引入axios
 import axios from 'axios';
 import qs from 'qs';
@@ -17,7 +19,8 @@ import common from "./components/common/js/common.js";
 
 Vue.use(ElementUI);
 Vue.use(Router);
-Vue.component(CollapseTransition.name, CollapseTransition);
+Vue.component(collapseTransition.name, collapseTransition);
+Vue.component('treeTransfer', TreeTransfer)
 Vue.prototype.$axios= axios;
 Vue.prototype.$qs = qs;
 Vue.prototype.$common = common;
