@@ -177,6 +177,14 @@
       } else {
         this.initBreadcrumbs(this.menus, this.breadcrumbs, url);
       }
+
+      // 重写引用组件的方法
+      that.$TreeTransfer.methods.filterNodeFrom = function (e, r) {
+        return !e || -1 !== r[this.defaultProps.label].indexOf(e) || -1 !== r[this.defaultProps.type].indexOf(e);
+      }
+      that.$TreeTransfer.methods.filterNodeTo = function (e, r) {
+        return !e || -1 !== r[this.defaultProps.label].indexOf(e) || -1 !== r[this.defaultProps.type].indexOf(e);
+      }
     }
   }
 </script>

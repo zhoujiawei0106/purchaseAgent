@@ -20,10 +20,11 @@ import common from "./components/common/js/common.js";
 Vue.use(ElementUI);
 Vue.use(Router);
 Vue.component(collapseTransition.name, collapseTransition);
-Vue.component('treeTransfer', TreeTransfer)
-Vue.prototype.$axios= axios;
+Vue.component('treeTransfer', TreeTransfer);
+Vue.prototype.$axios = axios;
 Vue.prototype.$qs = qs;
 Vue.prototype.$common = common;
+Vue.prototype.$TreeTransfer = TreeTransfer;
 Vue.config.productionTip = false;
 
 router.beforeEach((to, from, next) => {
