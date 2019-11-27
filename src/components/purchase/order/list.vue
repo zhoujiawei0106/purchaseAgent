@@ -36,25 +36,22 @@
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="orderNum" label="订单编号" align="center" sortable/>
-          <el-table-column prop="trackNum" label="快递单号" align="center" />
+          <el-table-column prop="trackId" label="快递单号" align="center" />
           <el-table-column prop="name" label="客户名称(昵称)" align="center" />
           <el-table-column prop="orderStatus" label="订单状态" align="center" />
           <el-table-column prop="totalPrice" label="订单结算" align="center" />
          <!-- <el-table-column prop="createTime" label="订单创建时间" align="center" />
           <el-table-column prop="updateTime" label="订单更新时间" align="center" />-->
-          <el-table-column label="操作" align="center">
+         <!-- <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button size="mini" @click="handleEdit(scope.$index, scope.row)" style="color: blue">明细</el-button>
             </template>
-          </el-table-column>
+          </el-table-column>-->
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
                   @exchangePagination="exchangePagination"/>
     </div>
-    <!--<div>
-      <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
-    </div>-->
     <div>
       <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>

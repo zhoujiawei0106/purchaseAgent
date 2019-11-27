@@ -3,8 +3,8 @@
              :center="true" :destroy-on-close="true" width="80%">
     <div style="padding-top: 1%;">
       <div>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
-          <el-form-item label="客户编码" prop="id" >
+        <el-form :model="ruleForm" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
+          <el-form-item label="客户编码" prop="id" v-if="false">
             <el-input v-model="ruleForm.id" />
           </el-form-item>
           <el-form-item label="客户名称" prop="name">
@@ -81,7 +81,8 @@
         </div>
       </div>
     </div>
-    <el-button  v-text="'总价：' + totalPrice" prop="totalPrice"  disabled="disabled" style="color: darkorange" tabindex="1"/>
+    <el-button  v-text="'总价：' + totalPrice" disabled="disabled" style="color: darkorange" tabindex="1"/>
+    <el-button  v-text="'总差价：' + totalRePrice"  disabled="disabled" style="color: darkorange" tabindex="2"/>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="save('ruleForm')" tabindex="2">保存</el-button>
       <el-button @click="back" tabindex="3">返回</el-button>
@@ -101,6 +102,7 @@
       return {
         multipleSelection: [],
         totalPrice:0,
+        totalRePrice:0,
         dialogForm: false,
         inline: true,
         selectedRow: '',
@@ -129,11 +131,6 @@
           trackId:'',
           value: false
         },
-        rules: {
-          trackId: [
-            {required: true, message: '请输入英文名称', trigger: 'change'},
-          ],
-        }
       };
     },
     methods: {
@@ -178,9 +175,18 @@
             that.tableData[scope.$index].id = that.shopInfo[i].id;
             that.tableData[scope.$index].price = that.shopInfo[i].price;
             that.tableData[scope.$index].basePrice = that.shopInfo[i].basePrice;
-            that.tableData[scope.$index].rePrice = that.shopInfo[i].price + that.shopInfo[i].basePrice;
+            that.tableData[scope.$index].rePrice = that.shopInfo[i].price - that.shopInfo[i].basePrice;
           }
         }
+        let allPrice = 0;
+        let rePrice = 0;
+        let tableData = that.tableData;
+        for(let key in tableData){
+          allPrice += tableData[key].price * tableData[key].shopNum
+          rePrice += tableData[key].rePrice * tableData[key].shopNum
+        }
+        this.totalPrice = allPrice;
+        this.totalRePrice = rePrice;
       },
       // 增加行
       addRow () {
@@ -218,19 +224,17 @@
       handleChange(value) {
         let that = this;
         let allPrice = 0;
-        let multipleSelection = that.multipleSelection;
-        for(let key in multipleSelection){
-          allPrice += multipleSelection[key].price * multipleSelection[key].shopNum
+        let rePrice = 0;
+        let tableData = that.tableData;
+        for(let key in tableData){
+          allPrice += tableData[key].price * tableData[key].shopNum
+          rePrice += tableData[key].rePrice * tableData[key].shopNum
         }
         this.totalPrice = allPrice;
+        this.totalRePrice = rePrice;
       },
       handleSelectionChange(val) {
-        let allPrice = 0;
-        for(let key in val){
-          allPrice += val[key].price * val[key].shopNum
-        }
         this.multipleSelection = val;
-        this.totalPrice = allPrice;
       },
       /**
        * 单击数据行
@@ -253,6 +257,8 @@
         let that = this;
         that.$common.saveAxios(that, '/purchase/order/save', {
           id:that.ruleForm.id,
+          orderStatus:that.ruleForm.value == false ? 0 : 1,
+          trackId:that.ruleForm.trackId,
           tableData:JSON.stringify(that.tableData),
           'parentId': JSON.parse(sessionStorage.getItem('user')).id,
         }, '订单新增成功').then(function (flag) {
