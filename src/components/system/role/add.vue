@@ -11,7 +11,7 @@
       </el-form-item>
       <hr style="height: 1px;background-color: #d9d9d9;border: none;"/>
       <el-form-item label="分配菜单"/>
-      <menu-tree :distribute="distribute" :undistributed="undistributed"/>
+      <menu-tree :distribute="distribute" :undistributed="undistributed" @menuLists="menuLists"/>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="save('ruleForm')" tabindex="3">保存</el-button>
@@ -45,7 +45,7 @@
           ],
           remark: [
             {required: false, message: '请输入角色描述', trigger: 'change'},
-            {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'}
+            {min: 0, max: 250, message: '请输入备注', trigger: 'blur'}
           ]
         },
         title: ['left', 'right'],
@@ -58,19 +58,26 @@
       menuTree
     },
     methods: {
+      menuLists(param) {
+        this.distribute = param[0];
+        this.undistributed = param[1];
+      },
       save() {
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/system/user/save', {
+            that.$common.saveAxios(that, '/system/role/save', {
               'roleName': that.ruleForm.roleName,
               'remark': that.ruleForm.remark,
+              'menus': JSON.stringify(that.undistributed),
               'id': that.$common.uuid(),
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
                   roleName: '',
-                  remark: ''
+                  remark: '',
+                  distribute: [],
+                  undistributed:[]
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -87,7 +94,9 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: ''
+            remark: '',
+            distribute: [],
+            undistributed:[]
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -108,7 +117,9 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: ''
+            remark: '',
+            distribute: [],
+            undistributed:[]
           };
           done();
           that.$emit('changeFlag', [false, false]);
