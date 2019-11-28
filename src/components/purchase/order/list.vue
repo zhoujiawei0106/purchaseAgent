@@ -5,11 +5,11 @@
         <div v-show="!isHideForm">
           <el-form :inline="true" :model="formData" class="search-element-form">
             <el-row>
-              <el-col :span="8">
+              <!--<el-col :span="8">
                 <el-form-item label="订单编号: ">
                   <el-input v-model="formData.orderNum" placeholder="订单编号"> </el-input>
                 </el-form-item>
-              </el-col>
+              </el-col>-->
               <el-col :span="8">
                 <el-form-item label="订单状态: ">
                     <el-select v-model="formData.orderStatus" clearable placeholder="请选择" >
@@ -23,6 +23,7 @@
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
+            <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
             <!--<el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">撤销</el-button>-->
           </div>
         </div>
@@ -37,7 +38,7 @@
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="orderNum" label="订单编号" align="center" sortable/>
           <el-table-column prop="trackId" label="快递单号" align="center" />
-          <el-table-column prop="name" label="客户名称(昵称)" align="center" />
+          <el-table-column prop="name" label="客户名称" align="center" />
           <el-table-column prop="orderStatus" label="订单状态" align="center" />
           <el-table-column prop="totalPrice" label="订单结算" align="center" />
          <!-- <el-table-column prop="createTime" label="订单创建时间" align="center" />
@@ -171,7 +172,7 @@
       selectRow(row, event) {
         this.selectedRow = row.id;
       },
-    addBtn() {
+      addBtn() {
       this.addFlag = true;
     },
       updateBtn() {
@@ -181,6 +182,19 @@
           return false;
         }
         this.updateFlag = true;
+      },
+      exportBtn() {
+        let that = this;
+        return new Promise(function (resolve) {
+          that.$common.queryAxios(that, '/purchase/order/export', that.formData, '', false).then(function (event) {
+            if (event.flag) {
+              let header = ['订单编号','快递单号','客户名称（昵称）','订单状态','订单结算'];
+              let entity = ['orderNum','trackId','name','orderStatus','totalPrice'];
+              let title = '订单管理';
+              that.$common.exportExcel(that, title, header, entity, event.data);
+            }
+          });
+        });
       }
     },
     created: function() {

@@ -190,6 +190,14 @@
       },
       // 增加行
       addRow () {
+        let that = this;
+        if(that.shopInfo.length === that.tableData.length) {
+          this.$message({
+            message: '一个商品只能存在一行',
+            type: 'warning'
+          });
+          return;
+        }
         let list = {
           id:'',
           sName:'',
@@ -255,6 +263,24 @@
       },
       save() {
         let that = this;
+        let temp = 0;
+        for (let i = 0; i < that.tableData.length; i++) {
+          for(let j = 0; j < that.tableData.length; j++) {
+            if (that.tableData[i].id === that.tableData[j].id) {
+              temp++;
+            }
+            if (temp > 1) {
+              this.$message({
+                message: '一个商品只能存在一行',
+                type: 'warning'
+              });
+              return;
+            }
+          }
+          if (temp <= 1) {
+            temp = 0;
+          }
+        }
         that.$common.saveAxios(that, '/purchase/order/save', {
           id:that.ruleForm.id,
           orderStatus:that.ruleForm.value == false ? 0 : 1,
