@@ -18,7 +18,6 @@
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
-            <el-button type="primary" @click="roleBtn" icon="el-icon-user">权限分配</el-button>
           </div>
         </div>
       </el-collapse-transition>
@@ -32,6 +31,7 @@
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="roleName" label="角色名称" align="center" sortable/>
           <el-table-column prop="userName" label="归属用户" align="center" sortable/>
+          <el-table-column prop="loginName" label="登陆名称" align="center" sortable/>
           <el-table-column prop="remark" label="角色描述" align="center"/>
         </el-table>
       </div>
@@ -174,26 +174,6 @@
             that.loading = false;
           });
         })
-      },
-      roleBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        if (this.$common.isEmpty(this.selectedRow)) {
-          this.$common.selectRowMsg(this);
-          return false;
-        }
-
-        // // 遮罩
-        // this.loading = true;
-        //
-        // this.$common.updateAxios(that, '/system/user/reset', {'id': that.selectedRow},  '用户登陆次数重置成功')
-        //   .then(function (flag) {
-        //     if (flag) {
-        //       that.$common.tableSearch(that, that.url, that.formData);
-        //       that.selectedRow = '';
-        //     }
-        //     that.loading = false;
-        // });
       },
       resetPwdBtn() {
         let that = this;
