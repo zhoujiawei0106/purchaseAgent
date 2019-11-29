@@ -1,6 +1,6 @@
 <template>
   <div>
-    <tree-transfer :title="title" :from_data='distribute' :to_data='undistributed' :defaultProps="{label:'label', type: 'type'}"
+    <tree-transfer :title="title" :from_data='undistributed' :to_data='distribute' :defaultProps="{label:'label', type: 'type'}"
                   @addBtn='add' @removeBtn='remove' :mode='mode' filter openAll/>
   </div>
 </template>

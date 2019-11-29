@@ -43,7 +43,7 @@
       <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :role-id="selectedRow" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>

@@ -6,8 +6,7 @@
         <el-input v-model="ruleForm.roleName" placeholder="请输入角色名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
       <el-form-item label="角色描述" prop="remark">
-        <el-input v-model="ruleForm.remark" type="textarea" placeholder="请输入角色描述" suffix-icon="el-icon-edit"
-                  tabindex="2" size="small"/>
+        <el-input v-model="ruleForm.remark" type="textarea" placeholder="请输入角色描述" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
       <hr style="height: 1px;background-color: #d9d9d9;border: none;"/>
       <el-form-item label="分配菜单"/>
@@ -41,15 +40,13 @@
         rules: {
           roleName: [
             {required: true, message: '请输入角色名称', trigger: 'change'},
-            {min: 2, max: 4, message: '用户名长度在 2 到 4 个字符', trigger: 'blur'}
+            {min: 2, max: 4, message: '用户名长度在 2 到 50 个字符', trigger: 'blur'}
           ],
           remark: [
             {required: false, message: '请输入角色描述', trigger: 'change'},
-            {min: 0, max: 250, message: '请输入备注', trigger: 'blur'}
+            {min: 0, max: 250, message: '请输入备注长度在 0 到 250 个字符', trigger: 'blur'}
           ]
         },
-        title: ['left', 'right'],
-        mode: "transfer", // transfer addressList
         distribute:[],
         undistributed:[]
       };
@@ -141,7 +138,7 @@
         if (newValue) {
           that.$common.queryAxios(that, '/system/role/getUndistributedMenu', {type: 'save'}, '', false).then(function (e) {
             that.distribute = e.data;
-          })
+          });
         }
       }
     }
