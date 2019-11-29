@@ -61,7 +61,7 @@
               </el-table-column>
               <el-table-column  prop="shopNum" label="商品数量" align="center" >
                 <template slot-scope="scope">
-                  <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange" controls-position="right" :min="1"></el-input-number>
+                  <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange(scope)" controls-position="right" :min="1"></el-input-number>
                 </template>
               </el-table-column>
               <el-table-column prop="price" label="商品单价" align="center" >
@@ -134,6 +134,7 @@
     methods: {
       // 增加行
       addRow () {
+        debugger;
         let that = this;
         if(that.shopInfo.length === that.tableData.length) {
           this.$message({
@@ -206,17 +207,25 @@
           return (shopInfo.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
         };
       },
-      handleChange(value) {
+      handleChange(scope) {
+        debugger;
         let that = this;
+         for(let i in that.shopInfo) {
+             if(scope.row.sName === that.shopInfo[i].name) {
+               that.tableData[scope.$index].id = that.shopInfo[i].id;
+               that.tableData[scope.$index].price = that.shopInfo[i].price;
+               that.tableData[scope.$index].basePrice = that.shopInfo[i].basePrice;
+               that.tableData[scope.$index].rePrice = that.shopInfo[i].price - that.shopInfo[i].basePrice;
+             }
+       }
         let allPrice = 0;
         let rePrice = 0;
-        let tableData = that.tableData;
-        for(let key in tableData){
-          allPrice += tableData[key].price * tableData[key].shopNum
-          rePrice += tableData[key].rePrice * tableData[key].shopNum
+        for(let key in that.tableData){
+          allPrice += that.tableData[scope.$index].price * that.tableData[key].shopNum
+          rePrice += that.tableData[scope.$index].rePrice * that.tableData[key].shopNum
         }
-        this.totalPrice = allPrice;
-        this.totalRePrice = rePrice;
+        that.totalPrice = allPrice;
+        that.totalRePrice = rePrice;
       },
       handleSelectionChange(val) {
         this.multipleSelection = val;
@@ -240,12 +249,28 @@
       },
       save() {
         let that = this;
+        debugger;
+        if(that.tableData.length === 0) {
+          this.$message({
+            message: '商品信息不为空',
+            type: 'warning'
+          });
+          return
+        }
         let temp = 0;
         for (let i = 0; i < that.tableData.length; i++) {
+          if(that.$common.isEmpty(that.tableData[i].sName)) {
+            this.$message({
+              message: '商品名称不为空',
+              type: 'warning'
+            });
+            return
+          }
           for(let j = 0; j < that.tableData.length; j++) {
             if (that.tableData[i].id === that.tableData[j].id) {
               temp++;
             }
+            debugger;
             if (temp > 1) {
               this.$message({
                 message: '一个商品只能存在一行',
@@ -278,11 +303,20 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
-          that.formData = {
-            name: '',
-            shopNum: '',
-            price: ''
-          };
+          for(let i = 0; i < that.tableData.length; i++) {
+            that.tableData.splice(i, that.tableData.length)
+          }
+          that.ruleForm = {
+            index:0,
+            id:'',
+            kName:'',
+            nickName:'',
+            idCard:'',
+            tel:'',
+            address:'',
+            trackId:'',
+            value: false
+          },
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -303,11 +337,20 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
-          that.formData = {
-            name: '',
-            shopNum: '',
-            price: ''
-          };
+          for(let i = 0; i < that.tableData.length; i++) {
+            that.tableData.splice(i, that.tableData.length)
+          }
+          that.ruleForm = {
+            index:0,
+            id:'',
+            kName:'',
+            nickName:'',
+            idCard:'',
+            tel:'',
+            address:'',
+            trackId:'',
+            value: false
+          },
           done();
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -327,6 +370,9 @@
       updateFlag(newValue) {
         let that = this;
         this.dialogForm = newValue;
+        for(let i = 0; i < that.tableData.length; i++) {
+          that.tableData.splice(i, that.tableData.length)
+        }
         if (newValue) {
           this.$common.queryAxios(this, '/purchase/commodity/listOfOrder', {id: this.id}, '商品查询成功').then(function (e) {
             that.shopInfo = e.data2.data;

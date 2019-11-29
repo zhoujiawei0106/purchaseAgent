@@ -13,6 +13,7 @@
                 v-model="ruleForm.kName"
                 :fetch-suggestions="querySearch"
                 placeholder="请输入客户名称"
+                :debounce=0
                 @select="handleSelect">
               </el-autocomplete>
           </el-form-item>
@@ -61,6 +62,7 @@
                     v-model="scope.row.sName"
                     :fetch-suggestions="querySearchOfShop"
                     placeholder="请输入商品名称"
+                    :debounce=10
                     @select="handleSelectOfShop(scope)"
                   ></el-autocomplete>
                 </template>
@@ -160,16 +162,16 @@
       },
       handleSelect(item) {
         let that = this;
+        debugger;
           that.ruleForm.id = item.id;
           that.ruleForm.nickName = item.nickName;
-          that.ruleForm.idCard = item.idCard;
+          that.ruleForm.idCard = item.idcard;
           that.ruleForm.tel = item.tel;
           that.ruleForm.address = item.address;
         console.log(item);
       },
       handleSelectOfShop(scope) {
         let that = this;
-        debugger;
         for(let i = 0; i < that.shopInfo.length; i++) {
           if(scope.row.sName === that.shopInfo[i].name) {
             that.tableData[scope.$index].id = that.shopInfo[i].id;
@@ -263,8 +265,29 @@
       },
       save() {
         let that = this;
+        if(that.$common.isEmpty(that.ruleForm.kName)) {
+          this.$message({
+            message: '客户名称不为空',
+            type: 'warning'
+          });
+          return
+        }
+        if(that.tableData.length === 0) {
+          this.$message({
+            message: '商品信息不为空',
+            type: 'warning'
+          });
+          return
+        }
         let temp = 0;
         for (let i = 0; i < that.tableData.length; i++) {
+          if(that.$common.isEmpty(that.tableData[i].sName)) {
+            this.$message({
+              message: '商品名称不为空',
+              type: 'warning'
+            });
+            return
+          }
           for(let j = 0; j < that.tableData.length; j++) {
             if (that.tableData[i].id === that.tableData[j].id) {
               temp++;
@@ -300,14 +323,25 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
-          that.formData = {
-            name: '',
-            shopNum: '',
-            price: ''
-          };
+        for(let i = 0; i < that.tableData.length; i++) {
+          that.tableData.splice(i, that.tableData.length)
+        }
+          that.ruleForm = {
+              index:0,
+              id:'',
+              kName:'',
+              nickName:'',
+              idCard:'',
+              tel:'',
+              address:'',
+              trackId:'',
+              value: false
+          },
+          // 删除完数据之后清除勾选框
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
+          debugger
           console.log(e);
           if(e === 'cancel') {
           } else {
@@ -325,11 +359,20 @@
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
+          for(let i = 0; i < that.tableData.length; i++) {
+            that.tableData.splice(i, that.tableData.length)
+          }
           that.ruleForm = {
-            name: '',
-            shopNum: '',
-            price: ''
-          };
+            index:0,
+            id:'',
+            kName:'',
+            nickName:'',
+            idCard:'',
+            tel:'',
+            address:'',
+            trackId:'',
+            value: false
+          },
           done();
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -347,11 +390,23 @@
     },
     watch: {
       addFlag(newValue) {
-        debugger;
         this.dialogForm = newValue;
+        let that = this;
+        for(let i = 0; i < that.tableData.length; i++) {
+          that.tableData.splice(i, that.tableData.length)
+        }
+        that.ruleForm = {
+          index:0,
+          id:'',
+          kName:'',
+          nickName:'',
+          idCard:'',
+          tel:'',
+          address:'',
+          trackId:'',
+          value: false
+        }
         if (newValue) {
-          let that = this;
-          debugger;
           this.$common.queryAxios(this, '/purchase/customer/list', {id: this.id}, '客户查询成功').then(function (e) {
             that.customerInfo = e.data.list;
           })
