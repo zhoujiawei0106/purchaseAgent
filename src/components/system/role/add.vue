@@ -137,7 +137,7 @@
         // 打开新增窗口时加载未分配菜单数据
         if (newValue) {
           that.$common.queryAxios(that, '/system/role/getUndistributedMenu', {type: 'save'}, '', false).then(function (e) {
-            that.distribute = e.data;
+            that.undistributed = e.data;
           });
         }
       }

@@ -44,12 +44,12 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="loginName" label="登陆名" align="center" sortable/>
-          <el-table-column prop="userName" label="用户名" align="center"/>
-          <el-table-column prop="tel" label="手机" align="center"/>
-          <el-table-column prop="ip" label="ip" align="center"/>
-          <el-table-column prop="status" label="有效状态" align="center"/>
-          <el-table-column prop="loginFailTimes" label="登陆失败次数" align="center"/>
+          <el-table-column prop="loginName" label="登陆名" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="userName" label="用户名" align="center" show-overflow-tooltip/>
+          <el-table-column prop="tel" label="手机" align="center" show-overflow-tooltip/>
+          <el-table-column prop="ip" label="ip" align="center" show-overflow-tooltip/>
+          <el-table-column prop="status" label="有效状态" align="center" show-overflow-tooltip/>
+          <el-table-column prop="loginFailTimes" label="登陆失败次数" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"

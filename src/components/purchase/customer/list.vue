@@ -49,13 +49,13 @@
                   border highlight-current-row stripe>
           <el-table-column type="index" width="50" label="序号" align="center"/>
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="name" label="客户名称(昵称)" align="center"/>
-          <el-table-column prop="parentId" label="上级客户" align="center"/>
-          <el-table-column prop="type" label="客户类型" align="center" sortable/>
-          <el-table-column prop="status" label="客户状态" align="center"/>
-          <el-table-column prop="point" label="客户积分" align="center"/>
-          <el-table-column prop="tel" label="客户电话" align="center"/>
-          <el-table-column prop="address" label="客户地址" align="center"/>
+          <el-table-column prop="name" label="客户名(昵)称" align="center" show-overflow-tooltip/>
+          <el-table-column prop="parentId" label="上级客户" align="center" show-overflow-tooltip/>
+          <el-table-column prop="type" label="客户类型" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="status" label="客户状态" align="center" show-overflow-tooltip/>
+          <el-table-column prop="point" label="客户积分" align="center" show-overflow-tooltip/>
+          <el-table-column prop="tel" label="客户电话" align="center" show-overflow-tooltip/>
+          <el-table-column prop="address" label="客户地址" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
