@@ -35,8 +35,6 @@
           <el-table-column prop="remark" label="角色描述" align="center"  show-overflow-tooltip/>
         </el-table>
       </div>
-      <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
-                  @exchangePagination="exchangePagination"/>
     </div>
 
     <div>
@@ -50,7 +48,6 @@
 
 <script>
   import collapse from '../../common/collapse';
-  import pagination from '../../common/pagination';
   import addPage from './add';
   import updatePage from './update';
 
@@ -64,16 +61,10 @@
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
-        pagination: false,
+        // pagination: false,
         // 查询条件
         formData: {
-          roleName: '',
-          // 当前第几页
-          page: 1,
-          // 每页几条
-          rows: 10,
-          // 数据总数
-          total: 0
+          roleName: ''
         },
         loading: false,
         tableData: [],
@@ -81,7 +72,6 @@
       }
     },
     components: {
-      pagination,
       collapse,
       addPage,
       updatePage

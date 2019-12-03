@@ -67,12 +67,12 @@
         let that = this;
         that.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            that.$common.saveAxios(that, '/system/role/save', {
+            that.$common.updateAxios(that, '/system/role/update', {
               'roleName': that.ruleForm.roleName,
               'remark': that.ruleForm.remark,
-              'menus': JSON.stringify(that.undistributed),
-              'id': that.$common.uuid(),
-            }, '用户新增成功').then(function (flag) {
+              'menus': JSON.stringify(that.distribute),
+              'id': that.roleId,
+            }, '角色修改成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
                   roleName: '',
