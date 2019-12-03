@@ -76,10 +76,10 @@
               if (flag) {
                 that.ruleForm = {
                   roleName: '',
-                  remark: '',
-                  distribute: [],
-                  undistributed:[]
+                  remark: ''
                 };
+                that.distribute = [];
+                that.undistributed = [];
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
               }
@@ -95,10 +95,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -118,10 +118,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           done();
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {

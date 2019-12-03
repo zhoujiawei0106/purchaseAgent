@@ -56,8 +56,8 @@
     },
     methods: {
       menuLists(param) {
-        this.distribute = param[0];
-        this.undistributed = param[1];
+        this.distribute = param[1];
+        this.undistributed = param[0];
       },
       save() {
         let that = this;
@@ -66,16 +66,16 @@
             that.$common.saveAxios(that, '/system/role/save', {
               'roleName': that.ruleForm.roleName,
               'remark': that.ruleForm.remark,
-              'menus': JSON.stringify(that.undistributed),
+              'menus': JSON.stringify(that.distribute),
               'id': that.$common.uuid(),
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
                   roleName: '',
-                  remark: '',
-                  distribute: [],
-                  undistributed:[]
+                  remark: ''
                 };
+                that.distribute = [];
+                that.undistributed = [];
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
               }
@@ -91,10 +91,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -114,10 +114,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           done();
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
