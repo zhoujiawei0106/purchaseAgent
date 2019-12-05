@@ -43,6 +43,7 @@
         rules: {
           place: [
             {required: true, message: '请输入行程地点', trigger: ''},
+            {max: 100, message: '行程目的地不超过100个字符', trigger: 'blur'}
           ],
           startTime: [
             {required: true, message: '请输入行程开始时间', trigger: 'change'},

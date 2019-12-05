@@ -26,13 +26,13 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   :row-style="tableRowClassName" >
-          <el-table-column type="index" width="50" label="序号" align="center"/>
-          <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="name" label="商品名称" align="center" sortable/>
-          <el-table-column prop="enName" label="英文名称" align="center" sortable/>
-          <el-table-column prop="shopNum" label="商品数量" align="center" />
-          <el-table-column prop="createTime" label="入库时间" align="center" />
-          <el-table-column prop="updateTime" label="更新时间" align="center" />
+          <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
+          <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
+          <el-table-column prop="name" label="商品名称" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="enName" label="英文名称" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="shopNum" label="商品数量" align="center" show-overflow-tooltip/>
+          <el-table-column prop="createTime" label="入库时间" align="center" show-overflow-tooltip/>
+          <el-table-column prop="updateTime" label="更新时间" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"

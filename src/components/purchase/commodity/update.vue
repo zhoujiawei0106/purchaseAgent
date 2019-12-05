@@ -65,14 +65,16 @@
         rules: {
           name: [
             {required: true, message: '请输入商品名称', trigger: 'change'},
+            {max: 100, message: '商品名称长度不超过100个字符', trigger: 'blur'}
           ],
           enName: [
             {required: true, message: '请输入英文名称', trigger: 'change'},
+            {max: 100, message: '英文名称长度不超过100个字符', trigger: 'blur'}
           ],
           price: [
             {required: true, message: '请输入商品价格', trigger: 'change'},
             {pattern: /^([0-9]+(.[0-9]{1,2})?)|(-[0-9]+(.[0-9]{1,2})?)$/,
-              message: '请输入正确的价格', trigger: 'blur'}
+              message: '请输入正确的价格', trigger: 'blur'},
           ],
           basePrice: [
             {required: true, message: '请输入商品成本', trigger: 'change'},
@@ -81,9 +83,11 @@
           ],
           category: [
             {required: true, message: '请输入商品类型', trigger: 'change'},
+            {max: 1, message: '商品类型长度不超过1个字符', trigger: 'blur'}
           ],
           brand: [
             {required: true, message: '请输入商品品牌', trigger: 'change'},
+            {max: 100, message: '商品品牌长度不超过100个字符', trigger: 'blur'}
           ]
         }
       };

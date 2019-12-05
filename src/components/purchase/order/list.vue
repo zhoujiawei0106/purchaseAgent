@@ -34,13 +34,13 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>
-          <el-table-column type="index" width="50" label="序号" align="center"/>
-          <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="orderNum" label="订单编号" align="center" sortable/>
-          <el-table-column prop="trackId" label="快递单号" align="center" />
-          <el-table-column prop="name" label="客户名称" align="center" />
-          <el-table-column prop="orderStatus" label="订单状态" align="center" />
-          <el-table-column prop="totalPrice" label="订单结算" align="center" />
+          <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
+          <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
+          <el-table-column prop="orderNum" label="订单编号" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="trackId" label="快递单号" align="center" show-overflow-tooltip/>
+          <el-table-column prop="name" label="客户名称" align="center" show-overflow-tooltip/>
+          <el-table-column prop="orderStatus" label="订单状态" align="center" show-overflow-tooltip/>
+          <el-table-column prop="totalPrice" label="订单结算" align="center" show-overflow-tooltip/>
          <!-- <el-table-column prop="createTime" label="订单创建时间" align="center" />
           <el-table-column prop="updateTime" label="订单更新时间" align="center" />-->
          <!-- <el-table-column label="操作" align="center">
@@ -85,6 +85,7 @@
         // 分页条隐藏
         pagination: false,
         rowId:'',
+        selectedRowStatus:'',
         // 查询条件
         formData: {
           orderNum: '',
@@ -113,7 +114,8 @@
       detailPage
     },
     methods:
-      {handleEdit(index, row) {
+      {
+        /*handleEdit(index, row) {
         let that = this;
         that.rowId = row.id;
           // 判断是否选择了数据
@@ -122,7 +124,7 @@
             return false;
           }
           this.detailFlag = true;
-      },
+      },*/
       changeFlag(param) {
         this.addFlag = param[0];
         this.updateFlag = param[0];
@@ -163,6 +165,7 @@
        */
       clickRow(row, event, column) {
         this.selectedRow = row.id;
+        this.selectedRowStatus = row.orderStatus;
       },
       /**
        * 双击数据行
@@ -171,12 +174,20 @@
        */
       selectRow(row, event) {
         this.selectedRow = row.id;
+        this.selectedRowStatus = row.orderStatus;
       },
       addBtn() {
       this.addFlag = true;
     },
       updateBtn() {
         // 判断是否选择了数据
+        if(this.selectedRowStatus == '已支付'){
+          this.$message({
+            message: '已经支付订单信息无法修改',
+            type: 'warning'
+          });
+          return false;
+        }
         if (this.$common.isEmpty(this.selectedRow)) {
           this.$common.selectRowMsg(this);
           return false;

@@ -3,7 +3,7 @@
              :center="true" :destroy-on-close="true" width="80%">
     <div style="padding-top: 1%;">
       <div>
-        <el-form :model="ruleForm" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
+        <el-form :model="ruleForm" :rule="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
           <el-form-item label="客户编码" prop="id" v-if="false">
             <el-input v-model="ruleForm.customerId" />
           </el-form-item>
@@ -45,30 +45,31 @@
           <div>
             <el-table :data="tableData" style="width: 100%;" border highlight-current-row stripe ref="multipleTable"
                       @row-dblclick="selectRow" @row-click="clickRow" @selection-change="handleSelectionChange">
-              <el-table-column type="selection" width="55"/>
-              <el-table-column type="index" width="50" label="序号" align="center"/>
-              <el-table-column prop="id" label="id" align="center" v-if="false"/>
-              <el-table-column prop="sName" label="商品名称" align="center">
+              <el-table-column type="selection" width="55" show-overflow-tooltip/>
+              <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
+              <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
+              <el-table-column prop="sName" label="商品名称" align="center" show-overflow-tooltip>
                 <template slot-scope="scope">
                   <el-autocomplete
                     class="inline-input"
                     v-model="scope.row.sName"
                     :fetch-suggestions="querySearchOfShop"
                     placeholder="请输入商品名称"
-                    @select="handleSelectOfShop(scope)"
+                    @keyup.native="dealNone(scope)"
+                    @select="((item)=>{handleSelectOfShop(item, scope)})"
                   ></el-autocomplete>
                 </template>
               </el-table-column>
-              <el-table-column  prop="shopNum" label="商品数量" align="center" >
+              <el-table-column  prop="shopNum" label="商品数量" align="center" show-overflow-tooltip>
                 <template slot-scope="scope">
                   <el-input-number v-model="scope.row.shopNum" prop="shopNum" @change="handleChange(scope)" controls-position="right" :min="1"></el-input-number>
                 </template>
               </el-table-column>
-              <el-table-column prop="price" label="商品单价" align="center" >
+              <el-table-column prop="price" label="商品单价" align="center" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column prop="basePrice" label="商品成本" align="center" >
+              <el-table-column prop="basePrice" label="商品成本" align="center" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column prop="rePrice" label="商品差价" align="center">
+              <el-table-column prop="rePrice" label="商品差价" align="center" show-overflow-tooltip>
               </el-table-column>
             </el-table>
           </div>
@@ -106,8 +107,8 @@
         selectedRow: '',
         orderNum:'',
         tableData: [],
-        Info: [],
-          shopInfo: [],
+        shopInfo: [],
+        shopInfoCash: [],
           // 请求地址
           url: '/purchase/commodity/list',
           // 查询条件
@@ -129,16 +130,30 @@
             trackId: '',
             value: false
           },
+         rules: {
+          trackId:[
+            {max: 100, message: '快递单号长度不超过100个字符', trigger: 'blur'}
+          ]
+        }
         };
     },
     methods: {
+      dealNone(scope) {
+        let that = this;
+        let shopInfoCash = that.shopInfoCash;
+        that.shopInfo.push(shopInfoCash[scope.row.id]);
+        that.tableData[scope.$index].id = '';
+        that.tableData[scope.$index].shopNum = 1;
+        that.tableData[scope.$index].price = '';
+        that.tableData[scope.$index].basePrice = '';
+        that.tableData[scope.$index].rePrice = '';
+      },
       // 增加行
       addRow () {
-        debugger;
         let that = this;
-        if(that.shopInfo.length === that.tableData.length) {
+        if(that.tableData.length >= that.shopInfoCash.data.length) {
           this.$message({
-            message: '一个商品只能存在一行',
+            message: '一个商品只能存在一行,请增加商品数量',
             type: 'warning'
           });
           return;
@@ -159,14 +174,9 @@
           this.$common.selectRowMsg(this);
           return false;
         }
-        for (let i = 0; i < that.multipleSelection.length; i++) {
-          /*let val = this.selectedRow;*/
-          let tableData = that.tableData;
-          // 获取选中行的索引的方法
-          // 遍历表格中tableData数据和选中的val数据，比较它们的rowNum,相等则输出选中行的索引
-          // rowNum的作用主要是为了让每一行有一个唯一的数据，方便比较，可以根据个人的开发需求从后台传入特定的数据
-          for(let j = 0; j < that.tableData.length; j++) {
-            if(tableData[j] === that.multipleSelection[i]) {
+        for (let i in that.multipleSelection) {
+          for(let j in that.tableData) {
+            if(that.tableData[j] === that.multipleSelection[i]) {
               this.tableData.splice(j, 1)
             }
           }
@@ -175,25 +185,27 @@
         this.$refs.multipleTable.clearSelection();
       },
       //处理选择框数据
-      handleSelectOfShop(scope) {
+      handleSelectOfShop(item,scope) {
         let that = this;
-        for(let i = 0; i < that.shopInfo.length; i++) {
-          if(scope.row.sName === that.shopInfo[i].name) {
-            that.tableData[scope.$index].id = that.shopInfo[i].id;
-            that.tableData[scope.$index].price = that.shopInfo[i].price;
-            that.tableData[scope.$index].basePrice = that.shopInfo[i].basePrice;
-            that.tableData[scope.$index].rePrice = that.shopInfo[i].price - that.shopInfo[i].basePrice;
+        for(let key in that.shopInfo) {
+          if(item.id === that.shopInfo[key].id) {
+            that.tableData[scope.$index].id = that.shopInfo[key].id;
+            that.tableData[scope.$index].price = that.shopInfo[key].price;
+            that.tableData[scope.$index].basePrice = that.shopInfo[key].basePrice;
+            that.tableData[scope.$index].rePrice = that.shopInfo[key].price - that.shopInfo[key].basePrice;
+            that.shopInfo.splice(key,1);
+            break;
           }
         }
+        //计算价格
         let allPrice = 0;
         let rePrice = 0;
-        let tableData = that.tableData;
-        for(let key in tableData){
-          allPrice += tableData[key].price * tableData[key].shopNum
-          rePrice += tableData[key].rePrice * tableData[key].shopNum
+        for(let key in that.tableData){
+          allPrice += that.tableData[key].price * that.tableData[key].shopNum
+          rePrice += that.tableData[key].rePrice * that.tableData[key].shopNum
         }
-        this.totalPrice = allPrice;
-        this.totalRePrice = rePrice;
+        that.totalPrice = allPrice;
+        that.totalRePrice = rePrice;
       },
       querySearchOfShop(queryString, cb) {
         let shopInfo = this.shopInfo;
@@ -208,7 +220,6 @@
         };
       },
       handleChange(scope) {
-        debugger;
         let that = this;
          for(let i in that.shopInfo) {
              if(scope.row.sName === that.shopInfo[i].name) {
@@ -249,7 +260,13 @@
       },
       save() {
         let that = this;
-        debugger;
+        if(that.$common.isEmpty(that.ruleForm.kName)) {
+          this.$message({
+            message: '客户名称不为空',
+            type: 'warning'
+          });
+          return
+        }
         if(that.tableData.length === 0) {
           this.$message({
             message: '商品信息不为空',
@@ -257,30 +274,13 @@
           });
           return
         }
-        let temp = 0;
-        for (let i = 0; i < that.tableData.length; i++) {
-          if(that.$common.isEmpty(that.tableData[i].sName)) {
+        for (let key in that.tableData) {
+          if(that.$common.isEmpty(that.tableData[key].sName)) {
             this.$message({
               message: '商品名称不为空',
               type: 'warning'
             });
             return
-          }
-          for(let j = 0; j < that.tableData.length; j++) {
-            if (that.tableData[i].id === that.tableData[j].id) {
-              temp++;
-            }
-            debugger;
-            if (temp > 1) {
-              this.$message({
-                message: '一个商品只能存在一行',
-                type: 'warning'
-              });
-              return;
-            }
-          }
-          if (temp <= 1) {
-            temp = 0;
           }
         }
         that.$common.saveAxios(that, '/purchase/order/update', {
@@ -370,35 +370,36 @@
       updateFlag(newValue) {
         let that = this;
         this.dialogForm = newValue;
-        for(let i = 0; i < that.tableData.length; i++) {
-          that.tableData.splice(i, that.tableData.length)
+        for(let key in that.tableData) {
+          that.tableData.splice(key, that.tableData.length)
         }
         if (newValue) {
           this.$common.queryAxios(this, '/purchase/commodity/listOfOrder', {id: this.id}, '商品查询成功').then(function (e) {
-            that.shopInfo = e.data2.data;
+            that.shopInfo = e.data.data;
+            that.shopInfoCash = e.dataById;
           })
           if (this.$common.isEmpty(this.id)) {
             this.$common.errorMessage(this, '系统异常,未获取到客户信息!');
             return false
           }
           this.$common.queryAxios(this, '/purchase/order/getOrder', {id: this.id}, '订单查询成功').then(function (e) {
-            that.orderNum = e.data1.orderNum
-            that.ruleForm.customerId = e.data1.customerId;
-            that.ruleForm.kName = e.data1.name;
-            that.ruleForm.nickName = e.data1.nickName;
-            that.ruleForm.idCard = e.data1.idCard;
-            that.ruleForm.tel = e.data1.tel;
-            that.ruleForm.address = e.data1.address;
-            that.ruleForm.trackId = e.data1.trackId;
-            that.ruleForm.value = e.data1.orderStatus == 1 ? true : false;
-            for(let i = 0; i < e.data2.length; i++) {
+            that.orderNum = e.customer.orderNum;
+            that.ruleForm.customerId = e.customer.customerId;
+            that.ruleForm.kName = e.customer.name;
+            that.ruleForm.nickName = e.customer.nickName;
+            that.ruleForm.idCard = e.customer.idCard;
+            that.ruleForm.tel = e.customer.tel;
+            that.ruleForm.address = e.customer.address;
+            that.ruleForm.trackId = e.customer.trackId;
+            that.ruleForm.value = e.customer.orderStatus == 1 ? true : false;
+            for(let key in e.commodityList) {
               that.addRow();
             }
-            that.tableData = e.data2;
+            that.tableData = e.commodityList;
             let allPrice = 0;
             let rePrice = 0;
-            for(let key in e.data2){
-              allPrice +=  that.tableData[key].price *  that.tableData[key].shopNum
+            for(let key in e.commodityList){
+              allPrice +=  that.tableData[key].price *  that.tableData[key].shopNum;
               rePrice +=  that.tableData[key].rePrice *  that.tableData[key].shopNum
             }
             that.totalPrice = allPrice;

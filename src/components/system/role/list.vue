@@ -27,12 +27,12 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>
-          <el-table-column type="index" width="50" label="序号" align="center"/>
-          <el-table-column prop="id" label="id" align="center" v-if="false"/>
-          <el-table-column prop="roleName" label="角色名称" align="center" sortable/>
-          <el-table-column prop="userName" label="归属用户" align="center" sortable/>
-          <el-table-column prop="loginName" label="登陆名称" align="center" sortable/>
-          <el-table-column prop="remark" label="角色描述" align="center"/>
+          <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
+          <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
+          <el-table-column prop="roleName" label="角色名称" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="userName" label="归属用户" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="loginName" label="登陆名称" align="center" sortable show-overflow-tooltip/>
+          <el-table-column prop="remark" label="角色描述" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"

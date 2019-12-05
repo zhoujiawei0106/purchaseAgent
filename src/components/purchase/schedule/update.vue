@@ -57,6 +57,7 @@
         rules: {
           place: [
             {required: true, message: '请输入行程目的地', trigger: 'change'},
+            {max: 100, message: '行程目的地不超过100个字符', trigger: 'blur'}
           ]
         }
       };
