@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import menuTree from './menuTree';
+  import menuTree from '../../common/menuTree';
 
   export default {
     props: {
