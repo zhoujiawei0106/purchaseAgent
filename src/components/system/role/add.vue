@@ -6,8 +6,7 @@
         <el-input v-model="ruleForm.roleName" placeholder="请输入角色名称" suffix-icon="el-icon-edit" tabindex="1"/>
       </el-form-item>
       <el-form-item label="角色描述" prop="remark">
-        <el-input v-model="ruleForm.remark" type="textarea" placeholder="请输入角色描述" suffix-icon="el-icon-edit"
-                  tabindex="2" size="small"/>
+        <el-input v-model="ruleForm.remark" type="textarea" placeholder="请输入角色描述" suffix-icon="el-icon-edit" tabindex="2"/>
       </el-form-item>
       <hr style="height: 1px;background-color: #d9d9d9;border: none;"/>
       <el-form-item label="分配菜单"/>
@@ -21,7 +20,7 @@
 </template>
 
 <script>
-  import menuTree from './menuTree';
+  import menuTree from '../../common/menuTree';
 
   export default {
     props: {
@@ -41,15 +40,13 @@
         rules: {
           roleName: [
             {required: true, message: '请输入角色名称', trigger: 'change'},
-            {min: 2, max: 4, message: '用户名长度在 2 到 4 个字符', trigger: 'blur'}
+            {min: 2, max: 4, message: '用户名长度在 2 到 50 个字符', trigger: 'blur'}
           ],
           remark: [
             {required: false, message: '请输入角色描述', trigger: 'change'},
-            {min: 0, max: 250, message: '请输入备注', trigger: 'blur'}
+            {min: 0, max: 250, message: '请输入备注长度在 0 到 250 个字符', trigger: 'blur'}
           ]
         },
-        title: ['left', 'right'],
-        mode: "transfer", // transfer addressList
         distribute:[],
         undistributed:[]
       };
@@ -59,8 +56,8 @@
     },
     methods: {
       menuLists(param) {
-        this.distribute = param[0];
-        this.undistributed = param[1];
+        this.distribute = param[1];
+        this.undistributed = param[0];
       },
       save() {
         let that = this;
@@ -69,16 +66,16 @@
             that.$common.saveAxios(that, '/system/role/save', {
               'roleName': that.ruleForm.roleName,
               'remark': that.ruleForm.remark,
-              'menus': JSON.stringify(that.undistributed),
+              'menus': JSON.stringify(that.distribute),
               'id': that.$common.uuid(),
             }, '用户新增成功').then(function (flag) {
               if (flag) {
                 that.ruleForm = {
                   roleName: '',
-                  remark: '',
-                  distribute: [],
-                  undistributed:[]
+                  remark: ''
                 };
+                that.distribute = [];
+                that.undistributed = [];
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
               }
@@ -94,10 +91,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -117,10 +114,10 @@
         }).then(function () {
           that.ruleForm = {
             roleName: '',
-            remark: '',
-            distribute: [],
-            undistributed:[]
+            remark: ''
           };
+          that.distribute = [];
+          that.undistributed = [];
           done();
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
@@ -140,8 +137,8 @@
         // 打开新增窗口时加载未分配菜单数据
         if (newValue) {
           that.$common.queryAxios(that, '/system/role/getUndistributedMenu', {type: 'save'}, '', false).then(function (e) {
-            that.distribute = e.data;
-          })
+            that.undistributed = e.data;
+          });
         }
       }
     }

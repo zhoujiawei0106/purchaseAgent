@@ -27,30 +27,27 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>
-          <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
-          <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
-          <el-table-column prop="roleName" label="角色名称" align="center" sortable show-overflow-tooltip/>
-          <el-table-column prop="userName" label="归属用户" align="center" sortable show-overflow-tooltip/>
-          <el-table-column prop="loginName" label="登陆名称" align="center" sortable show-overflow-tooltip/>
-          <el-table-column prop="remark" label="角色描述" align="center" show-overflow-tooltip/>
+          <el-table-column type="index" width="50" label="序号" align="center"/>
+          <el-table-column prop="id" label="id" align="center" v-if="false"/>
+          <el-table-column prop="roleName" label="角色名称" align="center" sortable  show-overflow-tooltip/>
+          <el-table-column prop="userName" label="归属用户" align="center" sortable  show-overflow-tooltip/>
+          <el-table-column prop="loginName" label="登陆名称" align="center" sortable  show-overflow-tooltip/>
+          <el-table-column prop="remark" label="角色描述" align="center"  show-overflow-tooltip/>
         </el-table>
       </div>
-      <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
-                  @exchangePagination="exchangePagination"/>
     </div>
 
     <div>
       <add-page :add-flag="addFlag" @changeFlag="changeFlag"/>
     </div>
     <div>
-      <update-page :update-flag="updateFlag" :user-id="selectedRow" @changeFlag="changeFlag"/>
+      <update-page :update-flag="updateFlag" :role-id="selectedRow" @changeFlag="changeFlag"/>
     </div>
   </div>
 </template>
 
 <script>
   import collapse from '../../common/collapse';
-  import pagination from '../../common/pagination';
   import addPage from './add';
   import updatePage from './update';
 
@@ -64,16 +61,10 @@
         // 是否隐藏查询条件(true隐藏)
         isHideForm: false,
         // 分页条隐藏
-        pagination: false,
+        // pagination: false,
         // 查询条件
         formData: {
-          roleName: '',
-          // 当前第几页
-          page: 1,
-          // 每页几条
-          rows: 10,
-          // 数据总数
-          total: 0
+          roleName: ''
         },
         loading: false,
         tableData: [],
@@ -81,7 +72,6 @@
       }
     },
     components: {
-      pagination,
       collapse,
       addPage,
       updatePage
@@ -165,8 +155,8 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           // 遮罩
-          this.loading = true;
-          this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+          that.loading = true;
+          that.$common.deleteAxios(that, '/system/role/delete', {'id': that.selectedRow}, '角色删除成功').then(function (flag) {
             if (flag) {
               that.$common.tableSearch(that, that.url, that.formData);
               that.selectedRow = '';
@@ -174,26 +164,6 @@
             that.loading = false;
           });
         })
-      },
-      resetPwdBtn() {
-        let that = this;
-        // 判断是否选择了数据
-        if (this.$common.isEmpty(this.selectedRow)) {
-          this.$common.selectRowMsg(this);
-          return false;
-        }
-
-        // 遮罩
-        this.loading = true;
-
-        this.$common.updateAxios(that, '/system/user/resetPwd', {'id': that.selectedRow},  '用户登陆次数重置成功')
-          .then(function (flag) {
-            if (flag) {
-              that.$common.tableSearch(that, that.url, that.formData);
-              that.selectedRow = '';
-            }
-            that.loading = false;
-        });
       }
     },
     created: function() {
