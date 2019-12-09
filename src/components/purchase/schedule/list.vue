@@ -55,13 +55,13 @@
       <div>
         <el-table :data="tableData" style="width: 100%;" @row-dblclick="selectRow" @row-click="clickRow"
                   border highlight-current-row stripe>
-          <el-table-column type="index" width="50" label="序号" align="center"/>
-          <el-table-column prop="id" label="id" align="center" v-if="false"/>
+          <el-table-column type="index" width="50" label="序号" align="center" show-overflow-tooltip/>
+          <el-table-column prop="id" label="id" align="center" v-if="false" show-overflow-tooltip/>
           <!--<el-table-column prop="scheduleNum" label="行程编码" align="center" sortable/>-->
-          <el-table-column prop="place" label="行程目地" align="center" />
-          <el-table-column prop="status" label="行程状态" align="center" />
-          <el-table-column prop="startTime" label="行程开始日期" align="center" />
-          <el-table-column prop="endTime" label="行程结束日期" align="center" />
+          <el-table-column prop="place" label="行程目地" align="center" show-overflow-tooltip/>
+          <el-table-column prop="status" label="行程状态" align="center" show-overflow-tooltip/>
+          <el-table-column prop="startTime" label="行程开始日期" align="center" show-overflow-tooltip/>
+          <el-table-column prop="endTime" label="行程结束日期" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
       <pagination :pagination="pagination" :formData="formData" :url="url" :tableData="tableData"
