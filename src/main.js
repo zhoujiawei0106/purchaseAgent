@@ -56,6 +56,7 @@ axios.interceptors.request.use(function (config) {
   if (token) {
     config.headers['token'] = token;
   }
+  // TODO 添加放重复提交参数
   return config;
 }, function (error) {
   return Promise.reject(error);

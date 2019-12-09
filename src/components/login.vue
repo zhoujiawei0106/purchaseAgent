@@ -8,7 +8,7 @@
       <el-form-item prop="password">
         <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="密码" prop="password" @keydown.enter.native="handleSubmit"/>
       </el-form-item>
-      <el-checkbox v-model="checked" checked class="remember">记住密码</el-checkbox>
+      <el-checkbox v-model="checked" class="remember">记住密码</el-checkbox>
       <el-form-item style="width:100%;">
         <el-button type="primary" style="width:100%;" @click="handleSubmit" :loading="logining">登录</el-button>
       </el-form-item>
@@ -23,8 +23,8 @@
       return {
         logining: false,
         ruleForm: {
-          loginName: 'admin',
-          password: 'test123'
+          loginName: '',
+          password: ''
         },
         rules: {
           loginName: [{
@@ -38,7 +38,7 @@
             trigger: 'blur'
           }]
         },
-        checked: true
+        checked: false
       };
     },
     methods: {
@@ -60,6 +60,9 @@
                   }));
                   // 在local中添加token
                   localStorage.setItem('token', data.data.data.token);
+                  localStorage.setItem('checked', that.checked);
+                  localStorage.setItem('loginName', that.ruleForm.loginName);
+                  localStorage.setItem('password', that.ruleForm.password);
                   that.$router.push({ path: '/home' });
                 } else {
                   that.$alert(data.data.msg, '提示信息', {
@@ -81,6 +84,14 @@
             return false;
           }
         });
+      }
+    },
+    mounted: function () {
+      debugger
+      if (localStorage.getItem('checked') === 'true') {
+        this.checked = true;
+        this.ruleForm.loginName = localStorage.getItem('loginName');
+        this.ruleForm.password = localStorage.getItem('password');
       }
     }
   }

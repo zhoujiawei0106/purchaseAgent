@@ -51,7 +51,8 @@
         <router-view></router-view>
       </el-main>
     </el-container>
-    <el-footer height="3%" width="100%" style="text-align: center; font-size: 12px">这是我的脚</el-footer>
+    <el-footer height="3%" width="100%" style="text-align: center; font-size: 12px">如有问题,请咨询.
+      <strong>微信:xxx 电话:021-12345678</strong></el-footer>
   </el-container>
 </template>
 
