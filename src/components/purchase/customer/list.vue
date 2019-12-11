@@ -197,8 +197,8 @@
           dangerouslyUseHTMLString: true
         }).then(function () {
           // 遮罩
-          this.loading = true;
-          this.$common.deleteAxios(that, '/purchase/customer/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+          that.loading = true;
+          that.$common.deleteAxios(that, '/purchase/customer/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
             if (flag) {
               that.$common.tableSearch(that, that.url, that.formData);
               that.selectedRow = '';

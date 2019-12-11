@@ -66,8 +66,8 @@
         menus: [],
         // 面包屑
         breadcrumbs: [],
-        // 菜单是否展开(默认是)
-        isCollapse: false,
+        // 菜单是否展开
+        isCollapse: true,
         rightSideWidth: '85%',
         leftSideWidth: '15%',
         // 菜单展开样式
@@ -185,6 +185,12 @@
       }
       that.$TreeTransfer.methods.filterNodeTo = function (e, r) {
         return !e || -1 !== r[this.defaultProps.label].indexOf(e) || -1 !== r[this.defaultProps.type].indexOf(e);
+      }
+    },
+    mounted: function() {
+      // 如果电脑登陆，展开菜单
+      if (!this.$common.isMobile()) {
+        this.isCollapse = false;
       }
     }
   }

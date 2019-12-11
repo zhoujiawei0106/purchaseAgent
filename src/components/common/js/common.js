@@ -132,7 +132,7 @@ function changeString(value) {
  * @param data 数据
  */
 function errorAlert(that, data) {
-  if (!data.flag && (isEmpty(data.data.code) || data.data.code != 412)) {
+  if (!data.flag && (isEmpty(data.code) || data.code != 412)) {
     that.$alert('系统异常，请联系管理员', '提示');
   }
 }
@@ -191,7 +191,7 @@ function tableSearch(that, url, data) {
     if (event.data.flag) {
       that.tableData = event.data.data.list;
       // 根据返回数据量显示或隐藏分页条，并设置分页信息
-      if (that.$common.isNotEmpty(that.tableData)) {
+      if (that.$common.isNotEmpty(that.pagination)) {
         that.pagination = true;
         // 设置当前第页数
         that.formData.page = event.data.data.pageNum;
@@ -346,6 +346,11 @@ function formatJson(filterVal, jsonData) {
   return jsonData.map(v => filterVal.map(j => v[j]))
 }
 
+function isMobile() {
+  let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
+  return flag;
+}
+
 export default {
   contentPath,
   null2empty,
@@ -363,5 +368,6 @@ export default {
   saveAxios,
   updateAxios,
   deleteAxios,
-  exportExcel
+  exportExcel,
+  isMobile
 }

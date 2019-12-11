@@ -87,7 +87,6 @@
       }
     },
     mounted: function () {
-      debugger
       if (localStorage.getItem('checked') === 'true') {
         this.checked = true;
         this.ruleForm.loginName = localStorage.getItem('loginName');

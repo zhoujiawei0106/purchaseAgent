@@ -21,19 +21,23 @@
         <el-input-number v-model="ruleForm.point" :min="0" placeholder="请输入客户积分" size="medium" tabindex="6"/>
       </el-form-item>
       <el-form-item label="客户类型" prop="type">
-        <el-select v-model="ruleForm.type" clearable placeholder="-请选择-" tabindex="6">
+        <el-select v-model="ruleForm.type" clearable placeholder="-请选择-" tabindex="7">
           <el-option v-for="item in customerType" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="客户状态" prop="status">
-        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="7">
+        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="8">
           <el-option v-for="item in customerStatus" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
+      <el-form-item label="客户有效期" prop="expiringDate">
+        <el-date-picker v-model="ruleForm.expiringDate" type="date" format="yyyyMMdd" placeholder="请选择日期"
+                        :disabled="dateFlag" :readonly="dateFlag" tabindex="9"/>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="9">保存</el-button>
-      <el-button @click="back" tabindex="10">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="10">保存</el-button>
+      <el-button @click="back" tabindex="11">返回</el-button>
     </span>
   </el-dialog>
 </template>
@@ -58,6 +62,7 @@
       return {
         dialogForm: false,
         inline: true,
+        dateFlag: true, // 客户有效期控件只读
         ruleForm: {
           name: '',
           nickName: '',
@@ -66,7 +71,8 @@
           idcard: '',
           point: '',
           type: '',
-          status: ''
+          status: '',
+          expiringDate: '',
         },
         rules: {
           name: [
@@ -79,6 +85,7 @@
             {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
           ],
           tel: [
+            {required: true, message: '请输入客户电话', trigger: 'change'},
             {min: 11, max: 11, message: '请输入11位的手机号码', trigger: 'blur'},
             {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
               message: '请输入正确的手机号码', trigger: 'blur'}
@@ -113,6 +120,7 @@
               point: that.ruleForm.point,
               type: that.ruleForm.type,
               status: that.ruleForm.status,
+              expiringDate: that.ruleForm.expiringDate,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid()
             }, '用户新增成功').then(function (flag) {
@@ -125,7 +133,8 @@
                   idcard: '',
                   point: '',
                   type: '',
-                  status: ''
+                  status: '',
+                  expiringDate: ''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -148,7 +157,8 @@
             idcard: '',
             point: '',
             type: '',
-            status: ''
+            status: '',
+            expiringDate: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -178,7 +188,8 @@
             idcard: '',
             point: '',
             type: '',
-            status: ''
+            status: '',
+            expiringDate: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);
@@ -197,7 +208,19 @@
     },
     watch: {
       addFlag(newValue) {
-        this.dialogForm = newValue;
+        let that = this;
+        that.dialogForm = newValue;
+        if (newValue) {
+          that.$common.queryAxios(that, '/purchase/customer/getUserType', {}, '', false).then(function (e) {
+            if (!e.data) {
+              that.dateFlag = e.data;
+            } else {
+              that.dateFlag = true;
+              that.ruleForm.expiringDate = e.data.expiringDate;
+            }
+          });
+        }
+
       }
     }
   }

@@ -22,12 +22,12 @@
         <el-input-number v-model="ruleForm.point" :min="0" placeholder="请输入客户积分" size="medium" tabindex="6"/>
       </el-form-item>
       <el-form-item label="客户类型" prop="type">
-        <el-select v-model="ruleForm.type" clearable placeholder="-请选择-" tabindex="6">
+        <el-select v-model="ruleForm.type" clearable placeholder="-请选择-" tabindex="7">
           <el-option v-for="item in customerType" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
       <el-form-item label="客户状态" prop="status">
-        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="7">
+        <el-select v-model="ruleForm.status" clearable placeholder="-请选择-" tabindex="8">
           <el-option v-for="item in customerStatus" :key="item.value" :label="item.label" :value="item.value"/>
         </el-select>
       </el-form-item>
@@ -84,7 +84,7 @@
             {pattern: /^[a-zA-Z]{3,36}$/, message: '登陆名长度在 3 到 36 个英文字符', trigger: 'blur'}
           ],
           tel: [
-            {required: true, message: '请输入客户名称', trigger: 'change'},
+            {required: true, message: '请输入客户电话', trigger: 'change'},
             {pattern: /^[1](([3][0-9])|([4][5-9])|([5][0-3,5-9])|([6][5,6])|([7][0-8])|([8][0-9])|([9][1,8,9]))[0-9]{8}$/,
               message: '请输入正确的手机号码', trigger: 'blur'}
           ],
