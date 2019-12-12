@@ -209,6 +209,7 @@
       }
     },
     created: function() {
+      debugger;
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
       let that = this;
       that.$common.tableSearch(that, this.url, {});

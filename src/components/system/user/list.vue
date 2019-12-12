@@ -182,20 +182,20 @@
         this.updateFlag = true;
       },
       deleteBtn() {
+        debugger;
         let that = this;
         // 判断是否选择了数据
         if (this.$common.isEmpty(this.selectedRow)) {
           this.$common.selectRowMsg(this);
           return false;
         }
-
         this.$confirm('是否确认删除数据？<br/><b>数据删除后无法恢复</b>', '提示', {
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(function () {
           // 遮罩
-          this.loading = true;
-          this.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
+          that.loading = true;
+          that.$common.deleteAxios(that, '/system/user/delete', {'id': that.selectedRow}, '用户删除成功').then(function (flag) {
             if (flag) {
               that.$common.tableSearch(that, that.url, that.formData);
               that.selectedRow = '';
@@ -244,7 +244,7 @@
         // 遮罩
         this.loading = true;
 
-        this.$common.updateAxios(that, '/system/user/resetTimes', {'id': that.selectedRow},  '用户登陆次数重置成功')
+        this.$common.updateAxios(that, '/system/user/resetTimes', {'id': that.selectedRow},  '用户密码重置成功')
           .then(function (flag) {
             if (flag) {
               that.$common.tableSearch(that, that.url, that.formData);
