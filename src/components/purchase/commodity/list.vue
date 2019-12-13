@@ -28,6 +28,7 @@
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="deleteBtn" icon="el-icon-delete-solid">删除</el-button>
@@ -168,6 +169,15 @@
           return false;
         }
         this.updateFlag = true;
+      },
+      /**
+       * 重置按钮
+       */
+      resetBtn() {
+        this.formData.name = '';
+        this.formData.price= '',
+        this.formData.priceMax ='',
+        this.formData.category=''
       },
       deleteBtn() {
         let that = this;

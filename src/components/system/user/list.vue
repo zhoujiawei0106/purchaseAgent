@@ -182,7 +182,6 @@
         this.updateFlag = true;
       },
       deleteBtn() {
-        debugger;
         let that = this;
         // 判断是否选择了数据
         if (this.$common.isEmpty(this.selectedRow)) {

@@ -374,7 +374,7 @@
           that.tableData.splice(key, that.tableData.length)
         }
         if (newValue) {
-          this.$common.queryAxios(this, '/purchase/commodity/listOfOrder', {id: this.id}, '商品查询成功').then(function (e) {
+          this.$common.queryAxios(this, '/purchase/order/getOrderList', {id: this.id}, '商品查询成功').then(function (e) {
             that.shopInfo = e.data.data;
             that.shopInfoCash = e.dataById;
           })

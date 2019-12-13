@@ -14,6 +14,7 @@
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">增量</el-button>
             <el-button type="primary" @click="resetTimesBtn" icon="el-icon-refresh-right">库存销毁</el-button>
             <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
@@ -134,6 +135,12 @@
        */
       selectRow(row, event) {
         this.selectedRow = row.id;
+      },
+      /**
+       * 重置按钮
+       */
+      resetBtn() {
+        this.formData.name = '';
       },
       addBtn() {
         // 判断是否选择了数据

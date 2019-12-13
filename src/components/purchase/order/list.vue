@@ -21,6 +21,7 @@
           </el-form>
           <div class="search-form-btn">
             <el-button type="primary" @click="searchBtn" icon="el-icon-search">查询</el-button>
+            <el-button type="primary" @click="resetBtn" icon="el-icon-refresh-left">重置</el-button>
             <el-button type="primary" @click="addBtn" icon="el-icon-circle-plus-outline">新增</el-button>
             <el-button type="primary" @click="updateBtn" icon="el-icon-edit">修改</el-button>
             <el-button type="primary" @click="exportBtn" icon="el-icon-refresh-right">导出</el-button>
@@ -194,6 +195,12 @@
         }
         this.updateFlag = true;
       },
+        /**
+         * 重置按钮
+         */
+        resetBtn() {
+          this.formData.orderStatus = '';
+        },
       exportBtn() {
         let that = this;
         return new Promise(function (resolve) {
@@ -209,7 +216,6 @@
       }
     },
     created: function() {
-      debugger;
       this.loginName = JSON.parse(sessionStorage.getItem('user')).loginName;
       let that = this;
       that.$common.tableSearch(that, this.url, {});

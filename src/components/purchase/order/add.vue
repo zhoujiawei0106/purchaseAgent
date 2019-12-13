@@ -359,7 +359,6 @@
             that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
         }).catch(function (e) {
-          debugger
           console.log(e);
           if(e === 'cancel') {
           } else {
@@ -424,12 +423,10 @@
           trackId:'',
           value: false
         }
-        debugger;
         if (newValue) {
-          this.$common.queryAxios(this, '/purchase/customer/list', {id: this.id}, '客户查询成功').then(function (e) {
-            that.customerInfo = e.data.list;
-          })
-          this.$common.queryAxios(this, '/purchase/commodity/listOfOrder', {id: this.id}, '商品查询成功').then(function (e) {
+          debugger;
+          this.$common.queryAxios(this, '/purchase/order/getOrderList', {id: this.id}, '商品查询成功').then(function (e) {
+            that.customerInfo = e.list;
             that.shopInfo = e.data.data;
             that.shopInfoCash = e.dataById;
           })

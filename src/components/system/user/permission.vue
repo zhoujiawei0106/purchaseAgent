@@ -37,7 +37,6 @@
     },
     methods: {
       menuLists(param) {
-        debugger;
         this.undistributed = param[0];
         this.distribute = param[1];
       },
@@ -94,7 +93,6 @@
     },
     watch: {
       permissionFlag(newValue) {
-        debugger;
         let that = this;
         that.dialogForm = newValue;
         // 打开新增窗口时加载未分配菜单数据
