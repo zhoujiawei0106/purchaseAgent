@@ -46,9 +46,12 @@
           <el-table-column prop="id" label="id" align="center" v-if="false"/>
           <el-table-column prop="loginName" label="登陆名" align="center" sortable show-overflow-tooltip/>
           <el-table-column prop="userName" label="用户名" align="center" show-overflow-tooltip/>
+          <el-table-column prop="userType" label="用户类型" align="center" show-overflow-tooltip/>
           <el-table-column prop="tel" label="手机" align="center" show-overflow-tooltip/>
-          <el-table-column prop="ip" label="ip" align="center" show-overflow-tooltip/>
           <el-table-column prop="status" label="有效状态" align="center" show-overflow-tooltip/>
+          <el-table-column prop="expiringDate" label="有效期" align="center" show-overflow-tooltip slot-=""
+                           :formatter="dateFormat"/>
+          <el-table-column prop="ip" label="ip" align="center" show-overflow-tooltip/>
           <el-table-column prop="loginFailTimes" label="登陆失败次数" align="center" show-overflow-tooltip/>
         </el-table>
       </div>
@@ -74,6 +77,7 @@
   import addPage from './add';
   import updatePage from './update';
   import menuTree from './permission';
+  import common from "../../common/js/common";
 
   export default {
     data() {
@@ -113,6 +117,16 @@
       menuTree
     },
     methods: {
+      dateFormat(row, column, cellValue) {
+        if(common.isNotEmpty(cellValue)){
+          cellValue = new Date(cellValue);
+          let year = cellValue.getFullYear() + '年';
+          let month = cellValue.getMonth()+1 + '月';
+          let day = cellValue.getDate() + '日';
+          return year + month + day;
+        }
+        return ''
+      },
       changeFlag(param) {
         this.addFlag = param[0];
         this.updateFlag = param[0];
@@ -182,7 +196,6 @@
         this.updateFlag = true;
       },
       deleteBtn() {
-        debugger;
         let that = this;
         // 判断是否选择了数据
         if (this.$common.isEmpty(this.selectedRow)) {

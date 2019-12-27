@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新增客户" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
+  <el-dialog title="修改客户" :visible.sync="dialogForm" :before-close="handleClose" :close-on-click-modal="false"
              :center="true" :destroy-on-close="true">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" :inline="inline" label-position="right">
       <el-form-item label="客户名称" prop="name">

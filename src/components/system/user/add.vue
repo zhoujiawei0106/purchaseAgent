@@ -24,10 +24,14 @@
       <el-form-item label="确认密码" prop="pwd">
         <el-input v-model="ruleForm.pwd" placeholder="请再次输入密码" show-password tabindex="6"/>
       </el-form-item>
+      <el-form-item label="有效期" prop="expiringDate">
+        <el-date-picker v-model="ruleForm.expiringDate" type="date" format="yyyy-MM-dd" placeholder="请选择日期"
+                        value-format="yyyyMMdd" tabindex="7"/>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="save('ruleForm')" tabindex="7">保存</el-button>
-      <el-button @click="back" tabindex="8">返回</el-button>
+      <el-button type="primary" @click="save('ruleForm')" tabindex="8">保存</el-button>
+      <el-button @click="back" tabindex="9">返回</el-button>
     </span>
   </el-dialog>
 </template>
@@ -74,7 +78,8 @@
           loginName: '',
           status: '',
           password: '',
-          pwd: ''
+          pwd: '',
+          expiringDate: ''
         },
         rules: {
           userName: [
@@ -103,6 +108,9 @@
             {required: true, message: '请再次输入密码', trigger: 'change'},
             {validator: valid2Password, trigger: 'blur'},
             {validator: passwordPatten, trigger: 'blur'}
+          ],
+          expiringDate: [
+            {required: true, message: '请选择有效期', trigger: 'blur'},
           ]
         }
       };
@@ -117,6 +125,7 @@
               'tel': that.ruleForm.tel,
               'loginName': that.ruleForm.loginName,
               'password': that.ruleForm.password,
+              'expiringDate': that.ruleForm.expiringDate,
               'parentId': JSON.parse(sessionStorage.getItem('user')).id,
               'id': that.$common.uuid(),
               'status': that.ruleForm.status
@@ -128,7 +137,8 @@
                   loginName: '',
                   password: '',
                   pwd: '',
-                  status: ''
+                  status: '',
+                  expiringDate: ''
                 };
                 that.dialogForm = false;
                 that.$emit('changeFlag', [false, true]);
@@ -149,7 +159,8 @@
             loginName: '',
             password: '',
             pwd: '',
-            status: ''
+            status: '',
+            expiringDate: ''
           };
           that.dialogForm = false;
           that.$emit('changeFlag', [false, false]);
@@ -174,7 +185,8 @@
             loginName: '',
             password: '',
             pwd: '',
-            status: ''
+            status: '',
+            expiringDate: ''
           };
           done();
           that.$emit('changeFlag', [false, false]);
