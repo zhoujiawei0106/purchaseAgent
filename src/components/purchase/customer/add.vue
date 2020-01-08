@@ -31,8 +31,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="客户有效期" prop="expiringDate">
-        <el-date-picker v-model="ruleForm.expiringDate" type="date" format="yyyyMMdd" placeholder="请选择日期"
-                        :disabled="dateFlag" :readonly="dateFlag" tabindex="9"/>
+        <el-date-picker v-model="ruleForm.expiringDate" type="date" format="yyyy-MM-dd" placeholder="请选择日期"
+                        value-format="yyyyMMdd" :disabled="dateFlag" :readonly="dateFlag" tabindex="9"/>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

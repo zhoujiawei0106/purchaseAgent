@@ -346,6 +346,11 @@ function formatJson(filterVal, jsonData) {
   return jsonData.map(v => filterVal.map(j => v[j]))
 }
 
+/**
+ * 校验登陆是否为手机
+ * @author zhoujiawei
+ * @returns {RegExpMatchArray}
+ */
 function isMobile() {
   let flag = navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i)
   return flag;

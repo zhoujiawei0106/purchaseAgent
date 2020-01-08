@@ -61,7 +61,7 @@ let routes = [{
   ]
 }];
 
-var router = new VueRouter({
+let router = new VueRouter({
   routes
 })
 export default router;
